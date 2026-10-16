@@ -55,10 +55,11 @@
     <a href="#about" data-n="02" data-label="about">about</a>
     <a href="#skills" data-n="03" data-label="skills">skills</a>
     <a href="#projects" data-n="04" data-label="team">team</a>
-    <a href="#terminal" data-n="05" data-label="terminal">terminal</a>
-    <a href="#portfolio" data-n="06" data-label="portfolio">portfolio</a>
-    <a href="#reviews" data-n="07" data-label="reviews">reviews</a>
-    <a href="#contact" data-n="08" data-label="contact">contact</a>
+    <a href="#product" data-n="05" data-label="soft">soft</a>
+    <a href="#terminal" data-n="06" data-label="terminal">terminal</a>
+    <a href="#portfolio" data-n="07" data-label="portfolio">portfolio</a>
+    <a href="#reviews" data-n="08" data-label="reviews">reviews</a>
+    <a href="#contact" data-n="09" data-label="contact">contact</a>
   </div>
   <div class="nav-tools">
     <button type="button" class="nav-tool" id="palette-btn" data-cursor="⌘K" aria-label="Командная палитра"><kbd>⌘K</kbd></button>
@@ -192,11 +193,60 @@
     </div>
   </section>
 
-  <!-- ===== 05 Терминал ===== -->
-  <section id="terminal" class="block block-wave" data-sector="06">
+  <!-- ===== 05 Софт: нарезка видео и баннеры ===== -->
+  <section id="product" class="block block-product" data-sector="06">
+    <div class="film film-top" aria-hidden="true"></div>
+    <div class="film film-bottom" aria-hidden="true"></div>
+    <div class="container">
+      <header class="sec-head reveal"><span class="sec-num">05</span><h2 class="glitch" data-text="video_cutter.exe">video_cutter.exe</h2><span class="sec-line"></span></header>
+      <div class="product">
+        <div class="editor window reveal" id="editor">
+          <div class="window-bar"><span></span><span></span><span></span><b>cutter — project.mp4</b><em class="ed-rec">● REC</em></div>
+          <div class="ed-preview" id="ed-preview">
+            <div class="ed-scene" id="ed-scene" aria-hidden="true"><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>
+            <div class="ed-banner" id="ed-banner" aria-hidden="true"><b>BANNER</b><span>@ghoursteam · подпишись</span></div>
+            <div class="ed-flash" id="ed-flash" aria-hidden="true"></div>
+            <span class="ed-tc" id="ed-tc">00:00:00:00</span>
+            <span class="ed-res">1920×1080 · 60fps</span>
+          </div>
+          <div class="ed-tools">
+            <button type="button" id="ed-play" data-cursor="PLAY" aria-label="Пауза / воспроизведение">❚❚</button>
+            <button type="button" id="ed-cut" data-cursor="CUT" aria-label="Разрезать в позиции курсора">✂ cut</button>
+            <button type="button" id="ed-ban" data-cursor="ADD" aria-label="Добавить или убрать баннер">▣ banner</button>
+            <span class="ed-info" id="ed-info">клипов: 1 · баннер: on</span>
+          </div>
+          <div class="ed-timeline" id="ed-timeline" data-cursor="SCRUB" aria-label="Таймлайн: наведи, чтобы перемотать">
+            <div class="ed-ruler" id="ed-ruler"></div>
+            <div class="ed-track ed-video" id="ed-video"><span class="lbl">V1</span></div>
+            <div class="ed-track ed-ban-track" id="ed-ban-track"><span class="lbl">B1</span></div>
+            <div class="ed-track ed-audio" id="ed-audio"><span class="lbl">A1</span></div>
+            <div class="ed-head" id="ed-head"><i></i></div>
+          </div>
+        </div>
+        <div class="product-info reveal">
+          <span class="badge">// новая разработка</span>
+          <h3>Нарезка видео<br><span>+ баннеры</span></h3>
+          <p>Софт, который режет видео на фрагменты и добавляет баннеры поверх ролика. Наша разработка — подробности, демо и доступ в посте.</p>
+          <ul class="features">
+            <li><b>✂</b> Нарезка видео на фрагменты</li>
+            <li><b>▣</b> Баннеры поверх видео</li>
+            <li><b>⚙</b> Разработка nalpax × GHOURS TEAM</li>
+          </ul>
+          <div class="product-actions">
+            <a class="btn btn-product" href="https://t.me/ghoursteam/148" data-warp="продукт" data-cursor="GET">открыть продукт ↗</a>
+            <a class="btn btn-ghost" href="https://t.me/ceojobb" data-cursor="TG">вопросы — @ceojobb</a>
+          </div>
+          <p class="muted small">↖ демо слева интерактивное: води курсором по таймлайну, режь ✂ и добавляй баннер ▣</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 06 Терминал ===== -->
+  <section id="terminal" class="block block-wave" data-sector="07">
     <canvas class="bg-canvas" id="wave" aria-hidden="true"></canvas>
     <div class="container">
-      <header class="sec-head reveal"><span class="sec-num">05</span><h2 class="glitch" data-text="terminal">terminal</h2><span class="sec-line"></span></header>
+      <header class="sec-head reveal"><span class="sec-num">06</span><h2 class="glitch" data-text="terminal">terminal</h2><span class="sec-line"></span></header>
       <p class="muted reveal">Введи <b class="accent">help</b>. Попробуй <b class="accent">neofetch</b>. Есть секретные команды 👀</p>
       <div class="window term reveal" id="term">
         <div class="window-bar"><span></span><span></span><span></span><b>bash — guest@nalpax</b></div>
@@ -210,20 +260,20 @@
   </section>
 
   <!-- ===== 06 Портфолио ===== -->
-  <section id="portfolio" class="block block-hex" data-sector="07">
+  <section id="portfolio" class="block block-hex" data-sector="08">
     <canvas class="bg-canvas" id="hex" aria-hidden="true"></canvas>
     <div class="container">
-      <header class="sec-head reveal"><span class="sec-num">06</span><h2 class="glitch" data-text="portfolio">portfolio</h2><span class="sec-line"></span></header>
+      <header class="sec-head reveal"><span class="sec-num">07</span><h2 class="glitch" data-text="portfolio">portfolio</h2><span class="sec-line"></span></header>
       <div class="filters reveal" id="filters" role="tablist" aria-label="Фильтр работ"></div>
       <div class="works" id="works"></div>
     </div>
   </section>
 
   <!-- ===== 07 Отзывы ===== -->
-  <section id="reviews" class="block block-reviews" data-sector="08">
+  <section id="reviews" class="block block-reviews" data-sector="09">
     <div class="bubbles" id="bubbles" aria-hidden="true"></div>
     <div class="container">
-      <header class="sec-head reveal"><span class="sec-num">07</span><h2 class="glitch" data-text="reviews.log">reviews.log</h2><span class="sec-line"></span></header>
+      <header class="sec-head reveal"><span class="sec-num">08</span><h2 class="glitch" data-text="reviews.log">reviews.log</h2><span class="sec-line"></span></header>
       <div class="reviews-card reveal">
         <div class="chat" aria-hidden="true">
           <div class="chat-head"><span class="chat-ava">★</span><div><b>Отзывы · nalpax</b><small id="chat-status">печатает<span class="typing"><i></i><i></i><i></i></span></small></div></div>
@@ -243,11 +293,11 @@
   </section>
 
   <!-- ===== 08 Контакты ===== -->
-  <section id="contact" class="block block-radar" data-sector="09">
+  <section id="contact" class="block block-radar" data-sector="10">
     <div class="stars" id="stars" aria-hidden="true"></div>
     <div class="radar" aria-hidden="true"><i></i><i></i><i></i><b class="sweep"></b><em class="blip b1"></em><em class="blip b2"></em></div>
     <div class="container">
-      <header class="sec-head reveal"><span class="sec-num">08</span><h2 class="glitch" data-text="establish_connection">establish_connection</h2><span class="sec-line"></span></header>
+      <header class="sec-head reveal"><span class="sec-num">09</span><h2 class="glitch" data-text="establish_connection">establish_connection</h2><span class="sec-line"></span></header>
       <p class="contact-lead reveal">Есть идея, проект или просто хочешь сказать «привет»? <br>Сигнал принимается круглосуточно.</p>
       <div class="contacts reveal">
         <a class="contact" href="https://t.me/nalpax" data-cursor="TG">

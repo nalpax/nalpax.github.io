@@ -7,6 +7,7 @@ const CONFIG = {
   team: "ghoursteam",
   manager: "ceojobb",
   reviews: "https://t.me/+IaY9WUZKbF03YzFi",
+  product: "https://t.me/ghoursteam/148",
   roles: ["creative developer", "web designer", "founder of GHOURS TEAM", "делаю сайты, которые запоминают"],
   marquee: ["NALPAX", "CREATIVE CODE", "GHOURS TEAM", "INTERACTIVE WEB", "WEB DESIGN", "OPEN TO WORK", "@nalpax"],
   stats: [
@@ -24,9 +25,11 @@ const CONFIG = {
     { name: "Teamwork", icon: "👥", level: 90, note: "веду команду GHOURS TEAM" },
   ],
   // Категории для фильтра портфолио
-  categories: { all: "Все", web: "Сайты", tg: "Telegram", design: "Дизайн", lab: "Эксперименты" },
+  categories: { all: "Все", soft: "Софт", web: "Сайты", tg: "Telegram", design: "Дизайн", lab: "Эксперименты" },
   // Работы в портфолио. soon: true — карточка «в работе»
   portfolio: [
+    { title: "Video Cutter", cat: "soft", year: "2026", hue: "#ff2e63", icon: "✂", link: "https://t.me/ghoursteam/148", warp: "продукт",
+      desc: "Софт для нарезки видео и добавления баннеров. Наша разработка — подробности и доступ в посте.", tags: ["Software", "Video", "Banners"] },
     { title: "nalpax.portfolio", cat: "web", year: "2026", hue: "#00ff6a", icon: "⌘", link: "#home",
       desc: "Этот сайт: хакерский стиль, 3D-глобус, следящий глаз, рабочий терминал.", tags: ["HTML", "CSS", "JS", "Canvas"] },
     { title: "GHOURS TEAM", cat: "tg", year: "2026", hue: "#00e5ff", icon: "👻", link: "https://t.me/ghoursteam",
@@ -48,6 +51,7 @@ const CONFIG = {
     "Есть секретная команда «red pill» 💊",
     "Заглядывай в GHOURS TEAM 👻",
     "Пиши nalpax в Telegram: @nalpax",
+    "Видел наш софт для нарезки видео? Раздел soft ✂",
     "По вопросам — менеджер @ceojobb",
     "Нажми Ctrl+K — откроется командная палитра ⌘",
     "Включи </> в шапке — увидишь сайт глазами разработчика",
@@ -57,10 +61,11 @@ const CONFIG = {
     "03": "Код слева — буквально про nalpax 😉",
     "04": "Видишь импульсы на плате? Это навыки качаются ⚡",
     "05": "GHOURS TEAM — главный проект. Жми на призрака!",
-    "06": "Попробуй: help, neofetch, hack nasa…",
-    "07": "Тут все работы nalpax. Фильтруй по категориям!",
-    "08": "Отзывы — без фильтров, прямо в Telegram ★",
-    "09": "Пиши — nalpax отвечает быстро ✈",
+    "06": "Это наш софт ✂ Поводи курсором по таймлайну!",
+    "07": "Попробуй: help, neofetch, hack nasa…",
+    "08": "Тут все работы nalpax. Фильтруй по категориям!",
+    "09": "Отзывы — без фильтров, прямо в Telegram ★",
+    "10": "Пиши — nalpax отвечает быстро ✈",
   },
 };
 
@@ -1069,7 +1074,7 @@ function renderPortfolio() {
           <h3>${p.title}</h3>
           <p>${p.desc}</p>
           <div class="tags">${p.tags.map((t) => `<span>${t}</span>`).join("")}</div>
-          <a class="btn work-btn" href="${p.link}" ${ext && !p.link.includes("t.me/") ? 'target="_blank" rel="noopener"' : ""} data-cursor="${ext ? "OPEN" : "GO"}">${p.soon ? "узнать первым ↗" : ext ? "открыть ↗" : "смотреть →"}</a>
+          <a class="btn work-btn" href="${p.link}" ${p.warp ? `data-warp="${p.warp}"` : ""} ${ext && !p.link.includes("t.me/") ? 'target="_blank" rel="noopener"' : ""} data-cursor="${ext ? "OPEN" : "GO"}">${p.soon ? "узнать первым ↗" : ext ? "открыть ↗" : "смотреть →"}</a>
         </div>
       </div>
     </div>`;
@@ -1226,9 +1231,10 @@ const COMMANDS = {
     "  ghours      — перейти в GHOURS TEAM",
     "  manager     — менеджер @ceojobb",
     "  reviews     — отзывы",
+    "  product     — софт для нарезки видео и баннеров",
     "  contact     — все контакты",
     "  dev         — режим разработчика",
-    "  goto <раздел> — перейти (eye, about, skills, projects, portfolio, reviews, contact)",
+    "  goto <раздел> — перейти (eye, about, skills, projects, product, portfolio, reviews, contact)",
     "  clear       — очистить экран",
     "  ...и несколько секретных 😉",
   ].join("\n"),
@@ -1263,6 +1269,8 @@ const COMMANDS = {
   },
   manager: () => { warpTo("https://t.me/" + CONFIG.manager); return "Соединяюсь с менеджером @" + CONFIG.manager + " ..."; },
   reviews: () => { warpTo(CONFIG.reviews, "отзывы"); return "Открываю отзывы ★"; },
+  product: () => { warpTo(CONFIG.product, "продукт"); return "Открываю софт для нарезки видео ✂"; },
+  soft: () => COMMANDS.product(),
   dev: () => { toggleDev(); return "DEV MODE: " + (document.body.classList.contains("devmode") ? "on" : "off"); },
   ls: () => "about.md  skills.db  portfolio/  ghours/  secret.txt",
   "ls -a": () => ".  ..  .hidden  about.md  skills.db  portfolio/  ghours/  secret.txt",
@@ -1405,6 +1413,78 @@ $$(".window, .skill, .stat, .work-face, .eye-readout div").forEach((el) => el.cl
 })();
 
 /* =========================================================
+   СОФТ: интерактивное демо видеоредактора
+   ========================================================= */
+(() => {
+  const tl = $("#ed-timeline"), video = $("#ed-video"), banTrack = $("#ed-ban-track"), head = $("#ed-head");
+  const scene = $("#ed-scene"), banner = $("#ed-banner"), flash = $("#ed-flash"), tc = $("#ed-tc"), info = $("#ed-info");
+  const DURATION = 60, BANS = [[0.12, 0.38], [0.58, 0.86]];
+  let p = 0, playing = true, hovering = false, bannerOn = true, cuts = [], nextAuto = 0, last = 0;
+
+  $("#ed-ruler").innerHTML = Array.from({ length: 7 }, (_, i) => `<span style="left:${(i / 6) * 100}%">${i * 10}s</span>`).join("");
+  $("#ed-audio").insertAdjacentHTML("beforeend", Array.from({ length: 90 }, (_, i) =>
+    `<i style="height:${(20 + Math.abs(Math.sin(i * 0.7)) * 50 + rand(0, 30)) | 0}%"></i>`).join(""));
+  banTrack.insertAdjacentHTML("beforeend", BANS.map(([a, b]) => `<span class="ban-clip" style="left:${a * 100}%;width:${(b - a) * 100}%"></span>`).join(""));
+
+  const trackW = () => tl.clientWidth - 34 - 10;
+  function renderClips() {
+    $$(".clip", video).forEach((c) => c.remove());
+    const edges = [0, ...cuts, 1];
+    for (let i = 0; i < edges.length - 1; i++) {
+      const c = document.createElement("span");
+      c.className = "clip";
+      c.style.cssText = `left:calc(${edges[i] * 100}% + 1px);width:calc(${(edges[i + 1] - edges[i]) * 100}% - 2px);--ch:${(330 + i * 47) % 360}`;
+      video.appendChild(c);
+    }
+    info.textContent = `клипов: ${edges.length - 1} · баннер: ${bannerOn ? "on" : "off"}`;
+  }
+  function cut(at = p) {
+    if (at < 0.02 || at > 0.98 || cuts.some((c) => Math.abs(c - at) < 0.03)) return;
+    if (cuts.length >= 7) { cuts = []; $$(".cut-mark", tl).forEach((m) => m.remove()); }
+    cuts.push(at);
+    cuts.sort((a, b) => a - b);
+    renderClips();
+    const m = document.createElement("span");
+    m.className = "cut-mark";
+    m.style.left = 34 + at * trackW() + "px";
+    m.dataset.at = at;
+    tl.appendChild(m);
+    scene.style.setProperty("--h", (rand(0, 360)) | 0);
+    flash.classList.remove("go"); void flash.offsetWidth; flash.classList.add("go");
+    beep(1400, 0.03);
+  }
+  function setBanner(on) {
+    bannerOn = on;
+    $$(".ban-clip", banTrack).forEach((b) => b.classList.toggle("off", !on));
+    renderClips();
+  }
+  function draw(t) {
+    const dt = Math.min((t - last) / 1000, 0.1) || 0;
+    last = t;
+    if (playing && !hovering) {
+      p += dt / 14;
+      if (p > 1) p = 0;
+      if (t > nextAuto) { cut(p); nextAuto = t + rand(1800, 3200); }
+    }
+    head.style.transform = `translateX(${p * trackW()}px)`;
+    const sec = p * DURATION;
+    tc.textContent = ["00", String(Math.floor(sec / 60)).padStart(2, "0"), String(Math.floor(sec % 60)).padStart(2, "0"), String(Math.floor((sec % 1) * 60)).padStart(2, "0")].join(":");
+    banner.classList.toggle("on", bannerOn && BANS.some(([a, b]) => p >= a && p <= b));
+    scene.style.filter = playing || hovering ? "" : "grayscale(.7) brightness(.7)";
+  }
+  const posFrom = (e) => Math.min(1, Math.max(0, (e.clientX - tl.getBoundingClientRect().left - 34) / trackW()));
+  tl.addEventListener("pointermove", (e) => { if (e.pointerType === "mouse") { hovering = true; p = posFrom(e); } });
+  tl.addEventListener("pointerleave", () => (hovering = false));
+  tl.addEventListener("click", (e) => { p = posFrom(e); cut(p); });
+  $("#ed-cut").addEventListener("click", () => cut(p));
+  $("#ed-ban").addEventListener("click", () => setBanner(!bannerOn));
+  $("#ed-play").addEventListener("click", (e) => { playing = !playing; e.currentTarget.textContent = playing ? "❚❚" : "▶"; });
+  addEventListener("resize", () => $$(".cut-mark", tl).forEach((m) => (m.style.left = 34 + +m.dataset.at * trackW() + "px")));
+  renderClips();
+  animateWhenVisible($("#editor"), draw);
+})();
+
+/* =========================================================
    ОТЗЫВЫ: живой чат-скелетон и всплывающие звёзды
    ========================================================= */
 $("#bubbles").innerHTML = Array.from({ length: 22 }, () =>
@@ -1439,6 +1519,7 @@ const ACTIONS = [
   { icon: "✈", name: "Написать @nalpax", hint: "telegram", run: () => warpTo("https://t.me/" + CONFIG.telegram) },
   { icon: "✉", name: "Менеджер @ceojobb — по вопросам", hint: "telegram", run: () => warpTo("https://t.me/" + CONFIG.manager) },
   { icon: "★", name: "Отзывы", hint: "telegram", run: () => warpTo(CONFIG.reviews, "отзывы") },
+  { icon: "✂", name: "Софт: нарезка видео и баннеры", hint: "продукт", run: () => warpTo(CONFIG.product, "продукт") },
   { icon: "👻", name: "GHOURS TEAM", hint: "telegram", run: () => warpTo("https://t.me/" + CONFIG.team) },
   { icon: "</>", name: "DEV MODE — показать разметку", hint: "toggle", run: () => toggleDev() },
   { icon: "♪", name: "Звук вкл/выкл", hint: "toggle", run: () => $("#sound-btn").click() },
