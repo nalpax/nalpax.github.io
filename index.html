@@ -4,10 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>nalpax // portfolio</title>
-<meta name="description" content="nalpax — портфолио в хакерском стиле">
+<meta name="description" content="nalpax — сайты, интерфейсы и цифровые предметы, которыми хочется пользоваться. Основатель GHOURS TEAM.">
+<meta name="theme-color" content="#020604">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="nalpax">
+<meta property="og:url" content="https://nalpax.github.io/">
+<meta property="og:title" content="NALPAX — creative developer">
+<meta property="og:description" content="Сайты, интерфейсы и цифровые предметы, которыми хочется пользоваться. Основатель GHOURS TEAM · софт для нарезки видео · @nalpax">
+<meta property="og:image" content="https://nalpax.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NALPAX — неоновый логотип и кибер-глаз на фоне матрицы">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NALPAX — creative developer">
+<meta name="twitter:description" content="Сайты, интерфейсы и цифровые предметы, которыми хочется пользоваться.">
+<meta name="twitter:image" content="https://nalpax.github.io/og.png">
+<link rel="apple-touch-icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Unbounded:wght@700;900&display=swap" rel="stylesheet">
-<link rel="icon" id="favicon" href="data:,">
+<script>if(matchMedia("(pointer: coarse)").matches||innerWidth<760||(navigator.hardwareConcurrency||8)<=2)document.documentElement.classList.add("lite")</script>
+<link rel="icon" id="favicon" href="icon.png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -38,7 +56,7 @@
 
 <!-- ===== HUD по углам ===== -->
 <div class="hud hud-tl" aria-hidden="true">X:<span id="hud-x">0000</span> Y:<span id="hud-y">0000</span></div>
-<div class="hud hud-bl" aria-hidden="true"><i class="dot"></i> SECURE CONNECTION · <span id="hud-sector">SECTOR 01</span></div>
+<div class="hud hud-bl" aria-hidden="true"><i class="dot"></i> SECURE CONNECTION · <span id="hud-sector">SECTOR 01</span> · <span id="hud-online">— online</span></div>
 <div class="hud hud-br" aria-hidden="true"><span id="hud-time">00:00:00</span> · UTC</div>
 
 <!-- ===== Вступление ===== -->
@@ -62,6 +80,8 @@
     <a href="#contact" data-n="09" data-label="contact">contact</a>
   </div>
   <div class="nav-tools">
+    <button type="button" class="nav-tool" id="sound-nav" data-cursor="SOUND" aria-label="Звуковая тема" aria-pressed="false">♪</button>
+    <button type="button" class="nav-tool" id="lang-btn" data-cursor="LANG" aria-label="Язык / Language">EN</button>
     <button type="button" class="nav-tool" id="palette-btn" data-cursor="⌘K" aria-label="Командная палитра"><kbd>⌘K</kbd></button>
     <button type="button" class="nav-tool" id="dev-btn" data-cursor="DEV" aria-label="Режим разработчика" aria-pressed="false">&lt;/&gt;</button>
     <a class="nav-cta" href="https://t.me/nalpax" data-cursor="TG">@nalpax</a>
@@ -81,7 +101,7 @@
       </h1>
       <p class="hero-hint" id="hero-hint">[ наведи курсор, чтобы восстановить файл ]</p>
       <p class="role">&gt; <span id="typed"></span><span class="cursor-blink">█</span></p>
-      <p class="hero-sub">Создаю сайты, интерфейсы и цифровые штуки, которые хочется трогать. Основатель <a href="https://t.me/ghoursteam" class="tg-inline">GHOURS TEAM</a>. Пиши: <a href="https://t.me/nalpax" class="tg-inline">@nalpax</a>. По вопросам — менеджер <a href="https://t.me/ceojobb" class="tg-inline">@ceojobb</a>. <a href="https://t.me/+IaY9WUZKbF03YzFi" class="tg-inline" data-warp="отзывы">Отзывы →</a></p>
+      <p class="hero-sub">Создаю сайты, интерфейсы и цифровые предметы, которыми хочется пользоваться. Основатель <a href="https://t.me/ghoursteam" class="tg-inline">GHOURS TEAM</a>. Пиши: <a href="https://t.me/nalpax" class="tg-inline">@nalpax</a>. По вопросам — менеджер <a href="https://t.me/ceojobb" class="tg-inline">@ceojobb</a>. <a href="https://t.me/+IaY9WUZKbF03YzFi" class="tg-inline" data-warp="отзывы">Отзывы →</a></p>
       <div class="hero-actions">
         <a href="#portfolio" class="btn" data-cursor="GO">./portfolio.sh</a>
         <a href="https://t.me/nalpax" class="btn btn-ghost" data-cursor="TG">связаться ↗</a>
@@ -148,6 +168,8 @@
             <div class="mon-row"><span>USER</span><a class="accent tg-inline" href="https://t.me/nalpax">@nalpax</a></div>
             <div class="mon-row"><span>TEAM</span><a class="accent tg-inline" href="https://t.me/ghoursteam">@ghoursteam</a></div>
             <div class="mon-row"><span>MANAGER</span><a class="accent tg-inline" href="https://t.me/ceojobb">@ceojobb</a></div>
+            <div class="mon-row"><span>VISITORS</span><b id="stat-visits" class="mon-live">scanning…</b></div>
+            <div class="mon-row"><span>ONLINE NOW</span><b id="stat-online" class="mon-live"><i class="dot"></i> scanning…</b></div>
             <div class="mon-row"><span>UPTIME</span><b id="uptime">00:00:00</b></div>
             <div class="mon-row"><span>CPU / creativity</span><b id="cpu-val">97%</b></div>
             <div class="bars" id="cpu-bars"></div>

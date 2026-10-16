@@ -1,4 +1,18 @@
 /* =========================================================
+   ЯЗЫК: RU / EN
+   ?lang=en в ссылке → сохранённый выбор → язык браузера
+   ========================================================= */
+const LANG = (() => {
+  let q = null, saved = null;
+  try { q = new URLSearchParams(location.search).get("lang"); } catch (e) {}
+  try { if (q === "ru" || q === "en") localStorage.setItem("nx-lang", q); saved = localStorage.getItem("nx-lang"); } catch (e) {}
+  if (q === "ru" || q === "en") return q;
+  if (saved === "ru" || saved === "en") return saved;
+  return (navigator.language || "ru").toLowerCase().startsWith("ru") ? "ru" : "en";
+})();
+const tr = (ru, en) => (LANG === "en" ? en : ru);
+
+/* =========================================================
    НАСТРОЙКИ — все тексты меняются здесь
    ========================================================= */
 const CONFIG = {
@@ -8,68 +22,70 @@ const CONFIG = {
   manager: "ceojobb",
   reviews: "https://t.me/+IaY9WUZKbF03YzFi",
   product: "https://t.me/ghoursteam/148",
-  roles: ["creative developer", "web designer", "founder of GHOURS TEAM", "делаю сайты, которые запоминают"],
+  roles: ["creative developer", "web designer", "founder of GHOURS TEAM", tr("делаю сайты, которые запоминают", "building sites people remember")],
   marquee: ["NALPAX", "CREATIVE CODE", "GHOURS TEAM", "INTERACTIVE WEB", "WEB DESIGN", "OPEN TO WORK", "@nalpax"],
   stats: [
-    { n: 6, suffix: "", label: "направлений в стеке" },
-    { n: 24, suffix: "/7", label: "на связи в Telegram" },
-    { n: 1000, suffix: "+", label: "строк кода" },
-    { n: 1, suffix: "", label: "своя команда — GHOURS" },
+    { n: 6, suffix: "", label: tr("направлений в стеке", "areas in my stack") },
+    { n: 24, suffix: "/7", label: tr("на связи в Telegram", "online on Telegram") },
+    { n: 1000, suffix: "+", label: tr("строк кода", "lines of code") },
+    { n: 1, suffix: "", label: tr("своя команда — GHOURS", "my own team — GHOURS") },
   ],
   skills: [
-    { name: "HTML / CSS", icon: "</>", level: 85, note: "вёрстка, анимации, адаптив" },
-    { name: "JavaScript", icon: "JS", level: 70, note: "интерактив, canvas, логика" },
-    { name: "Web Design", icon: "◆", level: 80, note: "стиль, типографика, UX" },
-    { name: "Canvas / 3D", icon: "✦", level: 75, note: "анимации, эффекты, графика в браузере" },
-    { name: "Telegram", icon: "✈", level: 75, note: "каналы, боты, комьюнити" },
-    { name: "Teamwork", icon: "👥", level: 90, note: "веду команду GHOURS TEAM" },
+    { name: "HTML / CSS", icon: "</>", level: 85, note: tr("вёрстка, анимации, адаптив", "layout, animation, responsive") },
+    { name: "JavaScript", icon: "JS", level: 70, note: tr("интерактив, canvas, логика", "interactivity, canvas, logic") },
+    { name: "Web Design", icon: "◆", level: 80, note: tr("стиль, типографика, UX", "style, typography, UX") },
+    { name: "Canvas / 3D", icon: "✦", level: 75, note: tr("анимации, эффекты, графика в браузере", "animation, effects, in-browser graphics") },
+    { name: "Telegram", icon: "✈", level: 75, note: tr("каналы, боты, комьюнити", "channels, bots, community") },
+    { name: "Teamwork", icon: "👥", level: 90, note: tr("веду команду GHOURS TEAM", "leading GHOURS TEAM") },
   ],
   // Категории для фильтра портфолио
-  categories: { all: "Все", soft: "Софт", web: "Сайты", tg: "Telegram", design: "Дизайн", lab: "Эксперименты" },
+  categories: { all: tr("Все", "All"), soft: tr("Софт", "Software"), web: tr("Сайты", "Websites"), tg: "Telegram", design: tr("Дизайн", "Design"), lab: tr("Эксперименты", "Experiments") },
   // Работы в портфолио. soon: true — карточка «в работе»
   portfolio: [
-    { title: "Video Cutter", cat: "soft", year: "2026", hue: "#ff2e63", icon: "✂", link: "https://t.me/ghoursteam/148", warp: "продукт",
-      desc: "Софт для нарезки видео и добавления баннеров. Наша разработка — подробности и доступ в посте.", tags: ["Software", "Video", "Banners"] },
+    { title: "Video Cutter", cat: "soft", year: "2026", hue: "#ff2e63", icon: "✂", link: "https://t.me/ghoursteam/148", warp: tr("продукт", "product"),
+      desc: tr("Софт для нарезки видео и добавления баннеров. Наша разработка — подробности и доступ в посте.", "Software for cutting videos and adding banners. Our own development — details and access in the post."), tags: ["Software", "Video", "Banners"] },
     { title: "nalpax.portfolio", cat: "web", year: "2026", hue: "#00ff6a", icon: "⌘", link: "#home",
-      desc: "Этот сайт: хакерский стиль, 3D-глобус, следящий глаз, рабочий терминал.", tags: ["HTML", "CSS", "JS", "Canvas"] },
+      desc: tr("Этот сайт: хакерский стиль, 3D-глобус, следящий глаз, рабочий терминал.", "This very site: hacker style, 3D globe, a watching eye, a working terminal."), tags: ["HTML", "CSS", "JS", "Canvas"] },
     { title: "GHOURS TEAM", cat: "tg", year: "2026", hue: "#00e5ff", icon: "👻", link: "https://t.me/ghoursteam",
-      desc: "Мой проект и команда в Telegram. Заходи — там всё самое свежее.", tags: ["Telegram", "Community"] },
+      desc: tr("Мой проект и команда в Telegram. Заходи — там всё самое свежее.", "My project and team on Telegram. Drop by — all the fresh stuff is there."), tags: ["Telegram", "Community"] },
     { title: "Landing", cat: "web", year: "soon", hue: "#ff3df2", icon: "◆", link: "https://t.me/nalpax", soon: true,
-      desc: "Лендинг в работе. Хочешь такой же для себя — пиши в Telegram.", tags: ["HTML", "CSS", "Design"] },
+      desc: tr("Лендинг в работе. Хочешь такой же для себя — пиши в Telegram.", "Landing page in progress. Want one like it? Message me on Telegram."), tags: ["HTML", "CSS", "Design"] },
     { title: "Telegram Bot", cat: "tg", year: "soon", hue: "#ffd23f", icon: "⚙", link: "https://t.me/nalpax", soon: true,
-      desc: "Бот в разработке. Анонс будет в канале GHOURS TEAM.", tags: ["Bot", "Telegram"] },
+      desc: tr("Бот в разработке. Анонс будет в канале GHOURS TEAM.", "Bot in development. Announcement coming in the GHOURS TEAM channel."), tags: ["Bot", "Telegram"] },
     { title: "Visual Pack", cat: "design", year: "soon", hue: "#ff7a2e", icon: "✦", link: "https://t.me/nalpax", soon: true,
-      desc: "Обложки, логотипы и макеты. Скоро здесь.", tags: ["Design", "UI"] },
+      desc: tr("Обложки, логотипы и макеты. Скоро здесь.", "Covers, logos and mockups. Coming soon."), tags: ["Design", "UI"] },
     { title: "Lab", cat: "lab", year: "soon", hue: "#8c6bff", icon: "▲", link: "https://t.me/nalpax", soon: true,
-      desc: "Эксперименты с canvas и анимацией. Скоро здесь.", tags: ["Canvas", "Motion"] },
+      desc: tr("Эксперименты с canvas и анимацией. Скоро здесь.", "Experiments with canvas and motion. Coming soon."), tags: ["Canvas", "Motion"] },
   ],
   tips: [
-    "Привет! Я Байт — помощник nalpax 👾",
-    "Наведи курсор на ERROR 404 — файл восстановится",
-    "Подвигай мышкой по Матрице — символы разбегаются",
-    "Введи «neofetch» в терминале ↓",
-    "Есть секретная команда «red pill» 💊",
-    "Заглядывай в GHOURS TEAM 👻",
-    "Пиши nalpax в Telegram: @nalpax",
-    "Видел наш софт для нарезки видео? Раздел soft ✂",
-    "По вопросам — менеджер @ceojobb",
-    "Нажми Ctrl+K — откроется командная палитра ⌘",
-    "Включи </> в шапке — увидишь сайт глазами разработчика",
+    tr("Привет! Я Байт — помощник nalpax 👾", "Hi! I’m Byte — nalpax’s assistant 👾"),
+    tr("Наведи курсор на ERROR 404 — файл восстановится", "Hover over ERROR 404 — the file will restore"),
+    tr("Подвигай мышкой по Матрице — символы разбегаются", "Move your mouse over the Matrix — the symbols scatter"),
+    tr("Введи «neofetch» в терминале ↓", "Type “neofetch” in the terminal ↓"),
+    tr("Есть секретная команда «red pill» 💊", "There’s a secret command: “red pill” 💊"),
+    tr("Заглядывай в GHOURS TEAM 👻", "Check out GHOURS TEAM 👻"),
+    tr("Пиши nalpax в Telegram: @nalpax", "Message nalpax on Telegram: @nalpax"),
+    tr("Видел наш софт для нарезки видео? Раздел soft ✂", "Seen our video cutting software? Section “soft” ✂"),
+    tr("По вопросам — менеджер @ceojobb", "Business inquiries — manager @ceojobb"),
+    tr("Нажми Ctrl+K — откроется командная палитра ⌘", "Press Ctrl+K — the command palette opens ⌘"),
+    tr("Включи </> в шапке — увидишь сайт глазами разработчика", "Turn on </> in the header — see the site like a developer"),
   ],
   sectorTips: {
-    "02": "Это глаз nalpax. Он видит тебя 👁",
-    "03": "Код слева — буквально про nalpax 😉",
-    "04": "Видишь импульсы на плате? Это навыки качаются ⚡",
-    "05": "GHOURS TEAM — главный проект. Жми на призрака!",
-    "06": "Это наш софт ✂ Поводи курсором по таймлайну!",
-    "07": "Попробуй: help, neofetch, hack nasa…",
-    "08": "Тут все работы nalpax. Фильтруй по категориям!",
-    "09": "Отзывы — без фильтров, прямо в Telegram ★",
-    "10": "Пиши — nalpax отвечает быстро ✈",
+    "02": tr("Это глаз nalpax. Он видит тебя 👁", "This is nalpax’s eye. It sees you 👁"),
+    "03": tr("Код слева — буквально про nalpax 😉", "The code on the left is literally about nalpax 😉"),
+    "04": tr("Видишь импульсы на плате? Это навыки качаются ⚡", "See the pulses on the board? Skills leveling up ⚡"),
+    "05": tr("GHOURS TEAM — главный проект. Жми на призрака!", "GHOURS TEAM is the main project. Click the ghost!"),
+    "06": tr("Это наш софт ✂ Поводи курсором по таймлайну!", "This is our software ✂ Scrub the timeline!"),
+    "07": tr("Попробуй: help, neofetch, hack nasa…", "Try: help, neofetch, hack nasa…"),
+    "08": tr("Тут все работы nalpax. Фильтруй по категориям!", "All of nalpax’s work. Filter by category!"),
+    "09": tr("Отзывы — без фильтров, прямо в Telegram ★", "Reviews — unfiltered, right on Telegram ★"),
+    "10": tr("Пиши — nalpax отвечает быстро ✈", "Write — nalpax replies fast ✈"),
   },
 };
 
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+// лёгкий режим для телефонов и слабых устройств (класс ставится в <head>)
+const LITE = document.documentElement.classList.contains("lite");
 const finePointer = matchMedia("(pointer: fine)").matches;
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -84,7 +100,13 @@ addEventListener("pointerup", () => (mouse.down = false));
 /* Цикл анимации, который крутится только пока элемент виден на экране */
 function animateWhenVisible(el, draw) {
   let running = false;
-  const loop = (t) => { if (!running) return; draw(t); requestAnimationFrame(loop); };
+  // на телефоне фоновые анимации рисуются не чаще 30 раз в секунду
+  let lastDraw = 0;
+  const loop = (t) => {
+    if (!running) return;
+    if (!LITE || t - lastDraw > 32) { lastDraw = t; draw(t); }
+    requestAnimationFrame(loop);
+  };
   new IntersectionObserver(([e]) => {
     const was = running;
     running = e.isIntersecting && !reduceMotion;
@@ -112,26 +134,119 @@ const LETTERS = {
 };
 const ASCII_LOGO = LETTERS.N.map((_, i) => "NALPAX".split("").map((c) => LETTERS[c][i]).join("")).join("\n");
 
-/* ---------- Звук (Web Audio, без файлов) ---------- */
+/* ---------- Звуковая тема (Web Audio, без файлов) ----------
+   Тихий эмбиент-гул + мягкий метроном. Все щелчки сайта
+   встают на ближайшую 1/16 такта и подстраиваются под гамму. */
 let soundOn = false;
-let audioCtx = null;
+const audio = (() => {
+  const BPM = 96, S16 = 60 / BPM / 4;
+  // минорная пентатоника от ля: щелчки всегда звучат в лад
+  const SCALE = [];
+  for (let o = -1; o <= 3; o++) for (const n of [0, 3, 5, 7, 10]) SCALE.push(220 * 2 ** (o + n / 12));
+  let ctx, master, drone, timer, step = 0, nextTime = 0;
+  const snap = (f) => SCALE.reduce((a, b) => (Math.abs(b - f) < Math.abs(a - f) ? b : a));
+
+  function noiseBuffer() {
+    const b = ctx.createBuffer(1, ctx.sampleRate * 0.05, ctx.sampleRate);
+    const d = b.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+    return b;
+  }
+  function startDrone() {
+    const filter = ctx.createBiquadFilter();
+    filter.type = "lowpass"; filter.frequency.value = 320; filter.Q.value = 3;
+    const lfo = ctx.createOscillator(), lfoGain = ctx.createGain();
+    lfo.frequency.value = 0.06; lfoGain.gain.value = 180;
+    lfo.connect(lfoGain).connect(filter.frequency);
+    const g = ctx.createGain();
+    g.gain.value = 0.0001;
+    g.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + 3);
+    const oscs = [55, 55.4, 82.5].map((f, i) => {
+      const o = ctx.createOscillator();
+      o.type = i === 2 ? "triangle" : "sawtooth";
+      o.frequency.value = f;
+      o.connect(filter);
+      o.start();
+      return o;
+    });
+    filter.connect(g).connect(master);
+    lfo.start();
+    drone = { oscs, lfo, g };
+  }
+  function tick(when, accent) {
+    // хай-хэт из шума
+    const src = ctx.createBufferSource(), hp = ctx.createBiquadFilter(), g = ctx.createGain();
+    src.buffer = noiseBuffer(); hp.type = "highpass"; hp.frequency.value = 7000;
+    g.gain.value = accent ? 0.02 : 0.008;
+    src.connect(hp).connect(g).connect(master);
+    src.start(when);
+    if (accent) {
+      // мягкая «бочка» на сильную долю
+      const o = ctx.createOscillator(), og = ctx.createGain();
+      o.frequency.setValueAtTime(90, when);
+      o.frequency.exponentialRampToValueAtTime(40, when + 0.25);
+      og.gain.setValueAtTime(0.09, when);
+      og.gain.exponentialRampToValueAtTime(0.0001, when + 0.3);
+      o.connect(og).connect(master);
+      o.start(when); o.stop(when + 0.32);
+      setTimeout(() => document.body.classList.add("beat"), (when - ctx.currentTime) * 1000);
+      setTimeout(() => document.body.classList.remove("beat"), (when - ctx.currentTime) * 1000 + 120);
+    }
+  }
+  function scheduler() {
+    while (nextTime < ctx.currentTime + 0.12) {
+      if (step % 4 === 0) tick(nextTime, step % 16 === 0 || step % 16 === 8);
+      else if (step % 2 === 0 && Math.random() < 0.3) tick(nextTime, false);
+      nextTime += S16;
+      step++;
+    }
+  }
+  return {
+    on() {
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+      ctx.resume();
+      master = ctx.createGain();
+      master.gain.value = 0.8;
+      master.connect(ctx.destination);
+      startDrone();
+      nextTime = ctx.currentTime + 0.1; step = 0;
+      timer = setInterval(scheduler, 25);
+    },
+    off() {
+      if (!ctx) return;
+      clearInterval(timer);
+      const m = master, d = drone;
+      m.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.3);
+      setTimeout(() => { d.oscs.forEach((o) => o.stop()); d.lfo.stop(); m.disconnect(); }, 1500);
+    },
+    // щелчок/«пик»: в такт и в лад
+    blip(freq, dur, vol) {
+      if (!ctx || !soundOn) return;
+      const when = Math.ceil(ctx.currentTime / S16) * S16 + 0.005;
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "triangle";
+      o.frequency.value = snap(freq);
+      g.gain.setValueAtTime(0.0001, when);
+      g.gain.exponentialRampToValueAtTime(Math.min(vol * 3, 0.12), when + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, when + Math.max(dur, 0.08) + 0.15);
+      o.connect(g).connect(master);
+      o.start(when); o.stop(when + dur + 0.3);
+    },
+  };
+})();
 function beep(freq = 800, dur = 0.03, vol = 0.03) {
-  if (!soundOn) return;
-  audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-  const o = audioCtx.createOscillator();
-  const g = audioCtx.createGain();
-  o.type = "square";
-  o.frequency.value = freq;
-  g.gain.value = vol;
-  o.connect(g).connect(audioCtx.destination);
-  o.start();
-  o.stop(audioCtx.currentTime + dur);
+  audio.blip(freq, dur, vol);
 }
-$("#sound-btn").addEventListener("click", (e) => {
-  soundOn = !soundOn;
-  e.target.textContent = "sound: " + (soundOn ? "on" : "off");
-  beep(1200, 0.08);
-});
+function setSound(on) {
+  soundOn = on;
+  on ? audio.on() : audio.off();
+  $("#sound-btn").textContent = "sound: " + (on ? "on" : "off");
+  $("#sound-nav").setAttribute("aria-pressed", on);
+  $("#sound-nav").textContent = on ? "♫" : "♪";
+  if (on) beep(880, 0.1, 0.04);
+}
+$("#sound-btn").addEventListener("click", () => setSound(!soundOn));
+$("#sound-nav").addEventListener("click", () => setSound(!soundOn));
 
 /* =========================================================
    ФОН: Матрица, которая убегает от курсора
@@ -140,7 +255,7 @@ const matrix = (() => {
   const canvas = $("#matrix");
   const ctx = canvas.getContext("2d");
   const CHARS = "01アイウエオカキクケコサシスセソタチツテトナニヌネノ<>/{}[]#$%&*+=NALPAX";
-  const FONT = 16;
+  const FONT = LITE ? 18 : 16;
   let cols, drops, w, h, last = 0;
   const state = { color: "#00ff6a" };
   function resize() {
@@ -151,7 +266,7 @@ const matrix = (() => {
   }
   function draw(t) {
     requestAnimationFrame(draw);
-    if (t - last < 45) return;
+    if (t - last < (LITE ? 75 : 45) || scrollY > innerHeight * 1.4) return;
     last = t;
     ctx.fillStyle = "rgba(2, 6, 4, 0.12)";
     ctx.fillRect(0, 0, w, h);
@@ -214,7 +329,7 @@ const matrix = (() => {
   let w, h, objs = [];
   function resize() {
     ({ w, h } = fitCanvas(canvas, 1.5));
-    objs = Array.from({ length: w < 700 ? 6 : 11 }, (_, i) => ({
+    objs = Array.from({ length: LITE ? 0 : 11 }, (_, i) => ({
       m: models[kinds[i % kinds.length]],
       x: rand(0.03, 0.97) * w, y: rand(0, h * 3), size: rand(24, 80),
       ax: rand(0, 6), ay: rand(0, 6), sx: rand(0.002, 0.008), sy: rand(0.003, 0.01),
@@ -257,7 +372,7 @@ const matrix = (() => {
 (() => {
   const canvas = $("#globe");
   const ctx = canvas.getContext("2d");
-  const N = 520;
+  const N = LITE ? 220 : 520;
   const pts = [];
   for (let i = 0; i < N; i++) {
     const y = 1 - (i / (N - 1)) * 2;
@@ -265,10 +380,10 @@ const matrix = (() => {
     const th = i * 2.399963;
     pts.push([Math.cos(th) * r, y, Math.sin(th) * r]);
   }
-  const hubs = [12, 77, 140, 201, 263, 330, 388, 451, 497].map((i) => pts[i]);
+  const hubs = [12, 77, 140, 201, 263, 330, 388, 451, 497].map((i) => pts[Math.floor((i * N) / 520)]);
   const arcs = [[0, 3], [1, 5], [2, 7], [4, 8], [6, 1], [3, 6]];
   let size, angle = 0, tiltX = 0.35, tiltY = 0;
-  function resize() { size = fitCanvas(canvas).w; }
+  function resize() { size = fitCanvas(canvas, LITE ? 1 : 2).w; }
   function rot([x, y, z]) {
     const ca = Math.cos(angle + tiltY), sa = Math.sin(angle + tiltY);
     let x1 = x * ca + z * sa, z1 = -x * sa + z * ca;
@@ -364,8 +479,8 @@ const eye = (() => {
   const ctx = canvas.getContext("2d");
   let W, H;
   const st = { ix: 0, iy: 0, pupil: 0.38, open: 1, blinkStart: -1, nextBlink: 2500 };
-  const fibres = Array.from({ length: 110 }, () => ({ a: rand(0, Math.PI * 2), l: rand(0.55, 1), w: rand(0.5, 1.6), c: Math.random() }));
-  function resize() { ({ w: W, h: H } = fitCanvas(canvas)); }
+  const fibres = Array.from({ length: LITE ? 48 : 110 }, () => ({ a: rand(0, Math.PI * 2), l: rand(0.55, 1), w: rand(0.5, 1.6), c: Math.random() }));
+  function resize() { ({ w: W, h: H } = fitCanvas(canvas, LITE ? 1.5 : 2)); }
   function blink() { st.blinkStart = performance.now(); }
 
   function almond(cx, cy, ew, eh) {
@@ -423,8 +538,9 @@ const eye = (() => {
     for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.arc(0, 0, H * 0.43, i * Math.PI / 2, i * Math.PI / 2 + 0.6); ctx.stroke(); }
     ctx.restore();
     ctx.strokeStyle = "rgba(0,255,106,0.4)";
-    for (let i = 0; i < 60; i++) {
-      const a = (i / 60) * Math.PI * 2;
+    const TICKS = LITE ? 24 : 60;
+    for (let i = 0; i < TICKS; i++) {
+      const a = (i / TICKS) * Math.PI * 2;
       const r1 = H * 0.47, r2 = r1 + (i % 5 ? 4 : 10);
       ctx.beginPath(); ctx.moveTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1); ctx.lineTo(cx + Math.cos(a) * r2, cy + Math.sin(a) * r2); ctx.stroke();
     }
@@ -441,7 +557,7 @@ const eye = (() => {
     ctx.clip();
     // сетка сканера внутри глаза
     ctx.strokeStyle = "rgba(255,61,242,0.07)";
-    for (let x = cx - ew / 2; x < cx + ew / 2; x += 14) { ctx.beginPath(); ctx.moveTo(x, cy - ehMax); ctx.lineTo(x, cy + ehMax); ctx.stroke(); }
+    for (let x = cx - ew / 2; x < cx + ew / 2; x += LITE ? 40 : 14) { ctx.beginPath(); ctx.moveTo(x, cy - ehMax); ctx.lineTo(x, cy + ehMax); ctx.stroke(); }
     const ix = cx + st.ix, iy = cy + st.iy;
 
     // внешнее кольцо радужки
@@ -463,7 +579,7 @@ const eye = (() => {
     ig.addColorStop(1, "#013a40");
     ctx.fillStyle = ig;
     ctx.shadowColor = "#00e5ff";
-    ctx.shadowBlur = 30;
+    ctx.shadowBlur = LITE ? 0 : 30;
     ctx.beginPath(); ctx.arc(ix, iy, R, 0, Math.PI * 2); ctx.fill();
     ctx.shadowBlur = 0;
     // волокна радужки
@@ -514,7 +630,7 @@ const eye = (() => {
     ctx.strokeStyle = "#ff3df2";
     ctx.lineWidth = 3;
     ctx.shadowColor = "#ff3df2";
-    ctx.shadowBlur = 18;
+    ctx.shadowBlur = LITE ? 0 : 18;
     ctx.stroke();
     ctx.shadowBlur = 0;
     ctx.strokeStyle = "rgba(255,61,242,0.7)";
@@ -542,7 +658,7 @@ const eye = (() => {
   resize();
   addEventListener("resize", resize);
   animateWhenVisible(canvas, draw);
-  canvas.addEventListener("click", () => { blink(); beep(500, 0.06); say("Ай! Я же моргаю 👁"); });
+  canvas.addEventListener("click", () => { blink(); beep(500, 0.06); say(tr("Ай! Я же моргаю 👁", "Ouch! I’m blinking here 👁")); });
   return { blink };
 })();
 
@@ -555,7 +671,7 @@ const eye = (() => {
   let w, h, nodes = [];
   function resize() {
     ({ w, h } = fitCanvas(canvas, 1));
-    const count = Math.min(110, Math.floor((w * h) / 13000));
+    const count = Math.min(LITE ? 32 : 110, Math.floor((w * h) / 13000));
     nodes = Array.from({ length: count }, () => ({ x: rand(0, w), y: rand(0, h), vx: rand(-0.35, 0.35), vy: rand(-0.35, 0.35) }));
   }
   function draw() {
@@ -604,8 +720,8 @@ const eye = (() => {
     const T = t / 1000;
     const r = canvas.getBoundingClientRect();
     const mxn = mouse.x > -999 ? (mouse.x - r.left) / w - 0.5 : 0;
-    for (let z = 14; z >= 2; z -= 0.4) {
-      for (let x = -9; x <= 9; x += 0.45) {
+    for (let z = 14; z >= 2; z -= LITE ? 0.8 : 0.4) {
+      for (let x = -9; x <= 9; x += LITE ? 0.9 : 0.45) {
         const y = Math.sin(x * 0.6 + T + mxn * 4) * Math.cos(z * 0.5 + T * 0.7) * 0.9
                 + Math.sin((x - mxn * 18) * 0.3 - z * 0.4 + T * 1.6) * 0.4 + 2.4;
         const sx = w / 2 + (x / z) * w * 0.55;
@@ -630,7 +746,7 @@ const eye = (() => {
 (() => {
   const canvas = $("#hex");
   const ctx = canvas.getContext("2d");
-  const S = 26;
+  const S = LITE ? 36 : 26;
   let w, h, cells = [];
   function resize() {
     ({ w, h } = fitCanvas(canvas, 1));
@@ -682,7 +798,7 @@ function buildCircuit() {
   svg.innerHTML = "";
   const NS = "http://www.w3.org/2000/svg";
   const colors = ["#00ff6a", "#00e5ff", "#ff3df2"];
-  const count = Math.floor((W * H) / 22000);
+  const count = Math.floor((W * H) / (LITE ? 50000 : 22000));
   for (let i = 0; i < count; i++) {
     let x = Math.round(rand(0, W) / S) * S, y = Math.round(rand(0, H) / S) * S;
     const pts = [[x, y]];
@@ -723,7 +839,7 @@ function buildCircuit() {
 }
 
 /* Звёзды (contact) */
-$("#stars").innerHTML = Array.from({ length: 90 }, () =>
+$("#stars").innerHTML = Array.from({ length: LITE ? 30 : 90 }, () =>
   `<i style="left:${rand(0, 100)}%;top:${rand(0, 100)}%;animation-delay:${-rand(0, 3)}s;opacity:${rand(0.3, 1)}"></i>`).join("");
 
 /* =========================================================
@@ -911,7 +1027,7 @@ const heroTitle = (() => {
     title.classList.toggle("is-bio", toBio);
     status.textContent = toBio ? "● FILE RESTORED" : "● FILE CORRUPTED";
     status.classList.toggle("err", !toBio);
-    hint.textContent = toBio ? "[ файл восстановлен ✔ bio.txt загружен ]" : finePointer ? "[ наведи курсор, чтобы восстановить файл ]" : "[ нажми, чтобы восстановить файл ]";
+    hint.textContent = toBio ? tr("[ файл восстановлен ✔ bio.txt загружен ]", "[ file restored ✔ bio.txt loaded ]") : finePointer ? tr("[ наведи курсор, чтобы восстановить файл ]", "[ hover to restore the file ]") : tr("[ нажми, чтобы восстановить файл ]", "[ tap to restore the file ]");
     hint.classList.toggle("ok", toBio);
     decrypt(side, sideText, 700);
     const done = await decrypt(main, mainText, toBio ? 900 : 500);
@@ -923,7 +1039,7 @@ const heroTitle = (() => {
   title.addEventListener("blur", () => set(false));
   title.addEventListener("click", (e) => { if (e.pointerType !== "mouse") set(!bio); });
   status.classList.add("err");
-  if (!finePointer) { hint.textContent = "[ нажми, чтобы восстановить файл ]"; CONFIG.tips[1] = "Нажми на ERROR 404 — файл восстановится"; }
+  if (!finePointer) { hint.textContent = tr("[ нажми, чтобы восстановить файл ]", "[ tap to restore the file ]"); CONFIG.tips[1] = tr("Нажми на ERROR 404 — файл восстановится", "Tap ERROR 404 — the file will restore"); }
   return { intro: () => decrypt(main, "ERROR", 1200).then(() => glitchOnce(main)) };
 })();
 
@@ -987,6 +1103,79 @@ $("#boot-skip").addEventListener("click", finishBoot);
 addEventListener("keydown", (e) => { if (!bootDone && (e.key === "Enter" || e.key === "Escape")) finishBoot(); });
 
 /* =========================================================
+   Перевод статичной разметки на английский
+   ========================================================= */
+(() => {
+  $("#lang-btn").textContent = LANG === "en" ? "RU" : "EN";
+  $("#lang-btn").addEventListener("click", () => {
+    const next = LANG === "en" ? "ru" : "en";
+    try {
+      localStorage.setItem("nx-lang", next);
+      sessionStorage.setItem("nx-skip-boot", "1");
+      sessionStorage.setItem("nx-scroll", String(scrollY));
+    } catch (e) {}
+    document.body.classList.add("lang-switch");
+    beep(1200, 0.05);
+    const url = new URL(location.href);
+    url.searchParams.set("lang", next);
+    setTimeout(() => location.replace(url), 380);
+  });
+  if (LANG !== "en") return;
+  document.documentElement.lang = "en";
+  document.title = "nalpax // portfolio";
+  const tg = (u, txt, extra = "") => `<a href="https://t.me/${u}" class="tg-inline"${extra}>${txt}</a>`;
+  const HTML = {
+    "#warp-now": "open now ↗",
+    "#boot-skip": "[ SKIP — ENTER ]",
+    ".hero-sub": `I build websites, interfaces and digital things people actually want to use. Founder of ${tg("ghoursteam", "GHOURS TEAM")}. Write me: ${tg("nalpax", "@nalpax")}. Business inquiries — manager ${tg("ceojobb", "@ceojobb")}. ${tg("+IaY9WUZKbF03YzFi", "Reviews →", ' data-warp="reviews"')}`,
+    ".hero-actions .btn-ghost": "contact ↗",
+    ".eye-text": 'nalpax’s eye follows your every move. <span class="accent">Even now.</span>',
+    ".eye-copy .muted.small": "Click the eye — it will blink 👁",
+    ".about-body p:nth-child(6)": '<span class="ln">06</span>&nbsp;&nbsp;status: <span class="str">"open for projects"</span>',
+    ".about-body p:nth-child(8)": '<span class="ln">08</span>// Hi! I’m nalpax — I love what I do and make things beautiful, unusual and “wow”.',
+    ".about-body p:nth-child(9)": '<span class="ln">09</span>// I build websites with character. Message me on Telegram — I reply fast.',
+    ".featured-info p": 'My team and community on Telegram. <span class="muted">News, projects and everything we’re working on — there first.</span>',
+    ".ed-banner span": "@ghoursteam · subscribe",
+    ".product-info .badge": "// new release",
+    ".product-info h3": "Video cutting<br><span>+ banners</span>",
+    ".product-info > p:not(.muted)": "Software that cuts videos into clips and adds banners on top. Our own development — details, demo and access in the post.",
+    ".features li:nth-child(1)": "<b>✂</b> Cut videos into clips",
+    ".features li:nth-child(2)": "<b>▣</b> Banners over video",
+    ".features li:nth-child(3)": "<b>⚙</b> Made by nalpax × GHOURS TEAM",
+    ".btn-product": "open product ↗",
+    ".product-actions .btn-ghost": "questions — @ceojobb",
+    ".product-info .muted.small": "↖ the demo on the left is interactive: scrub the timeline, cut ✂ and add a banner ▣",
+    "#terminal .container > p.muted": 'Type <b class="accent">help</b>. Try <b class="accent">neofetch</b>. There are secret commands 👀',
+    ".chat-head b": "Reviews · nalpax",
+    "#chat-status": 'typing<span class="typing"><i></i><i></i><i></i></span>',
+    ".reviews-info h3": "What clients<br>say",
+    ".reviews-info p": "All reviews live in a separate Telegram channel — unfiltered and unedited. Read them, then write to me.",
+    ".reviews-actions .btn:first-child": "read reviews ↗",
+    ".reviews-actions .btn-ghost": "manager @ceojobb",
+    ".contact-lead": "Got an idea, a project, or just want to say “hi”? <br>Signal is received 24/7.",
+    ".contact:nth-child(1) small": "Telegram · personal", ".contact:nth-child(1) .c-go": "write →",
+    ".contact:nth-child(2) small": "Telegram · project", ".contact:nth-child(2) .c-go": "join →",
+    ".contact:nth-child(3) small": "Telegram · inquiries", ".contact:nth-child(3) .c-go": "manager →",
+    ".contact:nth-child(4) small": "Telegram · reviews", ".contact:nth-child(4) .c-go": "read →",
+    "#bubble": "Hi! I’m Byte 👾",
+  };
+  for (const [sel, html] of Object.entries(HTML)) $$(sel).forEach((el) => (el.innerHTML = html));
+  // короткие подписи внутри текста (не трогая соседние элементы)
+  const WORDS = { "· менеджер": "· manager", "отзывы": "reviews", "выбрать": "select", "выполнить": "run", "открыть": "open" };
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let n; (n = walker.nextNode()); ) {
+    const k = n.nodeValue.trim();
+    if (WORDS[k]) n.nodeValue = n.nodeValue.replace(k, WORDS[k]);
+  }
+  $$("[data-warp]").forEach((a) => (a.dataset.warp = { "отзывы": "reviews", "продукт": "product" }[a.dataset.warp] || a.dataset.warp));
+  $("#pal-in").placeholder = "Type a command or section…";
+  if (finePointer) $("#hero-hint").textContent = "[ hover to restore the file ]";
+  const A = { "#sound-nav": "Sound theme", "#palette-btn": "Command palette", "#dev-btn": "Developer mode", "#ed-play": "Pause / play", "#ed-cut": "Cut at playhead", "#ed-ban": "Toggle banner", "#ed-timeline": "Timeline: hover to scrub", "#eye-canvas": "An eye that follows the cursor", "#term-in": "Terminal command", "#pal-in": "Command", "#filters": "Filter work", "#palette": "Command palette", ".scroll-hint": "Scroll down" };
+  for (const [sel, l] of Object.entries(A)) $(sel)?.setAttribute("aria-label", l);
+  document.querySelector('meta[name="description"]').content = "nalpax — websites, interfaces and digital things people actually want to use. Founder of GHOURS TEAM.";
+})();
+
+/* =========================================================
    Контент из CONFIG
    ========================================================= */
 function render() {
@@ -998,7 +1187,7 @@ function render() {
   $("#mq2").innerHTML = mq + mq;
 
   $("#stats").innerHTML = CONFIG.stats.map((s) => `
-    <div class="stat" data-cursor="DECODE"><b data-count="${s.n}" data-suffix="${s.suffix}">0</b><span>${s.label}</span><small class="stat-hint">${finePointer ? "▸ наведи — расшифрую" : "▸ нажми — расшифрую"}</small></div>`).join("");
+    <div class="stat" data-cursor="DECODE"><b data-count="${s.n}" data-suffix="${s.suffix}">0</b><span>${s.label}</span><small class="stat-hint">${finePointer ? tr("▸ наведи — расшифрую", "▸ hover to decode") : tr("▸ нажми — расшифрую", "▸ tap to decode")}</small></div>`).join("");
 
   $("#skills-list").innerHTML = CONFIG.skills.map((s) => `
     <div class="skill">
@@ -1062,7 +1251,7 @@ function renderPortfolio() {
           <div class="work-info">
             ${meta}
             <h3>${p.title}</h3>
-            <p class="flip-hint">↻ наведи, чтобы перевернуть</p>
+            <p class="flip-hint">${tr("↻ наведи, чтобы перевернуть", "↻ hover to flip")}</p>
           </div>
           <div class="skel" aria-hidden="true">
             <span class="skel-ico">&lt;/&gt;</span>
@@ -1074,7 +1263,7 @@ function renderPortfolio() {
           <h3>${p.title}</h3>
           <p>${p.desc}</p>
           <div class="tags">${p.tags.map((t) => `<span>${t}</span>`).join("")}</div>
-          <a class="btn work-btn" href="${p.link}" ${p.warp ? `data-warp="${p.warp}"` : ""} ${ext && !p.link.includes("t.me/") ? 'target="_blank" rel="noopener"' : ""} data-cursor="${ext ? "OPEN" : "GO"}">${p.soon ? "узнать первым ↗" : ext ? "открыть ↗" : "смотреть →"}</a>
+          <a class="btn work-btn" href="${p.link}" ${p.warp ? `data-warp="${p.warp}"` : ""} ${ext && !p.link.includes("t.me/") ? 'target="_blank" rel="noopener"' : ""} data-cursor="${ext ? "OPEN" : "GO"}">${p.soon ? tr("узнать первым ↗", "be the first to know ↗") : ext ? tr("открыть ↗", "open ↗") : tr("смотреть →", "view →")}</a>
         </div>
       </div>
     </div>`;
@@ -1148,12 +1337,14 @@ function countUp(el) {
 /* Счётчики: пока курсор не наведён — быстро мелькает двоичный код, при наведении расшифровываются */
 $$(".stat").forEach((stat) => {
   const b = $("b", stat);
-  const len = Math.max(4, (new Intl.NumberFormat("ru-RU").format(+b.dataset.count) + b.dataset.suffix).length);
+  const len = 4;
   let open = false, timer;
   const binary = () => { if (!open) b.textContent = Array.from({ length: len }, () => (Math.random() > 0.5 ? 1 : 0)).join(""); };
   b.classList.add("bin");
   binary();
-  setInterval(binary, 70);
+  let visible = false;
+  new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(stat);
+  setInterval(() => visible && binary(), LITE ? 120 : 70);
   const show = () => { clearTimeout(timer); open = true; b.classList.remove("bin"); stat.classList.add("open"); countUp(b); beep(1000, 0.04); };
   const hide = () => { timer = setTimeout(() => { open = false; b._tok++; b.classList.add("bin"); stat.classList.remove("open"); }, 350); };
   stat.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") show(); });
@@ -1169,7 +1360,10 @@ $$(".stat").forEach((stat) => {
   const hex = $("#hexdump");
   const lines = [];
   let addr = 0x7f00;
+  let monVisible = false;
+  new IntersectionObserver(([e]) => (monVisible = e.isIntersecting)).observe(bars);
   setInterval(() => {
+    if (!monVisible) return;
     items.forEach((b) => (b.style.height = rand(25, 100) + "%"));
     $("#cpu-val").textContent = (rand(88, 100) | 0) + "%";
     const bytes = Array.from({ length: 8 }, () => ((Math.random() * 256) | 0).toString(16).padStart(2, "0").toUpperCase());
@@ -1191,7 +1385,7 @@ $$(".stat").forEach((stat) => {
   $("#ghost").addEventListener("click", () => {
     const r = $("#ghost").getBoundingClientRect();
     for (let i = 0; i < 24; i++) spawnBit(r.left + rand(0, r.width), r.top + rand(0, r.height), "#00e5ff");
-    say("Бу! 👻 Вступай в GHOURS TEAM");
+    say(tr("Бу! 👻 Вступай в GHOURS TEAM", "Boo! 👻 Join GHOURS TEAM"));
     beep(900, 0.1);
   });
 })();
@@ -1222,23 +1416,23 @@ function printLink(label, url) {
 }
 const COMMANDS = {
   help: () => [
-    "Доступные команды:",
-    "  whoami      — кто я",
-    "  neofetch    — инфа о системе",
-    "  skills      — навыки",
-    "  portfolio   — список работ",
-    "  telegram    — перейти в мой Telegram",
-    "  ghours      — перейти в GHOURS TEAM",
-    "  manager     — менеджер @ceojobb",
-    "  reviews     — отзывы",
-    "  product     — софт для нарезки видео и баннеров",
-    "  contact     — все контакты",
-    "  dev         — режим разработчика",
-    "  goto <раздел> — перейти (eye, about, skills, projects, product, portfolio, reviews, contact)",
-    "  clear       — очистить экран",
-    "  ...и несколько секретных 😉",
+    tr("Доступные команды:", "Available commands:"),
+    tr("  whoami      — кто я", "  whoami      — who I am"),
+    tr("  neofetch    — инфа о системе", "  neofetch    — system info"),
+    tr("  skills      — навыки", "  skills      — skills"),
+    tr("  portfolio   — список работ", "  portfolio   — list of work"),
+    tr("  telegram    — перейти в мой Telegram", "  telegram    — open my Telegram"),
+    tr("  ghours      — перейти в GHOURS TEAM", "  ghours      — open GHOURS TEAM"),
+    tr("  manager     — менеджер @ceojobb", "  manager     — manager @ceojobb"),
+    tr("  reviews     — отзывы", "  reviews     — reviews"),
+    tr("  product     — софт для нарезки видео и баннеров", "  product     — video cutting & banner software"),
+    tr("  contact     — все контакты", "  contact     — all contacts"),
+    tr("  dev         — режим разработчика", "  dev         — developer mode"),
+    tr("  goto <раздел> — перейти (eye, about, skills, projects, product, portfolio, reviews, contact)", "  goto <section> — jump (eye, about, skills, projects, product, portfolio, reviews, contact)"),
+    tr("  clear       — очистить экран", "  clear       — clear the screen"),
+    tr("  ...и несколько секретных 😉", "  ...and a few secret ones 😉"),
   ].join("\n"),
-  whoami: () => `${CONFIG.name} — ${CONFIG.roles[0]}, основатель GHOURS TEAM`,
+  whoami: () => `${CONFIG.name} — ${CONFIG.roles[0]}, ${tr("основатель", "founder of")} GHOURS TEAM`,
   neofetch: () => {
     print(ASCII_LOGO, "t-art");
     print([
@@ -1258,28 +1452,28 @@ const COMMANDS = {
   skills: () => CONFIG.skills.map((s) => `${s.name.padEnd(14)} ${"█".repeat(Math.round(s.level / 10))}${"░".repeat(10 - Math.round(s.level / 10))} ${s.level}%`).join("\n"),
   portfolio: () => CONFIG.portfolio.map((p, i) => `[${i + 1}] ${p.title} — ${CONFIG.categories[p.cat]}`).join("\n"),
   projects: () => COMMANDS.portfolio(),
-  telegram: () => { warpTo("https://t.me/" + CONFIG.telegram); return "Соединяюсь с @" + CONFIG.telegram + " ..."; },
-  ghours: () => { warpTo("https://t.me/" + CONFIG.team); return "Соединяюсь с @" + CONFIG.team + " 👻"; },
+  telegram: () => { warpTo("https://t.me/" + CONFIG.telegram); return tr("Соединяюсь с @", "Connecting to @") + CONFIG.telegram + " ..."; },
+  ghours: () => { warpTo("https://t.me/" + CONFIG.team); return tr("Соединяюсь с @", "Connecting to @") + CONFIG.team + " 👻"; },
   contact: () => {
-    printLink("@" + CONFIG.telegram + " — лично", "https://t.me/" + CONFIG.telegram);
-    printLink("@" + CONFIG.manager + " — менеджер, по вопросам", "https://t.me/" + CONFIG.manager);
-    printLink("@" + CONFIG.team + " — проект", "https://t.me/" + CONFIG.team);
-    printLink("отзывы", CONFIG.reviews);
+    printLink("@" + CONFIG.telegram + tr(" — лично", " — personal"), "https://t.me/" + CONFIG.telegram);
+    printLink("@" + CONFIG.manager + tr(" — менеджер, по вопросам", " — manager, inquiries"), "https://t.me/" + CONFIG.manager);
+    printLink("@" + CONFIG.team + tr(" — проект", " — project"), "https://t.me/" + CONFIG.team);
+    printLink(tr("отзывы", "reviews"), CONFIG.reviews);
     return null;
   },
-  manager: () => { warpTo("https://t.me/" + CONFIG.manager); return "Соединяюсь с менеджером @" + CONFIG.manager + " ..."; },
-  reviews: () => { warpTo(CONFIG.reviews, "отзывы"); return "Открываю отзывы ★"; },
-  product: () => { warpTo(CONFIG.product, "продукт"); return "Открываю софт для нарезки видео ✂"; },
+  manager: () => { warpTo("https://t.me/" + CONFIG.manager); return tr("Соединяюсь с менеджером @", "Connecting to manager @") + CONFIG.manager + " ..."; },
+  reviews: () => { warpTo(CONFIG.reviews, tr("отзывы", "reviews")); return tr("Открываю отзывы ★", "Opening reviews ★"); },
+  product: () => { warpTo(CONFIG.product, tr("продукт", "product")); return tr("Открываю софт для нарезки видео ✂", "Opening the video cutting software ✂"); },
   soft: () => COMMANDS.product(),
   dev: () => { toggleDev(); return "DEV MODE: " + (document.body.classList.contains("devmode") ? "on" : "off"); },
   ls: () => "about.md  skills.db  portfolio/  ghours/  secret.txt",
   "ls -a": () => ".  ..  .hidden  about.md  skills.db  portfolio/  ghours/  secret.txt",
-  "cat secret.txt": () => "Подсказка: попробуй 'sudo hire nalpax' 😏",
-  "cat .hidden": () => "Ты нашёл скрытый файл. Уважение +100. Попробуй 'matrix' или 'red pill'.",
-  "cat bio.txt": () => ({ text: "ERROR 404: файл повреждён. Наведи курсор на заголовок сверху, чтобы восстановить.", cls: "t-err" }),
+  "cat secret.txt": () => tr("Подсказка: попробуй 'sudo hire nalpax' 😏", "Hint: try 'sudo hire nalpax' 😏"),
+  "cat .hidden": () => tr("Ты нашёл скрытый файл. Уважение +100. Попробуй 'matrix' или 'red pill'.", "You found a hidden file. Respect +100. Try 'matrix' or 'red pill'."),
+  "cat bio.txt": () => ({ text: tr("ERROR 404: файл повреждён. Наведи курсор на заголовок сверху, чтобы восстановить.", "ERROR 404: file corrupted. Hover over the title at the top to restore it."), cls: "t-err" }),
   date: () => new Date().toString(),
   clear: () => { out.innerHTML = ""; return null; },
-  "sudo hire nalpax": () => { print("[sudo] пароль для guest: ********\nДоступ разрешён ✔ Отличное решение!"); printLink("написать @nalpax", "https://t.me/nalpax"); return null; },
+  "sudo hire nalpax": () => { print(tr("[sudo] пароль для guest: ********\nДоступ разрешён ✔ Отличное решение!", "[sudo] password for guest: ********\nAccess granted ✔ Great decision!")); printLink(tr("написать @nalpax", "message @nalpax"), "https://t.me/nalpax"); return null; },
   sudo: () => ({ text: "guest is not in the sudoers file. This incident will be reported 🚨", cls: "t-err" }),
   "hack nasa": async () => {
     for (const s of ["connecting to nasa.gov...", "bypassing proxy ▓▓▓▓▓▓░░░░", "downloading moon.zip ▓▓▓▓▓▓▓▓▓▓"]) {
@@ -1287,17 +1481,17 @@ const COMMANDS = {
     }
     document.body.classList.add("shake");
     setTimeout(() => document.body.classList.remove("shake"), 500);
-    return "Шучу. Я хороший хакер 😇";
+    return tr("Шучу. Я хороший хакер 😇", "Just kidding. I’m a good hacker 😇");
   },
   matrix: () => {
     const colors = ["#00ff6a", "#00e5ff", "#ffd23f", "#ff3df2"];
     matrix.color = colors[(colors.indexOf(matrix.color) + 1) % colors.length];
-    return "Цвет Матрицы изменён: " + matrix.color;
+    return tr("Цвет Матрицы изменён: ", "Matrix color changed: ") + matrix.color;
   },
-  "red pill": () => { document.body.classList.add("red-pill"); matrix.color = "#ff2e63"; say("Добро пожаловать в реальность 💊"); return "Ты выбрал красную таблетку."; },
-  "blue pill": () => { document.body.classList.remove("red-pill"); matrix.color = "#00ff6a"; return "Ты проснулся в своей кровати. Всё как прежде."; },
-  blink: () => { eye.blink(); return "👁 моргнул"; },
-  exit: () => "Отсюда не выйти. Ты уже в системе 😈",
+  "red pill": () => { document.body.classList.add("red-pill"); matrix.color = "#ff2e63"; say(tr("Добро пожаловать в реальность 💊", "Welcome to reality 💊")); return tr("Ты выбрал красную таблетку.", "You took the red pill."); },
+  "blue pill": () => { document.body.classList.remove("red-pill"); matrix.color = "#00ff6a"; return tr("Ты проснулся в своей кровати. Всё как прежде.", "You wake up in your bed. Everything is as it was."); },
+  blink: () => { eye.blink(); return tr("👁 моргнул", "👁 blinked"); },
+  exit: () => tr("Отсюда не выйти. Ты уже в системе 😈", "There’s no way out. You’re in the system now 😈"),
 };
 async function run(raw) {
   const cmd = raw.trim().toLowerCase().replace(/\s+/g, " ");
@@ -1308,11 +1502,11 @@ async function run(raw) {
   if (cmd.startsWith("goto ")) {
     const target = document.getElementById(cmd.slice(5));
     if (target && target.dataset.sector) { target.scrollIntoView(); print("→ " + cmd.slice(5)); }
-    else print("goto: раздел не найден", "t-err");
+    else print(tr("goto: раздел не найден", "goto: section not found"), "t-err");
     return;
   }
   const fn = COMMANDS[cmd];
-  if (!fn) { print(`command not found: ${cmd}. Введи 'help'`, "t-err"); return; }
+  if (!fn) { print(`command not found: ${cmd}. ${tr("Введи", "Type")} 'help'`, "t-err"); return; }
   const res = await fn();
   if (res == null) return;
   if (typeof res === "object") print(res.text, res.cls); else print(res);
@@ -1324,7 +1518,7 @@ input.addEventListener("keydown", (e) => {
   else if (e.key.length === 1) beep(300 + Math.random() * 200, 0.015, 0.02);
 });
 $("#term").addEventListener("click", (e) => { if (!e.target.closest("a")) input.focus(); });
-print("Welcome to NalpaxOS v3.0 — введи 'help' или 'neofetch'", "t-dim");
+print(tr("Welcome to NalpaxOS v3.0 — введи 'help' или 'neofetch'", "Welcome to NalpaxOS v3.0 — type 'help' or 'neofetch'"), "t-dim");
 
 /* =========================================================
    Персонаж Байт: следит глазами и подсказывает
@@ -1394,11 +1588,12 @@ document.addEventListener("pointermove", (e) => {
 $$(".window, .skill, .stat, .work-face, .eye-readout div").forEach((el) => el.classList.add("spot"));
 
 // параллакс номеров разделов + бегущие строки ускоряются от скролла
+// цикл крутится только пока идёт прокрутка, в покое ничего не считается
 (() => {
-  const nums = $$(".sec-num");
+  const nums = LITE ? [] : $$(".sec-num");
   const tracks = $$(".marquee-track").flatMap((t) => t.getAnimations());
-  let lastY = scrollY, speed = 1;
-  (function frame() {
+  let lastY = scrollY, speed = 1, running = false;
+  function frame() {
     const dy = scrollY - lastY;
     lastY = scrollY;
     speed += (1 + Math.min(Math.abs(dy) / 8, 6) - speed) * 0.1;
@@ -1408,8 +1603,87 @@ $$(".window, .skill, .stat, .work-face, .eye-readout div").forEach((el) => el.cl
       if (r.bottom < 0 || r.top > innerHeight) return;
       n.style.transform = `translateY(${Math.max(-24, Math.min(24, (r.top - innerHeight / 2) * -0.05))}px)`;
     });
-    if (!reduceMotion) requestAnimationFrame(frame);
-  })();
+    if (dy !== 0 || speed > 1.02) requestAnimationFrame(frame);
+    else running = false;
+  }
+  addEventListener("scroll", () => {
+    if (running || reduceMotion) return;
+    running = true;
+    requestAnimationFrame(frame);
+  }, { passive: true });
+})();
+
+/* =========================================================
+   СЧЁТЧИК ПОСЕТИТЕЛЕЙ и «кто сейчас на сайте»
+   Без своего сервера: используем бесплатные публичные счётчики.
+   Онлайн считаем так: каждая открытая вкладка раз в 30 секунд
+   «отмечается» в счётчике текущего окна времени (6 окон по кругу).
+   Сколько отметок набралось за прошлое окно — столько людей на сайте.
+   ========================================================= */
+(() => {
+  const NS = "nalpax-site";
+  const PROVIDERS = [
+    { hit: (k) => `https://abacus.jasoncameron.dev/hit/${NS}/${k}`, get: (k) => `https://abacus.jasoncameron.dev/get/${NS}/${k}`, read: (j) => j.value },
+    { hit: (k) => `https://api.counterapi.dev/v1/${NS}/${k}/up`, get: (k) => `https://api.counterapi.dev/v1/${NS}/${k}`, read: (j) => j.count },
+  ];
+  const WINDOW = 30000, SLOTS = 6;
+  const visitsEl = $("#stat-visits"), onlineEl = $("#stat-online"), hud = $("#hud-online");
+  const fmt = new Intl.NumberFormat("ru-RU");
+  let api = null;
+
+  async function call(url) {
+    const r = await fetch(url, { cache: "no-store" });
+    if (r.status === 404) return 0; // счётчик ещё не создан
+    if (!r.ok) throw new Error(r.status);
+    return api.read(await r.json()) || 0;
+  }
+  async function pickProvider(key, mode) {
+    for (const p of PROVIDERS) {
+      try {
+        api = p;
+        return await call(p[mode](key));
+      } catch (e) { api = null; }
+    }
+    throw new Error("no counter provider");
+  }
+  function setOnline(n) {
+    const v = Math.max(1, n); // ты-то точно на сайте
+    onlineEl.innerHTML = `<i class="dot"></i> ${v} ${tr("чел.", v === 1 ? "person" : "people")}`;
+    hud.textContent = `${v} online`;
+  }
+  function offline() {
+    visitsEl.textContent = "offline";
+    onlineEl.textContent = "offline";
+    hud.textContent = "offline";
+    visitsEl.classList.add("off");
+    onlineEl.classList.add("off");
+  }
+  async function start() {
+    // всего визитов: +1 один раз за сессию
+    let first = false;
+    try { first = !sessionStorage.getItem("nx-visit"); sessionStorage.setItem("nx-visit", "1"); } catch (e) { first = true; }
+    const total = await pickProvider("visits", first ? "hit" : "get");
+    visitsEl.textContent = fmt.format(total);
+    setOnline(1);
+
+    let started = {}; // значение счётчика окна в момент его начала
+    async function tick() {
+      const now = Date.now();
+      const slot = Math.floor(now / WINDOW);
+      const cur = `on${slot % SLOTS}`, prev = `on${(slot - 1) % SLOTS}`;
+      try {
+        // замер начала текущего окна и конца прошлого
+        const [curStart, prevEnd] = await Promise.all([call(api.get(cur)), call(api.get(prev))]);
+        if (started[slot - 1] != null) setOnline(prevEnd - started[slot - 1]);
+        started = { [slot]: curStart };
+        // отметиться в текущем окне в случайный момент
+        setTimeout(() => call(api.hit(cur)).catch(() => {}), rand(1000, WINDOW - 4000));
+      } catch (e) { /* сеть моргнула — попробуем в следующем окне */ }
+      setTimeout(tick, WINDOW - (now % WINDOW) + 500);
+    }
+    tick();
+  }
+  start().catch(offline);
 })();
 
 /* =========================================================
@@ -1436,7 +1710,7 @@ $$(".window, .skill, .stat, .work-face, .eye-readout div").forEach((el) => el.cl
       c.style.cssText = `left:calc(${edges[i] * 100}% + 1px);width:calc(${(edges[i + 1] - edges[i]) * 100}% - 2px);--ch:${(330 + i * 47) % 360}`;
       video.appendChild(c);
     }
-    info.textContent = `клипов: ${edges.length - 1} · баннер: ${bannerOn ? "on" : "off"}`;
+    info.textContent = `${tr("клипов", "clips")}: ${edges.length - 1} · ${tr("баннер", "banner")}: ${bannerOn ? "on" : "off"}`;
   }
   function cut(at = p) {
     if (at < 0.02 || at > 0.98 || cuts.some((c) => Math.abs(c - at) < 0.03)) return;
@@ -1487,7 +1761,7 @@ $$(".window, .skill, .stat, .work-face, .eye-readout div").forEach((el) => el.cl
 /* =========================================================
    ОТЗЫВЫ: живой чат-скелетон и всплывающие звёзды
    ========================================================= */
-$("#bubbles").innerHTML = Array.from({ length: 22 }, () =>
+$("#bubbles").innerHTML = Array.from({ length: LITE ? 8 : 22 }, () =>
   `<i style="left:${rand(0, 100)}%;font-size:${rand(14, 34) | 0}px;animation-duration:${rand(9, 20)}s;animation-delay:${-rand(0, 20)}s">${["★", "✦", "❝", "✉", "♥"][(Math.random() * 5) | 0]}</i>`).join("");
 (() => {
   const body = $("#chat-body");
@@ -1515,18 +1789,18 @@ $("#bubbles").innerHTML = Array.from({ length: 22 }, () =>
    КОМАНДНАЯ ПАЛИТРА (Ctrl+K или /)
    ========================================================= */
 const ACTIONS = [
-  ...$$("[data-sector]").filter((s) => s.id).map((s) => ({ icon: "#", name: "Перейти: " + s.id, hint: "раздел", run: () => s.scrollIntoView() })),
-  { icon: "✈", name: "Написать @nalpax", hint: "telegram", run: () => warpTo("https://t.me/" + CONFIG.telegram) },
-  { icon: "✉", name: "Менеджер @ceojobb — по вопросам", hint: "telegram", run: () => warpTo("https://t.me/" + CONFIG.manager) },
-  { icon: "★", name: "Отзывы", hint: "telegram", run: () => warpTo(CONFIG.reviews, "отзывы") },
-  { icon: "✂", name: "Софт: нарезка видео и баннеры", hint: "продукт", run: () => warpTo(CONFIG.product, "продукт") },
+  ...$$("[data-sector]").filter((s) => s.id).map((s) => ({ icon: "#", name: tr("Перейти: ", "Go to: ") + s.id, hint: tr("раздел", "section"), run: () => s.scrollIntoView() })),
+  { icon: "✈", name: tr("Написать @nalpax", "Message @nalpax"), hint: "telegram", run: () => warpTo("https://t.me/" + CONFIG.telegram) },
+  { icon: "✉", name: tr("Менеджер @ceojobb — по вопросам", "Manager @ceojobb — inquiries"), hint: "telegram", run: () => warpTo("https://t.me/" + CONFIG.manager) },
+  { icon: "★", name: tr("Отзывы", "Reviews"), hint: "telegram", run: () => warpTo(CONFIG.reviews, tr("отзывы", "reviews")) },
+  { icon: "✂", name: tr("Софт: нарезка видео и баннеры", "Software: video cutting & banners"), hint: tr("продукт", "product"), run: () => warpTo(CONFIG.product, tr("продукт", "product")) },
   { icon: "👻", name: "GHOURS TEAM", hint: "telegram", run: () => warpTo("https://t.me/" + CONFIG.team) },
-  { icon: "</>", name: "DEV MODE — показать разметку", hint: "toggle", run: () => toggleDev() },
-  { icon: "♪", name: "Звук вкл/выкл", hint: "toggle", run: () => $("#sound-btn").click() },
-  { icon: "▦", name: "Сменить цвет Матрицы", hint: "fx", run: () => COMMANDS.matrix() },
+  { icon: "</>", name: tr("DEV MODE — показать разметку", "DEV MODE — show layout"), hint: "toggle", run: () => toggleDev() },
+  { icon: "♪", name: tr("Звук вкл/выкл", "Sound on/off"), hint: "toggle", run: () => $("#sound-btn").click() },
+  { icon: "▦", name: tr("Сменить цвет Матрицы", "Change Matrix color"), hint: "fx", run: () => COMMANDS.matrix() },
   { icon: "💊", name: "Red pill / Blue pill", hint: "fx", run: () => (document.body.classList.contains("red-pill") ? COMMANDS["blue pill"]() : COMMANDS["red pill"]()) },
-  { icon: "👁", name: "Моргнуть глазом", hint: "fx", run: () => { $("#eye").scrollIntoView(); setTimeout(eye.blink, 600); } },
-  { icon: ">_", name: "Открыть терминал", hint: "раздел", run: () => { $("#terminal").scrollIntoView(); setTimeout(() => $("#term-in").focus({ preventScroll: true }), 700); } },
+  { icon: "👁", name: tr("Моргнуть глазом", "Blink the eye"), hint: "fx", run: () => { $("#eye").scrollIntoView(); setTimeout(eye.blink, 600); } },
+  { icon: ">_", name: tr("Открыть терминал", "Open terminal"), hint: tr("раздел", "section"), run: () => { $("#terminal").scrollIntoView(); setTimeout(() => $("#term-in").focus({ preventScroll: true }), 700); } },
 ];
 (() => {
   const pal = $("#palette"), inp = $("#pal-in"), list = $("#pal-list");
@@ -1540,7 +1814,7 @@ const ACTIONS = [
       let name = esc(a.name);
       if (q) { const k = a.name.toLowerCase().indexOf(q); if (k >= 0) name = esc(a.name.slice(0, k)) + "<mark>" + esc(a.name.slice(k, k + q.length)) + "</mark>" + esc(a.name.slice(k + q.length)); }
       return `<li role="option" data-i="${i}" class="${i === sel ? "sel" : ""}" aria-selected="${i === sel}"><span class="pi">${esc(a.icon)}</span>${name}<small>${a.hint}</small></li>`;
-    }).join("") : '<li class="empty">ничего не найдено — попробуй «отзывы» или «dev»</li>';
+    }).join("") : `<li class="empty">${tr("ничего не найдено — попробуй «отзывы» или «dev»", "nothing found — try “reviews” or “dev”")}</li>`;
     list.querySelector(".sel")?.scrollIntoView({ block: "nearest" });
   }
   window.openPalette = () => { pal.hidden = false; inp.value = ""; sel = 0; draw(); inp.focus(); beep(900, 0.04); };
@@ -1571,8 +1845,9 @@ const ACTIONS = [
    ========================================================= */
 function toggleDev() {
   const on = document.body.classList.toggle("devmode");
+  if (on) requestAnimationFrame(window.devFps);
   $("#dev-btn").setAttribute("aria-pressed", on);
-  say(on ? "DEV MODE: наведи на любой блок — увидишь тег и размер" : "DEV MODE выключен");
+  say(on ? tr("DEV MODE: наведи на любой блок — увидишь тег и размер", "DEV MODE: hover any block to see its tag and size") : tr("DEV MODE выключен", "DEV MODE off"));
   beep(on ? 1100 : 400, 0.06);
 }
 $("#dev-btn").addEventListener("click", toggleDev);
@@ -1593,7 +1868,8 @@ $("#dev-btn").addEventListener("click", toggleDev);
     tip.style.left = Math.min(e.clientX + 16, innerWidth - tip.offsetWidth - 8) + "px";
     tip.style.top = e.clientY + 18 + "px";
   });
-  (function fps(t) {
+  window.devFps = function fps(t) {
+    if (!document.body.classList.contains("devmode")) return;
     frames++;
     if (t - lastT > 500) {
       if (document.body.classList.contains("devmode")) {
@@ -1604,7 +1880,7 @@ $("#dev-btn").addEventListener("click", toggleDev);
       frames = 0; lastT = t;
     }
     requestAnimationFrame(fps);
-  })(lastT);
+  };
 })();
 
 /* =========================================================
@@ -1619,7 +1895,7 @@ $("#dev-btn").addEventListener("click", toggleDev);
     pos = 0;
     document.body.classList.add("god");
     matrix.color = "#ffffff";
-    say("GOD MODE активирован ⚡ ты знаешь Konami code!");
+    say(tr("GOD MODE активирован ⚡ ты знаешь Konami code!", "GOD MODE activated ⚡ you know the Konami code!"));
     for (let i = 0; i < 60; i++) setTimeout(() => spawnBit(rand(0, innerWidth), rand(0, innerHeight), ["#00ff6a", "#00e5ff", "#ff3df2", "#ffd23f"][i % 4]), i * 30);
     setTimeout(() => { document.body.classList.remove("god"); matrix.color = "#00ff6a"; }, 6000);
   });
@@ -1631,7 +1907,7 @@ $("#dev-btn").addEventListener("click", toggleDev);
   });
 
   console.log("%c" + ASCII_LOGO, "color:#00ff6a;font-family:monospace;font-size:10px;text-shadow:0 0 6px #00ff6a");
-  console.log("%cЛюбишь смотреть исходники? Уважаю.%c\nНужен такой сайт — пиши: https://t.me/nalpax · по вопросам: https://t.me/ceojobb",
+  console.log(tr("%cЛюбишь смотреть исходники? Уважаю.%c\nНужен такой сайт — пиши: https://t.me/nalpax · по вопросам: https://t.me/ceojobb", "%cLike reading source code? Respect.%c\nWant a site like this — write: https://t.me/nalpax · inquiries: https://t.me/ceojobb"),
     "color:#00e5ff;font-size:14px;font-weight:bold", "color:#c4ffd9");
 
   // фавиконка с мигающим курсором
@@ -1646,12 +1922,21 @@ $("#dev-btn").addEventListener("click", toggleDev);
     $("#favicon").href = c.toDataURL();
     on = !on;
   }
-  fav();
-  setInterval(fav, 600);
+  if (!LITE) { fav(); setInterval(fav, 600); }
 })();
 
 /* ---------- Старт ---------- */
 buildCircuit();
 let rt;
 addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(buildCircuit, 250); });
-if (reduceMotion) finishBoot(); else boot();
+let skipBoot = false;
+try { skipBoot = sessionStorage.getItem("nx-skip-boot") === "1"; sessionStorage.removeItem("nx-skip-boot"); } catch (e) {}
+if (reduceMotion || skipBoot) {
+  finishBoot();
+  try {
+    const y = +sessionStorage.getItem("nx-scroll") || 0;
+    sessionStorage.removeItem("nx-scroll");
+    document.documentElement.style.scrollBehavior = "auto";
+    requestAnimationFrame(() => { scrollTo(0, y); document.documentElement.style.scrollBehavior = ""; });
+  } catch (e) {}
+} else boot();

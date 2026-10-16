@@ -870,3 +870,33 @@ body.god main, body.god .nav { animation: godHue 1.2s linear infinite; }
 .ed-tools { flex-wrap: wrap; }
 .ed-tools button { white-space: nowrap; }
 @media (max-width: 640px) { .ed-info { width: 100%; margin-left: 0; } }
+
+/* ================= Лёгкий режим (телефоны и слабые устройства) ================= */
+.lite .aurora, .lite .noise, .lite #shapes { display: none; }
+.lite .crt { animation: none; opacity: .7; }
+.lite *, .lite *::before, .lite *::after { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.lite .bg-circuit .pulse { filter: none; }
+.lite .synth-sun { filter: none; }
+.lite #ghost { filter: none; }
+.lite .window, .lite .featured, .lite .editor, .lite .reviews-card { box-shadow: none; }
+.lite .work:hover .work-face { box-shadow: none; }
+.lite .stars i { animation: none; }
+.lite .hero-title { text-shadow: 0 0 18px rgba(0,255,106,.45); }
+.lite .hero-title.is-error { text-shadow: 0 0 18px rgba(255,46,99,.5); animation: none; }
+.lite .ed-scene i { filter: none; }
+.lite .wp-art { animation: none; }
+.lite .film { animation-duration: 4s; }
+.lite .nav { background: rgba(2,6,4,.97); }
+.lite .eye-rings i { animation: none; }
+.lite .radar .sweep { animation-duration: 6s; }
+.mon-live { color: var(--cyan); }
+.mon-live .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 1.6s infinite; margin-right: 4px; }
+.mon-live.off { color: var(--muted); }
+/* в такт музыке */
+.logo-box, .mascot svg { transition: transform .12s ease-out; }
+body.beat .logo-box { transform: scale(1.18); }
+body.beat .mascot svg { transform: translateY(-3px) scale(1.03); }
+body.beat .hud .dot { box-shadow: 0 0 16px var(--green), 0 0 4px #fff; }
+/* глитч при смене языка */
+body.lang-switch main, body.lang-switch .nav { animation: langOut .38s steps(4) forwards; }
+@keyframes langOut { 30% { transform: translateX(-10px); filter: hue-rotate(90deg); } 60% { transform: translateX(10px) skewX(8deg); } 100% { opacity: 0; filter: blur(4px); } }
