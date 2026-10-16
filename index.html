@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nalpax // portfolio</title>
+<meta name="description" content="nalpax — портфолио в хакерском стиле">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Unbounded:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== Фон и оверлеи ===== -->
+<canvas id="matrix" aria-hidden="true"></canvas>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="crt" aria-hidden="true"></div>
+<div class="noise" aria-hidden="true"></div>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ===== Курсор «захват цели» ===== -->
+<div id="cursor" aria-hidden="true">
+  <div id="cursor-frame"><i class="c-tl"></i><i class="c-tr"></i><i class="c-bl"></i><i class="c-br"></i><span id="cursor-label"></span></div>
+  <div id="cursor-core"></div>
+</div>
+
+<!-- ===== Переход в Telegram ===== -->
+<div id="warp" role="dialog" aria-modal="true" aria-labelledby="warp-title" hidden>
+  <div class="warp-inner">
+    <p class="warp-small">// establishing secure connection</p>
+    <h3 id="warp-title">t.me/<span id="warp-target">nalpax</span></h3>
+    <div class="warp-bar"><i id="warp-fill"></i></div>
+    <pre id="warp-log"></pre>
+    <a id="warp-now" class="btn btn-ghost" href="#">открыть сейчас ↗</a>
+  </div>
+</div>
+
+<!-- ===== HUD по углам ===== -->
+<div class="hud hud-tl" aria-hidden="true">X:<span id="hud-x">0000</span> Y:<span id="hud-y">0000</span></div>
+<div class="hud hud-bl" aria-hidden="true"><i class="dot"></i> SECURE CONNECTION · <span id="hud-sector">SECTOR 01</span></div>
+<div class="hud hud-br" aria-hidden="true"><span id="hud-time">00:00:00</span> · UTC</div>
+
+<!-- ===== Вступление ===== -->
+<div id="boot" role="status" aria-live="polite">
+  <pre id="boot-log"></pre>
+  <button id="boot-skip" type="button" data-cursor="SKIP">[ ПРОПУСТИТЬ — ENTER ]</button>
+</div>
+
+<!-- ===== Навигация ===== -->
+<nav class="nav">
+  <a href="#home" class="logo"><span class="logo-box">N</span>nalpax<span class="blink">_</span></a>
+  <div class="nav-links">
+    <a href="#eye" data-n="01" data-label="eye">eye</a>
+    <a href="#about" data-n="02" data-label="about">about</a>
+    <a href="#skills" data-n="03" data-label="skills">skills</a>
+    <a href="#projects" data-n="04" data-label="team">team</a>
+    <a href="#terminal" data-n="05" data-label="terminal">terminal</a>
+    <a href="#portfolio" data-n="06" data-label="portfolio">portfolio</a>
+    <a href="#contact" data-n="07" data-label="contact">contact</a>
+  </div>
+  <a class="nav-cta" href="https://t.me/nalpax" data-cursor="TG">@nalpax</a>
+</nav>
+
+<main>
+  <canvas id="shapes" aria-hidden="true"></canvas>
+
+  <!-- ===== Главный экран ===== -->
+  <section id="home" class="hero" data-sector="01">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-text">
+      <p class="prompt"><span class="accent">root@nalpax</span>:~$ cat bio.txt <span class="tag-live" id="hero-status">● FILE CORRUPTED</span></p>
+      <h1 id="hero-title" class="hero-title is-error" tabindex="0" data-cursor="FIX">
+        <span class="ht-main glitch" id="ht-main" data-text="ERROR">ERROR</span><span class="ht-side" id="ht-side">404</span>
+      </h1>
+      <p class="hero-hint" id="hero-hint">[ наведи курсор, чтобы восстановить файл ]</p>
+      <p class="role">&gt; <span id="typed"></span><span class="cursor-blink">█</span></p>
+      <p class="hero-sub">Создаю сайты, интерфейсы и цифровые штуки, которые хочется трогать. Основатель <a href="https://t.me/ghoursteam" class="tg-inline">GHOURS TEAM</a>. Пиши: <a href="https://t.me/nalpax" class="tg-inline">@nalpax</a></p>
+      <div class="hero-actions">
+        <a href="#portfolio" class="btn" data-cursor="GO">./portfolio.sh</a>
+        <a href="https://t.me/nalpax" class="btn btn-ghost" data-cursor="TG">связаться ↗</a>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <canvas id="globe"></canvas>
+      <div class="orbit-label ol-1">[ NODE_01 ]</div>
+      <div class="orbit-label ol-2">[ GHOURS ]</div>
+      <div class="orbit-label ol-3">[ 0xFF ]</div>
+    </div>
+    <a href="#eye" class="scroll-hint" aria-label="Листать вниз"><span></span>scroll</a>
+  </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-row"><div class="marquee-track" id="mq1"></div></div>
+    <div class="marquee-row reverse"><div class="marquee-track" id="mq2"></div></div>
+  </div>
+
+  <!-- ===== 01 Глаз ===== -->
+  <section id="eye" class="block block-eye" data-sector="02">
+    <div class="eye-rings" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="container eye-layout">
+      <div class="eye-copy reveal">
+        <header class="sec-head"><span class="sec-num">01</span><h2 class="glitch" data-text="i_see_you">i_see_you</h2></header>
+        <p class="eye-text">Глаз nalpax следит за каждым твоим движением. <span class="accent">Даже сейчас.</span></p>
+        <div class="eye-readout">
+          <div><span>TARGET</span><b id="eye-target">searching...</b></div>
+          <div><span>DISTANCE</span><b id="eye-dist">—</b></div>
+          <div><span>PUPIL</span><b id="eye-pupil">—</b></div>
+          <div><span>STATUS</span><b id="eye-status" class="ok">watching</b></div>
+        </div>
+        <p class="muted small">Кликни по глазу — он моргнёт 👁</p>
+      </div>
+      <div class="eye-wrap reveal" data-cursor="👁">
+        <canvas id="eye-canvas" aria-label="Глаз, который следит за курсором" role="img"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 02 Обо мне ===== -->
+  <section id="about" class="block" data-sector="03">
+    <canvas class="bg-canvas" id="network" aria-hidden="true"></canvas>
+    <div class="container">
+      <header class="sec-head reveal"><span class="sec-num">02</span><h2 class="glitch" data-text="about_me">about_me</h2><span class="sec-line"></span></header>
+      <div class="about-grid">
+        <div class="window reveal">
+          <div class="window-bar"><span></span><span></span><span></span><b>~/nalpax/about.md</b></div>
+          <div class="window-body about-body">
+            <p><span class="ln">01</span><span class="kw">const</span> <span class="var">nalpax</span> = {</p>
+            <p><span class="ln">02</span>&nbsp;&nbsp;role: <span class="str">"creative developer"</span>,</p>
+            <p><span class="ln">03</span>&nbsp;&nbsp;telegram: <a class="str tg-inline" href="https://t.me/nalpax">"@nalpax"</a>,</p>
+            <p><span class="ln">04</span>&nbsp;&nbsp;team: <a class="str tg-inline" href="https://t.me/ghoursteam">"@ghoursteam"</a>,</p>
+            <p><span class="ln">05</span>&nbsp;&nbsp;stack: [<span class="str">"HTML"</span>, <span class="str">"CSS"</span>, <span class="str">"JS"</span>, <span class="str">"Canvas"</span>],</p>
+            <p><span class="ln">06</span>&nbsp;&nbsp;status: <span class="str">"открыт к проектам"</span></p>
+            <p><span class="ln">07</span>};</p>
+            <p class="comment"><span class="ln">08</span>// Привет! Я nalpax. Люблю делать красиво, необычно и чтобы «вау».</p>
+            <p class="comment"><span class="ln">09</span>// Делаю сайты с характером. Пиши в Telegram — отвечаю быстро.</p>
+          </div>
+        </div>
+        <div class="monitor window reveal">
+          <div class="window-bar"><span></span><span></span><span></span><b>system_monitor</b></div>
+          <div class="window-body">
+            <div class="mon-row"><span>USER</span><a class="accent tg-inline" href="https://t.me/nalpax">@nalpax</a></div>
+            <div class="mon-row"><span>TEAM</span><a class="accent tg-inline" href="https://t.me/ghoursteam">@ghoursteam</a></div>
+            <div class="mon-row"><span>UPTIME</span><b id="uptime">00:00:00</b></div>
+            <div class="mon-row"><span>CPU / creativity</span><b id="cpu-val">97%</b></div>
+            <div class="bars" id="cpu-bars"></div>
+            <pre class="hexdump" id="hexdump"></pre>
+          </div>
+        </div>
+      </div>
+      <div class="stats reveal" id="stats"></div>
+    </div>
+  </section>
+
+  <!-- ===== 03 Навыки ===== -->
+  <section id="skills" class="block block-circuit" data-sector="04">
+    <svg class="bg-circuit" id="circuit" aria-hidden="true"></svg>
+    <div class="container">
+      <header class="sec-head reveal"><span class="sec-num">03</span><h2 class="glitch" data-text="loading_modules">loading_modules</h2><span class="sec-line"></span></header>
+      <div class="skills-grid" id="skills-list"></div>
+    </div>
+  </section>
+
+  <!-- ===== 04 GHOURS TEAM ===== -->
+  <section id="projects" class="block block-grid" data-sector="05">
+    <div class="synth-sun" aria-hidden="true"></div>
+    <svg class="synth-mountains" viewBox="0 0 1440 220" preserveAspectRatio="none" aria-hidden="true">
+      <polyline points="0,220 90,120 170,170 260,60 360,150 450,90 540,180 620,110 720,40 820,140 900,100 990,170 1080,70 1180,160 1260,90 1360,150 1440,80 1440,220"/>
+    </svg>
+    <div class="synth-grid" aria-hidden="true"></div>
+    <div class="container">
+      <header class="sec-head reveal"><span class="sec-num">04</span><h2 class="glitch" data-text="main_project">main_project</h2><span class="sec-line"></span></header>
+      <article class="featured reveal" data-tilt>
+        <div class="featured-art">
+          <svg id="ghost" viewBox="0 0 14 11" aria-hidden="true"></svg>
+          <div class="ghost-shadow"></div>
+        </div>
+        <div class="featured-info">
+          <span class="badge">★ FEATURED // MAIN PROJECT</span>
+          <h3 class="glitch" data-text="GHOURS TEAM">GHOURS TEAM</h3>
+          <p>Моя команда и сообщество в Telegram. <span class="muted">Новости, проекты и всё, над чем мы сейчас работаем, — первыми там.</span></p>
+          <div class="tags"><span>team</span><span>community</span><span>telegram</span></div>
+          <a class="btn" href="https://t.me/ghoursteam" data-cursor="JOIN">@ghoursteam ↗</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== 05 Терминал ===== -->
+  <section id="terminal" class="block block-wave" data-sector="06">
+    <canvas class="bg-canvas" id="wave" aria-hidden="true"></canvas>
+    <div class="container">
+      <header class="sec-head reveal"><span class="sec-num">05</span><h2 class="glitch" data-text="terminal">terminal</h2><span class="sec-line"></span></header>
+      <p class="muted reveal">Введи <b class="accent">help</b>. Попробуй <b class="accent">neofetch</b>. Есть секретные команды 👀</p>
+      <div class="window term reveal" id="term">
+        <div class="window-bar"><span></span><span></span><span></span><b>bash — guest@nalpax</b></div>
+        <div class="window-body" id="term-out"></div>
+        <label class="term-line">
+          <span class="prompt-sign">guest@nalpax:~$</span>
+          <input id="term-in" autocomplete="off" spellcheck="false" aria-label="Команда терминала">
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 06 Портфолио ===== -->
+  <section id="portfolio" class="block block-hex" data-sector="07">
+    <canvas class="bg-canvas" id="hex" aria-hidden="true"></canvas>
+    <div class="container">
+      <header class="sec-head reveal"><span class="sec-num">06</span><h2 class="glitch" data-text="portfolio">portfolio</h2><span class="sec-line"></span></header>
+      <div class="filters reveal" id="filters" role="tablist" aria-label="Фильтр работ"></div>
+      <div class="works" id="works"></div>
+    </div>
+  </section>
+
+  <!-- ===== 07 Контакты ===== -->
+  <section id="contact" class="block block-radar" data-sector="08">
+    <div class="stars" id="stars" aria-hidden="true"></div>
+    <div class="radar" aria-hidden="true"><i></i><i></i><i></i><b class="sweep"></b><em class="blip b1"></em><em class="blip b2"></em></div>
+    <div class="container">
+      <header class="sec-head reveal"><span class="sec-num">07</span><h2 class="glitch" data-text="establish_connection">establish_connection</h2><span class="sec-line"></span></header>
+      <p class="contact-lead reveal">Есть идея, проект или просто хочешь сказать «привет»? <br>Сигнал принимается круглосуточно.</p>
+      <div class="contacts reveal">
+        <a class="contact" href="https://t.me/nalpax" data-cursor="TG">
+          <span class="c-icon">✈</span>
+          <small>Telegram · лично</small>
+          <strong>@nalpax</strong>
+          <span class="c-go">написать →</span>
+        </a>
+        <a class="contact contact-alt" href="https://t.me/ghoursteam" data-cursor="JOIN">
+          <span class="c-icon">👻</span>
+          <small>Telegram · проект</small>
+          <strong>@ghoursteam</strong>
+          <span class="c-go">вступить →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <pre class="footer-ascii" aria-hidden="true" id="footer-ascii"></pre>
+  <p>© <span id="year"></span> <a href="https://t.me/nalpax" class="tg-inline">@nalpax</a> · <a href="https://t.me/ghoursteam" class="tg-inline">@ghoursteam</a> · made with code &amp; coffee · <button id="sound-btn" type="button">sound: off</button></p>
+</footer>
+
+<!-- ===== Персонаж-хакер ===== -->
+<div class="mascot" id="mascot" data-cursor="?">
+  <div class="bubble" id="bubble">Привет! Я Байт 👾</div>
+  <svg viewBox="0 0 120 124" aria-hidden="true">
+    <defs>
+      <filter id="glow"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <linearGradient id="hood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d2a18"/><stop offset="1" stop-color="#03100a"/></linearGradient>
+    </defs>
+    <path class="m-hood" d="M60 6C30 6 14 34 14 64v34h92V64C106 34 90 6 60 6Z"/>
+    <path class="m-hood-line" d="M60 6C46 22 40 40 40 56M60 6c14 16 20 34 20 50"/>
+    <ellipse cx="60" cy="58" rx="27" ry="29" fill="#000"/>
+    <g id="m-eyes" filter="url(#glow)">
+      <g class="m-blink">
+        <rect x="45" y="54" width="9" height="5" rx="1.5" class="m-eye"/>
+        <rect x="66" y="54" width="9" height="5" rx="1.5" class="m-eye"/>
+      </g>
+    </g>
+    <rect x="18" y="88" width="84" height="34" rx="4" class="m-laptop"/>
+    <circle cx="60" cy="105" r="6" class="m-logo"/>
+    <rect x="57" y="103" width="2" height="2" fill="#000"/><rect x="61" y="103" width="2" height="2" fill="#000"/>
+  </svg>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
