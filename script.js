@@ -69,6 +69,7 @@ const CONFIG = {
     tr("По вопросам — менеджер @ceojobb", "Business inquiries — manager @ceojobb"),
     tr("Нажми Ctrl+K — откроется командная палитра ⌘", "Press Ctrl+K — the command palette opens ⌘"),
     tr("Включи </> в шапке — увидишь сайт глазами разработчика", "Turn on </> in the header — see the site like a developer"),
+    tr("Ctrl+K → «тема» — есть синтвейв и красная тревога 🌆🚨", "Ctrl+K → “theme” — synthwave and red alert 🌆🚨"),
   ],
   sectorTips: {
     "02": tr("Это глаз nalpax. Он видит тебя 👁", "This is nalpax’s eye. It sees you 👁"),
@@ -86,6 +87,14 @@ const CONFIG = {
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 // лёгкий режим для телефонов и слабых устройств (класс ставится в <head>)
 const LITE = document.documentElement.classList.contains("lite");
+// текущая цветовая тема: цвет акцента для canvas-анимаций
+const THEMES = {
+  matrix: { hex: "#00ff6a", rgb: "0,255,106", alt: "0,229,255" },
+  synthwave: { hex: "#ff3df2", rgb: "255,61,242", alt: "0,229,255" },
+  alert: { hex: "#ff2e4d", rgb: "255,46,77", alt: "255,176,46" },
+};
+let THEME_NAME = THEMES[document.documentElement.dataset.theme] ? document.documentElement.dataset.theme : "matrix";
+const THEME = { ...THEMES[THEME_NAME] };
 const finePointer = matchMedia("(pointer: fine)").matches;
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -257,7 +266,7 @@ const matrix = (() => {
   const CHARS = "01アイウエオカキクケコサシスセソタチツテトナニヌネノ<>/{}[]#$%&*+=NALPAX";
   const FONT = LITE ? 18 : 16;
   let cols, drops, w, h, last = 0;
-  const state = { color: "#00ff6a" };
+  const state = { color: THEME.hex };
   function resize() {
     w = canvas.width = innerWidth;
     h = canvas.height = innerHeight;
@@ -401,14 +410,14 @@ const matrix = (() => {
     const c = size / 2, R = size * 0.36;
     ctx.clearRect(0, 0, size, size);
     const g = ctx.createRadialGradient(c, c, R * 0.2, c, c, R * 1.4);
-    g.addColorStop(0, "rgba(0,255,106,0.10)");
-    g.addColorStop(1, "rgba(0,255,106,0)");
+    g.addColorStop(0, `rgba(${THEME.rgb},0.10)`);
+    g.addColorStop(1, `rgba(${THEME.rgb},0)`);
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, size, size);
     for (const p of pts) {
       const [x, y, z] = rot(p);
       const a = (z + 1) / 2;
-      ctx.fillStyle = `rgba(0,255,106,${0.08 + a * 0.75})`;
+      ctx.fillStyle = `rgba(${THEME.rgb},${0.08 + a * 0.75})`;
       const s = 1 + a * 1.6;
       ctx.fillRect(c + x * R - s / 2, c + y * R - s / 2, s, s);
     }
@@ -453,7 +462,7 @@ const matrix = (() => {
     ctx.rotate(-0.4);
     ctx.beginPath();
     ctx.ellipse(0, 0, R * 1.45, R * 0.38, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = "rgba(0,255,106,0.25)";
+    ctx.strokeStyle = `rgba(${THEME.rgb},0.25)`;
     ctx.setLineDash([4, 6]);
     ctx.stroke();
     ctx.setLineDash([]);
@@ -537,7 +546,7 @@ const eye = (() => {
     ctx.lineWidth = 2;
     for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.arc(0, 0, H * 0.43, i * Math.PI / 2, i * Math.PI / 2 + 0.6); ctx.stroke(); }
     ctx.restore();
-    ctx.strokeStyle = "rgba(0,255,106,0.4)";
+    ctx.strokeStyle = `rgba(${THEME.rgb},0.4)`;
     const TICKS = LITE ? 24 : 60;
     for (let i = 0; i < TICKS; i++) {
       const a = (i / TICKS) * Math.PI * 2;
@@ -586,7 +595,7 @@ const eye = (() => {
     const rot = t / 9000;
     for (const f of fibres) {
       const a = f.a + rot;
-      ctx.strokeStyle = f.c > 0.6 ? "rgba(255,255,255,0.35)" : f.c > 0.3 ? "rgba(0,255,106,0.45)" : "rgba(0,0,0,0.45)";
+      ctx.strokeStyle = f.c > 0.6 ? "rgba(255,255,255,0.35)" : f.c > 0.3 ? `rgba(${THEME.rgb},0.45)` : "rgba(0,0,0,0.45)";
       ctx.lineWidth = f.w;
       ctx.beginPath();
       ctx.moveTo(ix + Math.cos(a) * R * st.pupil, iy + Math.sin(a) * R * st.pupil);
@@ -606,7 +615,7 @@ const eye = (() => {
     ctx.beginPath(); ctx.arc(ix, iy, pr, 0, Math.PI * 2); ctx.fill();
     ctx.shadowBlur = 0;
     // перекрестие прицела в зрачке
-    ctx.strokeStyle = "rgba(0,255,106,0.6)";
+    ctx.strokeStyle = `rgba(${THEME.rgb},0.6)`;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(ix - pr * 0.6, iy); ctx.lineTo(ix + pr * 0.6, iy);
@@ -695,10 +704,10 @@ const eye = (() => {
       }
       const dm = Math.hypot(a.x - mx, a.y - my);
       if (dm < 200) {
-        ctx.strokeStyle = `rgba(0,255,106,${(1 - dm / 200) * 0.8})`;
+        ctx.strokeStyle = `rgba(${THEME.rgb},${(1 - dm / 200) * 0.8})`;
         ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(mx, my); ctx.stroke();
       }
-      ctx.fillStyle = dm < 200 ? "#00ff6a" : "rgba(0,229,255,.8)";
+      ctx.fillStyle = dm < 200 ? THEME.hex : `rgba(${THEME.alt},.8)`;
       ctx.fillRect(a.x - 1.5, a.y - 1.5, 3, 3);
     }
   }
@@ -728,7 +737,7 @@ const eye = (() => {
         const sy = h * 0.12 + (y / z) * h * 0.75;
         if (sx < -5 || sx > w + 5) continue;
         const a = Math.min(1, 4.5 / z);
-        const hue = y < 2.2 ? "0,255,106" : "0,229,255";
+        const hue = y < 2.2 ? THEME.rgb : THEME.alt;
         ctx.fillStyle = `rgba(${hue},${a * 0.8})`;
         const s = Math.max(1.6, 7 / z);
         ctx.fillRect(sx, sy, s, s);
@@ -1428,6 +1437,7 @@ const COMMANDS = {
     tr("  product     — софт для нарезки видео и баннеров", "  product     — video cutting & banner software"),
     tr("  contact     — все контакты", "  contact     — all contacts"),
     tr("  dev         — режим разработчика", "  dev         — developer mode"),
+    tr("  theme       — цветовые темы (matrix, synthwave, alert)", "  theme       — color themes (matrix, synthwave, alert)"),
     tr("  goto <раздел> — перейти (eye, about, skills, projects, product, portfolio, reviews, contact)", "  goto <section> — jump (eye, about, skills, projects, product, portfolio, reviews, contact)"),
     tr("  clear       — очистить экран", "  clear       — clear the screen"),
     tr("  ...и несколько секретных 😉", "  ...and a few secret ones 😉"),
@@ -1488,8 +1498,8 @@ const COMMANDS = {
     matrix.color = colors[(colors.indexOf(matrix.color) + 1) % colors.length];
     return tr("Цвет Матрицы изменён: ", "Matrix color changed: ") + matrix.color;
   },
-  "red pill": () => { document.body.classList.add("red-pill"); matrix.color = "#ff2e63"; say(tr("Добро пожаловать в реальность 💊", "Welcome to reality 💊")); return tr("Ты выбрал красную таблетку.", "You took the red pill."); },
-  "blue pill": () => { document.body.classList.remove("red-pill"); matrix.color = "#00ff6a"; return tr("Ты проснулся в своей кровати. Всё как прежде.", "You wake up in your bed. Everything is as it was."); },
+  "red pill": () => { setTheme("alert"); say(tr("Добро пожаловать в реальность 💊", "Welcome to reality 💊")); return tr("Ты выбрал красную таблетку.", "You took the red pill."); },
+  "blue pill": () => { setTheme("matrix"); return tr("Ты проснулся в своей кровати. Всё как прежде.", "You wake up in your bed. Everything is as it was."); },
   blink: () => { eye.blink(); return tr("👁 моргнул", "👁 blinked"); },
   exit: () => tr("Отсюда не выйти. Ты уже в системе 😈", "There’s no way out. You’re in the system now 😈"),
 };
@@ -1814,7 +1824,7 @@ const ACTIONS = [
     list.innerHTML = items.length ? items.map((a, i) => {
       let name = esc(a.name);
       if (q) { const k = a.name.toLowerCase().indexOf(q); if (k >= 0) name = esc(a.name.slice(0, k)) + "<mark>" + esc(a.name.slice(k, k + q.length)) + "</mark>" + esc(a.name.slice(k + q.length)); }
-      return `<li role="option" data-i="${i}" class="${i === sel ? "sel" : ""}" aria-selected="${i === sel}"><span class="pi">${esc(a.icon)}</span>${name}<small>${a.hint}</small></li>`;
+      return `<li role="option" data-i="${i}" class="${i === sel ? "sel" : ""}" aria-selected="${i === sel}"><span class="pi">${esc(a.icon)}</span><span>${name}</span><small>${a.hint}</small></li>`;
     }).join("") : `<li class="empty">${tr("ничего не найдено — попробуй «отзывы» или «dev»", "nothing found — try “reviews” or “dev”")}</li>`;
     list.querySelector(".sel")?.scrollIntoView({ block: "nearest" });
   }
@@ -1898,7 +1908,7 @@ $("#dev-btn").addEventListener("click", toggleDev);
     matrix.color = "#ffffff";
     say(tr("GOD MODE активирован ⚡ ты знаешь Konami code!", "GOD MODE activated ⚡ you know the Konami code!"));
     for (let i = 0; i < 60; i++) setTimeout(() => spawnBit(rand(0, innerWidth), rand(0, innerHeight), ["#00ff6a", "#00e5ff", "#ff3df2", "#ffd23f"][i % 4]), i * 30);
-    setTimeout(() => { document.body.classList.remove("god"); matrix.color = "#00ff6a"; }, 6000);
+    setTimeout(() => { document.body.classList.remove("god"); matrix.color = THEME.hex; }, 6000);
   });
 
   const title = document.title;
@@ -1918,13 +1928,59 @@ $("#dev-btn").addEventListener("click", toggleDev);
   let on = true;
   function fav() {
     x.fillStyle = "#020604"; x.fillRect(0, 0, 32, 32);
-    x.fillStyle = "#00ff6a"; x.font = "bold 22px monospace"; x.fillText("N", 3, 23);
+    x.fillStyle = THEME.hex; x.font = "bold 22px monospace"; x.fillText("N", 3, 23);
     if (on) x.fillRect(19, 22, 10, 4);
     $("#favicon").href = c.toDataURL();
     on = !on;
   }
   if (!LITE) { fav(); setInterval(fav, 600); }
 })();
+
+/* =========================================================
+   ТЕМЫ: matrix · synthwave · alert
+   ========================================================= */
+const THEME_LABELS = {
+  matrix: tr("Matrix — зелёный код", "Matrix — green code"),
+  synthwave: tr("Synthwave — неоновый закат", "Synthwave — neon sunset"),
+  alert: tr("Alert — красная тревога", "Alert — red alert"),
+};
+function setTheme(name, quiet) {
+  if (!THEMES[name]) return false;
+  THEME_NAME = name;
+  Object.assign(THEME, THEMES[name]);
+  if (name === "matrix") delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = name;
+  matrix.color = THEME.hex;
+  try { localStorage.setItem("nx-theme", name); } catch (e) {}
+  if (quiet) return true;
+  document.body.classList.remove("theme-flash");
+  void document.body.offsetWidth;
+  document.body.classList.add("theme-flash");
+  beep(name === "alert" ? 220 : name === "synthwave" ? 660 : 880, 0.12, 0.05);
+  say({
+    matrix: tr("Тема Matrix: добро пожаловать обратно 🟩", "Matrix theme: welcome back 🟩"),
+    synthwave: tr("Тема Synthwave: неон и закат 🌆", "Synthwave theme: neon and sunset 🌆"),
+    alert: tr("ТРЕВОГА! Обнаружено вторжение 🚨", "ALERT! Intrusion detected 🚨"),
+  }[name]);
+  return true;
+}
+COMMANDS.theme = () => [
+  tr("Темы:", "Themes:"),
+  ...Object.keys(THEMES).map((k) => `  ${k === THEME_NAME ? "●" : "○"} ${k.padEnd(10)} — ${THEME_LABELS[k]}`),
+  tr("Смена: theme <название>, например theme synthwave", "Switch: theme <name>, e.g. theme synthwave"),
+].join("\n");
+for (const k of Object.keys(THEMES)) COMMANDS["theme " + k] = () => (setTheme(k), tr("Тема: ", "Theme: ") + k);
+$("#theme-btn").addEventListener("click", () => {
+  const names = Object.keys(THEMES);
+  setTheme(names[(names.indexOf(THEME_NAME) + 1) % names.length]);
+});
+if (LANG === "en") $("#theme-btn").setAttribute("aria-label", "Switch theme");
+ACTIONS.unshift(...Object.keys(THEMES).map((k) => ({
+  icon: { matrix: "🟩", synthwave: "🌆", alert: "🚨" }[k],
+  name: tr("Тема: ", "Theme: ") + THEME_LABELS[k],
+  hint: tr("тема", "theme"),
+  run: () => setTheme(k),
+})));
 
 /* ---------- Старт ---------- */
 buildCircuit();

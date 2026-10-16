@@ -24,6 +24,7 @@
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Unbounded:wght@700;900&display=swap" rel="stylesheet">
+<script>try{var th=localStorage.getItem("nx-theme");if(th==="synthwave"||th==="alert")document.documentElement.dataset.theme=th}catch(e){}</script>
 <script>if(matchMedia("(pointer: coarse)").matches||innerWidth<760||(navigator.hardwareConcurrency||8)<=2)document.documentElement.classList.add("lite")</script>
 <link rel="icon" id="favicon" href="icon.png">
 <link rel="stylesheet" href="style.css">
@@ -55,6 +56,7 @@
 </div>
 
 <!-- ===== HUD по углам ===== -->
+<div id="alert-bar" aria-hidden="true">⚠ SYSTEM ALERT · INTRUSION DETECTED ⚠</div>
 <div class="hud hud-tl" aria-hidden="true">X:<span id="hud-x">0000</span> Y:<span id="hud-y">0000</span></div>
 <div class="hud hud-bl" aria-hidden="true"><i class="dot"></i> SECURE CONNECTION · <span id="hud-sector">SECTOR 01</span> · <span id="hud-online">— online</span></div>
 <div class="hud hud-br" aria-hidden="true"><span id="hud-time">00:00:00</span> · UTC</div>
@@ -82,6 +84,7 @@
   <div class="nav-tools">
     <button type="button" class="nav-tool" id="sound-nav" data-cursor="SOUND" aria-label="Звуковая тема" aria-pressed="false">♪</button>
     <button type="button" class="nav-tool" id="lang-btn" data-cursor="LANG" aria-label="Язык / Language">EN</button>
+    <button type="button" class="nav-tool" id="theme-btn" data-cursor="THEME" aria-label="Сменить тему">◐</button>
     <button type="button" class="nav-tool" id="palette-btn" data-cursor="⌘K" aria-label="Командная палитра"><kbd>⌘K</kbd></button>
     <button type="button" class="nav-tool" id="dev-btn" data-cursor="DEV" aria-label="Режим разработчика" aria-pressed="false">&lt;/&gt;</button>
     <a class="nav-cta" href="https://t.me/nalpax" data-cursor="TG">@nalpax</a>
