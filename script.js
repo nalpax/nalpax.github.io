@@ -22,10 +22,10 @@ const CONFIG = {
   manager: "ceojobb",
   reviews: "https://t.me/+IaY9WUZKbF03YzFi",
   product: "https://t.me/ghoursteam/148",
-  roles: ["creative developer", "web designer", "founder of GHOURS TEAM", tr("делаю сайты, которые запоминают", "building sites people remember")],
-  marquee: ["NALPAX", "CREATIVE CODE", "GHOURS TEAM", "INTERACTIVE WEB", "WEB DESIGN", "OPEN TO WORK", "@nalpax"],
+  roles: ["creative developer", "web designer", "FunPay plugin developer", "founder of GHOURS TEAM", tr("делаю сайты, которые запоминают", "building sites people remember")],
+  marquee: ["NALPAX", "CREATIVE CODE", "GHOURS TEAM", "FUNPAY PLUGINS", "INTERACTIVE WEB", "WEB DESIGN", "OPEN TO WORK", "@nalpax"],
   stats: [
-    { n: 6, suffix: "", label: tr("направлений в стеке", "areas in my stack") },
+    { n: 7, suffix: "", label: tr("направлений в стеке", "areas in my stack") },
     { n: 24, suffix: "/7", label: tr("на связи в Telegram", "online on Telegram") },
     { n: 1000, suffix: "+", label: tr("строк кода", "lines of code") },
     { n: 1, suffix: "", label: tr("своя команда — GHOURS", "my own team — GHOURS") },
@@ -36,12 +36,15 @@ const CONFIG = {
     { name: "Web Design", icon: "◆", level: 80, note: tr("стиль, типографика, UX", "style, typography, UX") },
     { name: "Canvas / 3D", icon: "✦", level: 75, note: tr("анимации, эффекты, графика в браузере", "animation, effects, in-browser graphics") },
     { name: "Telegram", icon: "✈", level: 75, note: tr("каналы, боты, комьюнити", "channels, bots, community") },
+    { name: "FunPay", icon: "⚡", level: 85, note: tr("плагины для продавцов FunPay", "plugins for FunPay sellers") },
     { name: "Teamwork", icon: "👥", level: 90, note: tr("веду команду GHOURS TEAM", "leading GHOURS TEAM") },
   ],
   // Категории для фильтра портфолио
   categories: { all: tr("Все", "All"), soft: tr("Софт", "Software"), web: tr("Сайты", "Websites"), tg: "Telegram", design: tr("Дизайн", "Design"), lab: tr("Эксперименты", "Experiments") },
   // Работы в портфолио. soon: true — карточка «в работе»
   portfolio: [
+    { title: "FunPay Plugins", cat: "soft", year: "2026", hue: "#ffb02e", icon: "⚡", link: "https://t.me/nalpax",
+      desc: tr("Плагины для FunPay: автоматизация и удобные инструменты для продавцов. Нужен свой плагин — пиши.", "FunPay plugins: automation and handy tools for sellers. Need a custom plugin? Message me."), tags: ["FunPay", "Plugins", "Automation"] },
     { title: "Video Cutter", cat: "soft", year: "2026", hue: "#ff2e63", icon: "✂", link: "https://t.me/ghoursteam/148", warp: tr("продукт", "product"),
       desc: tr("Софт для нарезки видео и добавления баннеров. Наша разработка — подробности и доступ в посте.", "Software for cutting videos and adding banners. Our own development — details and access in the post."), tags: ["Software", "Video", "Banners"] },
     { title: "nalpax.portfolio", cat: "web", year: "2026", hue: "#00ff6a", icon: "⌘", link: "#home",
@@ -57,6 +60,10 @@ const CONFIG = {
     { title: "Lab", cat: "lab", year: "soon", hue: "#8c6bff", icon: "▲", link: "https://t.me/nalpax", soon: true,
       desc: tr("Эксперименты с canvas и анимацией. Скоро здесь.", "Experiments with canvas and motion. Coming soon."), tags: ["Canvas", "Motion"] },
   ],
+  // Плеер: музыка, которую слушает nalpax.
+  // url — ссылка на трек: Яндекс Музыка, Spotify, SoundCloud или свой mp3 (например "music/track.mp3")
+  // пример: { title: "Название", artist: "Исполнитель", url: "https://music.yandex.ru/album/123/track/456" },
+  music: [],
   tips: [
     tr("Привет! Я Байт — помощник nalpax 👾", "Hi! I’m Byte — nalpax’s assistant 👾"),
     tr("Наведи курсор на ERROR 404 — файл восстановится", "Hover over ERROR 404 — the file will restore"),
@@ -143,119 +150,9 @@ const LETTERS = {
 };
 const ASCII_LOGO = LETTERS.N.map((_, i) => "NALPAX".split("").map((c) => LETTERS[c][i]).join("")).join("\n");
 
-/* ---------- Звуковая тема (Web Audio, без файлов) ----------
-   Тихий эмбиент-гул + мягкий метроном. Все щелчки сайта
-   встают на ближайшую 1/16 такта и подстраиваются под гамму. */
-let soundOn = false;
-const audio = (() => {
-  const BPM = 96, S16 = 60 / BPM / 4;
-  // минорная пентатоника от ля: щелчки всегда звучат в лад
-  const SCALE = [];
-  for (let o = -1; o <= 3; o++) for (const n of [0, 3, 5, 7, 10]) SCALE.push(220 * 2 ** (o + n / 12));
-  let ctx, master, drone, timer, step = 0, nextTime = 0;
-  const snap = (f) => SCALE.reduce((a, b) => (Math.abs(b - f) < Math.abs(a - f) ? b : a));
-
-  function noiseBuffer() {
-    const b = ctx.createBuffer(1, ctx.sampleRate * 0.05, ctx.sampleRate);
-    const d = b.getChannelData(0);
-    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
-    return b;
-  }
-  function startDrone() {
-    const filter = ctx.createBiquadFilter();
-    filter.type = "lowpass"; filter.frequency.value = 320; filter.Q.value = 3;
-    const lfo = ctx.createOscillator(), lfoGain = ctx.createGain();
-    lfo.frequency.value = 0.06; lfoGain.gain.value = 180;
-    lfo.connect(lfoGain).connect(filter.frequency);
-    const g = ctx.createGain();
-    g.gain.value = 0.0001;
-    g.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + 3);
-    const oscs = [55, 55.4, 82.5].map((f, i) => {
-      const o = ctx.createOscillator();
-      o.type = i === 2 ? "triangle" : "sawtooth";
-      o.frequency.value = f;
-      o.connect(filter);
-      o.start();
-      return o;
-    });
-    filter.connect(g).connect(master);
-    lfo.start();
-    drone = { oscs, lfo, g };
-  }
-  function tick(when, accent) {
-    // хай-хэт из шума
-    const src = ctx.createBufferSource(), hp = ctx.createBiquadFilter(), g = ctx.createGain();
-    src.buffer = noiseBuffer(); hp.type = "highpass"; hp.frequency.value = 7000;
-    g.gain.value = accent ? 0.02 : 0.008;
-    src.connect(hp).connect(g).connect(master);
-    src.start(when);
-    if (accent) {
-      // мягкая «бочка» на сильную долю
-      const o = ctx.createOscillator(), og = ctx.createGain();
-      o.frequency.setValueAtTime(90, when);
-      o.frequency.exponentialRampToValueAtTime(40, when + 0.25);
-      og.gain.setValueAtTime(0.09, when);
-      og.gain.exponentialRampToValueAtTime(0.0001, when + 0.3);
-      o.connect(og).connect(master);
-      o.start(when); o.stop(when + 0.32);
-      setTimeout(() => document.body.classList.add("beat"), (when - ctx.currentTime) * 1000);
-      setTimeout(() => document.body.classList.remove("beat"), (when - ctx.currentTime) * 1000 + 120);
-    }
-  }
-  function scheduler() {
-    while (nextTime < ctx.currentTime + 0.12) {
-      if (step % 4 === 0) tick(nextTime, step % 16 === 0 || step % 16 === 8);
-      else if (step % 2 === 0 && Math.random() < 0.3) tick(nextTime, false);
-      nextTime += S16;
-      step++;
-    }
-  }
-  return {
-    on() {
-      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
-      ctx.resume();
-      master = ctx.createGain();
-      master.gain.value = 0.8;
-      master.connect(ctx.destination);
-      startDrone();
-      nextTime = ctx.currentTime + 0.1; step = 0;
-      timer = setInterval(scheduler, 25);
-    },
-    off() {
-      if (!ctx) return;
-      clearInterval(timer);
-      const m = master, d = drone;
-      m.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.3);
-      setTimeout(() => { d.oscs.forEach((o) => o.stop()); d.lfo.stop(); m.disconnect(); }, 1500);
-    },
-    // щелчок/«пик»: в такт и в лад
-    blip(freq, dur, vol) {
-      if (!ctx || !soundOn) return;
-      const when = Math.ceil(ctx.currentTime / S16) * S16 + 0.005;
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = "triangle";
-      o.frequency.value = snap(freq);
-      g.gain.setValueAtTime(0.0001, when);
-      g.gain.exponentialRampToValueAtTime(Math.min(vol * 3, 0.12), when + 0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001, when + Math.max(dur, 0.08) + 0.15);
-      o.connect(g).connect(master);
-      o.start(when); o.stop(when + dur + 0.3);
-    },
-  };
-})();
-function beep(freq = 800, dur = 0.03, vol = 0.03) {
-  audio.blip(freq, dur, vol);
-}
-function setSound(on) {
-  soundOn = on;
-  on ? audio.on() : audio.off();
-  $("#sound-btn").textContent = "sound: " + (on ? "on" : "off");
-  $("#sound-nav").setAttribute("aria-pressed", on);
-  $("#sound-nav").textContent = on ? "♫" : "♪";
-  if (on) beep(880, 0.1, 0.04);
-}
-$("#sound-btn").addEventListener("click", () => setSound(!soundOn));
-$("#sound-nav").addEventListener("click", () => setSound(!soundOn));
+/* Звуковые эффекты отключены — вместо них на сайте плеер с музыкой.
+   beep() оставлен пустым, чтобы не трогать места, где он вызывается. */
+function beep() {}
 
 /* =========================================================
    ФОН: Матрица, которая убегает от курсора
@@ -1136,7 +1033,7 @@ addEventListener("keydown", (e) => { if (!bootDone && (e.key === "Enter" || e.ke
   const HTML = {
     "#warp-now": "open now ↗",
     "#boot-skip": "[ SKIP — ENTER ]",
-    ".hero-sub": `I build websites, interfaces and digital things people actually want to use. Founder of ${tg("ghoursteam", "GHOURS TEAM")}. Write me: ${tg("nalpax", "@nalpax")}. Business inquiries — manager ${tg("ceojobb", "@ceojobb")}. ${tg("+IaY9WUZKbF03YzFi", "Reviews →", ' data-warp="reviews"')}`,
+    ".hero-sub": `I build websites, interfaces and digital things people actually want to use. I make FunPay plugins. Founder of ${tg("ghoursteam", "GHOURS TEAM")}. Write me: ${tg("nalpax", "@nalpax")}. Business inquiries — manager ${tg("ceojobb", "@ceojobb")}. ${tg("+IaY9WUZKbF03YzFi", "Reviews →", ' data-warp="reviews"')}`,
     ".hero-actions .btn-ghost": "contact ↗",
     ".eye-text": 'nalpax’s eye follows your every move. <span class="accent">Even now.</span>',
     ".eye-copy .muted.small": "Click the eye — it will blink 👁",
@@ -1179,7 +1076,7 @@ addEventListener("keydown", (e) => { if (!bootDone && (e.key === "Enter" || e.ke
   $$("[data-warp]").forEach((a) => (a.dataset.warp = { "отзывы": "reviews", "продукт": "product" }[a.dataset.warp] || a.dataset.warp));
   $("#pal-in").placeholder = "Type a command or section…";
   if (finePointer) $("#hero-hint").textContent = "[ hover to restore the file ]";
-  const A = { "#sound-nav": "Sound theme", "#palette-btn": "Command palette", "#dev-btn": "Developer mode", "#ed-play": "Pause / play", "#ed-cut": "Cut at playhead", "#ed-ban": "Toggle banner", "#ed-timeline": "Timeline: hover to scrub", "#eye-canvas": "An eye that follows the cursor", "#term-in": "Terminal command", "#pal-in": "Command", "#filters": "Filter work", "#palette": "Command palette", ".scroll-hint": "Scroll down" };
+  const A = { "#sound-nav": "Music player", "#pl-toggle": "Playlist", "#pl-play": "Play / pause", "#pl-close": "Close", "#palette-btn": "Command palette", "#dev-btn": "Developer mode", "#ed-play": "Pause / play", "#ed-cut": "Cut at playhead", "#ed-ban": "Toggle banner", "#ed-timeline": "Timeline: hover to scrub", "#eye-canvas": "An eye that follows the cursor", "#term-in": "Terminal command", "#pal-in": "Command", "#filters": "Filter work", "#palette": "Command palette", ".scroll-hint": "Scroll down" };
   for (const [sel, l] of Object.entries(A)) $(sel)?.setAttribute("aria-label", l);
   document.querySelector('meta[name="description"]').content = "nalpax — websites, interfaces and digital things people actually want to use. Founder of GHOURS TEAM.";
 })();
@@ -1807,7 +1704,8 @@ const ACTIONS = [
   { icon: "✂", name: tr("Софт: нарезка видео и баннеры", "Software: video cutting & banners"), hint: tr("продукт", "product"), run: () => warpTo(CONFIG.product, tr("продукт", "product")) },
   { icon: "👻", name: "GHOURS TEAM", hint: "telegram", run: () => warpTo("https://t.me/" + CONFIG.team) },
   { icon: "</>", name: tr("DEV MODE — показать разметку", "DEV MODE — show layout"), hint: "toggle", run: () => toggleDev() },
-  { icon: "♪", name: tr("Звук вкл/выкл", "Sound on/off"), hint: "toggle", run: () => $("#sound-btn").click() },
+  { icon: "♫", name: tr("Плеер: что слушает nalpax", "Player: what nalpax listens to"), hint: tr("музыка", "music"), run: () => window.openPlayer() },
+  { icon: "⚡", name: tr("Заказать плагин для FunPay", "Order a FunPay plugin"), hint: "telegram", run: () => warpTo("https://t.me/" + CONFIG.telegram) },
   { icon: "▦", name: tr("Сменить цвет Матрицы", "Change Matrix color"), hint: "fx", run: () => COMMANDS.matrix() },
   { icon: "💊", name: "Red pill / Blue pill", hint: "fx", run: () => (document.body.classList.contains("red-pill") ? COMMANDS["blue pill"]() : COMMANDS["red pill"]()) },
   { icon: "👁", name: tr("Моргнуть глазом", "Blink the eye"), hint: "fx", run: () => { $("#eye").scrollIntoView(); setTimeout(eye.blink, 600); } },
@@ -1934,6 +1832,81 @@ $("#dev-btn").addEventListener("click", toggleDev);
     on = !on;
   }
   if (!LITE) { fav(); setInterval(fav, 600); }
+})();
+
+/* =========================================================
+   ПЛЕЕР: музыка, которую слушает nalpax
+   mp3 играет прямо на сайте; Яндекс Музыка / Spotify / SoundCloud —
+   через их официальные встраиваемые плееры
+   ========================================================= */
+(() => {
+  const player = $("#player"), panel = $("#pl-panel"), list = $("#pl-list"), embed = $("#pl-embed");
+  const audio = $("#pl-audio"), playBtn = $("#pl-play"), titleEl = $("#pl-title"), toggle = $("#pl-toggle");
+  const tracks = CONFIG.music || [];
+  let cur = -1;
+
+  function source(url) {
+    let m;
+    if (/\.(mp3|ogg|m4a|wav)(\?|$)/i.test(url)) return { type: "audio" };
+    if ((m = url.match(/music\.yandex\.\w+\/album\/(\d+)\/track\/(\d+)/))) return { type: "embed", h: 140, src: `https://music.yandex.ru/iframe/track/${m[2]}/${m[1]}` };
+    if ((m = url.match(/open\.spotify\.com\/(?:intl-\w+\/)?track\/(\w+)/))) return { type: "embed", h: 80, src: `https://open.spotify.com/embed/track/${m[1]}?theme=0` };
+    if (/soundcloud\.com\//.test(url)) return { type: "embed", h: 120, src: `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&auto_play=true&visual=false&color=%23${THEME.hex.slice(1)}` };
+    return { type: "link" };
+  }
+  function setPlaying(on) {
+    player.classList.toggle("playing", on);
+    playBtn.textContent = on ? "❚❚" : "▶";
+  }
+  function open(on = true) {
+    panel.hidden = !on;
+    player.classList.toggle("open", on);
+    toggle.setAttribute("aria-expanded", on);
+    $("#sound-nav").setAttribute("aria-pressed", on);
+  }
+  window.openPlayer = () => open(true);
+
+  function select(i) {
+    const t = tracks[i];
+    if (!t) return;
+    cur = i;
+    titleEl.textContent = `${t.artist ? t.artist + " — " : ""}${t.title}`;
+    $$("li", list).forEach((li, k) => li.classList.toggle("on", k === i));
+    const s = source(t.url);
+    audio.pause();
+    embed.innerHTML = "";
+    if (s.type === "audio") {
+      audio.src = t.url;
+      audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+    } else if (s.type === "embed") {
+      embed.innerHTML = `<iframe src="${s.src}" height="${s.h}" loading="lazy" allow="autoplay; encrypted-media" title="${t.title}"></iframe>`;
+      setPlaying(true);
+      open(true);
+    } else {
+      window.open(t.url, "_blank", "noopener");
+      setPlaying(false);
+    }
+  }
+
+  if (!tracks.length) {
+    titleEl.textContent = tr("плейлист скоро ✦", "playlist coming soon ✦");
+    list.innerHTML = `<li class="empty">${tr("Скоро здесь будет музыка, которую слушает nalpax 🎧", "Music nalpax listens to is coming soon 🎧")}</li>`;
+  } else {
+    titleEl.textContent = `${tracks[0].artist ? tracks[0].artist + " — " : ""}${tracks[0].title}`;
+    list.innerHTML = tracks.map((t, i) => `<li data-i="${i}"><span class="n">${String(i + 1).padStart(2, "0")}</span><span class="t"><b>${t.title}</b><small>${t.artist || ""}</small></span><span class="eq-mini"><i></i><i></i><i></i></span></li>`).join("");
+    list.addEventListener("click", (e) => { const li = e.target.closest("li[data-i]"); if (li) select(+li.dataset.i); });
+  }
+  playBtn.addEventListener("click", () => {
+    if (!tracks.length) return open(!player.classList.contains("open"));
+    if (cur < 0) return select(0);
+    if (source(tracks[cur].url).type === "audio") {
+      if (audio.paused) audio.play().then(() => setPlaying(true)).catch(() => {}); else { audio.pause(); setPlaying(false); }
+    } else open(!player.classList.contains("open"));
+  });
+  audio.addEventListener("ended", () => (cur + 1 < tracks.length ? select(cur + 1) : setPlaying(false)));
+  toggle.addEventListener("click", () => open(!player.classList.contains("open")));
+  $("#pl-close").addEventListener("click", () => open(false));
+  $("#sound-nav").addEventListener("click", () => open(!player.classList.contains("open")));
+  if (LANG === "en") { $("#pl-head-title").textContent = "what nalpax listens to"; }
 })();
 
 /* =========================================================

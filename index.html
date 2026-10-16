@@ -82,7 +82,7 @@
     <a href="#contact" data-n="09" data-label="contact">contact</a>
   </div>
   <div class="nav-tools">
-    <button type="button" class="nav-tool" id="sound-nav" data-cursor="SOUND" aria-label="Звуковая тема" aria-pressed="false">♪</button>
+    <button type="button" class="nav-tool" id="sound-nav" data-cursor="MUSIC" aria-label="Плеер" aria-pressed="false">♫</button>
     <button type="button" class="nav-tool" id="lang-btn" data-cursor="LANG" aria-label="Язык / Language">EN</button>
     <button type="button" class="nav-tool" id="theme-btn" data-cursor="THEME" aria-label="Сменить тему">◐</button>
     <button type="button" class="nav-tool" id="palette-btn" data-cursor="⌘K" aria-label="Командная палитра"><kbd>⌘K</kbd></button>
@@ -104,7 +104,7 @@
       </h1>
       <p class="hero-hint" id="hero-hint">[ наведи курсор, чтобы восстановить файл ]</p>
       <p class="role">&gt; <span id="typed"></span><span class="cursor-blink">█</span></p>
-      <p class="hero-sub">Создаю сайты, интерфейсы и цифровые предметы, которыми хочется пользоваться. Основатель <a href="https://t.me/ghoursteam" class="tg-inline">GHOURS TEAM</a>. Пиши: <a href="https://t.me/nalpax" class="tg-inline">@nalpax</a>. По вопросам — менеджер <a href="https://t.me/ceojobb" class="tg-inline">@ceojobb</a>. <a href="https://t.me/+IaY9WUZKbF03YzFi" class="tg-inline" data-warp="отзывы">Отзывы →</a></p>
+      <p class="hero-sub">Создаю сайты, интерфейсы и цифровые предметы, которыми хочется пользоваться. Делаю плагины для FunPay. Основатель <a href="https://t.me/ghoursteam" class="tg-inline">GHOURS TEAM</a>. Пиши: <a href="https://t.me/nalpax" class="tg-inline">@nalpax</a>. По вопросам — менеджер <a href="https://t.me/ceojobb" class="tg-inline">@ceojobb</a>. <a href="https://t.me/+IaY9WUZKbF03YzFi" class="tg-inline" data-warp="отзывы">Отзывы →</a></p>
       <div class="hero-actions">
         <a href="#portfolio" class="btn" data-cursor="GO">./portfolio.sh</a>
         <a href="https://t.me/nalpax" class="btn btn-ghost" data-cursor="TG">связаться ↗</a>
@@ -356,7 +356,7 @@
 
 <footer>
   <pre class="footer-ascii" aria-hidden="true" id="footer-ascii"></pre>
-  <p>© <span id="year"></span> <a href="https://t.me/nalpax" class="tg-inline">@nalpax</a> · <a href="https://t.me/ghoursteam" class="tg-inline">@ghoursteam</a> · менеджер <a href="https://t.me/ceojobb" class="tg-inline">@ceojobb</a> · <a href="https://t.me/+IaY9WUZKbF03YzFi" class="tg-inline" data-warp="отзывы">отзывы</a> · made with code &amp; coffee · <button id="sound-btn" type="button">sound: off</button></p>
+  <p>© <span id="year"></span> <a href="https://t.me/nalpax" class="tg-inline">@nalpax</a> · <a href="https://t.me/ghoursteam" class="tg-inline">@ghoursteam</a> · менеджер <a href="https://t.me/ceojobb" class="tg-inline">@ceojobb</a> · <a href="https://t.me/+IaY9WUZKbF03YzFi" class="tg-inline" data-warp="отзывы">отзывы</a> · made with code &amp; coffee</p>
 </footer>
 
 <!-- ===== Командная палитра ===== -->
@@ -371,6 +371,20 @@
 <!-- ===== DEV MODE ===== -->
 <div id="dev-tip" aria-hidden="true"></div>
 <div id="dev-hud" aria-hidden="true"><b>DEV MODE</b> · <span id="dev-fps">60</span> fps · <span id="dev-nodes">0</span> nodes · <span id="dev-vp"></span></div>
+
+<!-- ===== Плеер: музыка, которую слушает nalpax ===== -->
+<div id="player" class="player">
+  <button type="button" class="pl-disc" id="pl-toggle" aria-expanded="false" aria-controls="pl-panel" data-cursor="MUSIC" aria-label="Плейлист"><span class="disc"><i></i></span></button>
+  <div class="pl-now"><small id="pl-label">nalpax · playlist</small><b id="pl-title">—</b></div>
+  <button type="button" class="pl-btn" id="pl-play" data-cursor="PLAY" aria-label="Играть / пауза">▶</button>
+  <div class="pl-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="pl-panel" id="pl-panel" hidden>
+    <div class="pl-head"><span>♫ <b id="pl-head-title">что слушает nalpax</b></span><button type="button" id="pl-close" aria-label="Закрыть">✕</button></div>
+    <ol id="pl-list"></ol>
+    <div id="pl-embed"></div>
+    <audio id="pl-audio" preload="none"></audio>
+  </div>
+</div>
 
 <!-- ===== Персонаж-хакер ===== -->
 <div class="mascot" id="mascot" data-cursor="?">
