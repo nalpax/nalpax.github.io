@@ -1132,7 +1132,7 @@ addEventListener("keydown", (e) => { if (!bootDone && (e.key === "Enter" || e.ke
     ".eye-text": 'nalpax’s eye follows your every move. <span class="accent">Even now.</span>',
     ".eye-copy .muted.small": "Click the eye — it will blink 👁",
     ".about-body p:nth-child(6)": '<span class="ln">06</span>&nbsp;&nbsp;status: <span class="str">"open for projects"</span>',
-    ".about-body p:nth-child(8)": '<span class="ln">08</span>// Hi! I’m nalpax — I love what I do and make things beautiful, unusual and “wow”.',
+    ".about-body p:nth-child(8)": '<span class="ln">08</span>// Hi! I’m nalpax — I love what I do and make things beautiful and unusual.',
     ".about-body p:nth-child(9)": '<span class="ln">09</span>// I build websites with character. Message me on Telegram — I reply fast.',
     ".featured-info p": 'My team and community on Telegram. <span class="muted">News, projects and everything we’re working on — there first.</span>',
     ".ed-banner span": "@ghoursteam · subscribe",
@@ -1525,7 +1525,7 @@ print(tr("Welcome to NalpaxOS v3.0 — введи 'help' или 'neofetch'", "We
    ========================================================= */
 const bubble = $("#bubble");
 let bubbleTimer, tipIndex = 0;
-function say(text, ms = 4200) {
+function say(text, ms = LITE ? 2600 : 4200) {
   bubble.textContent = text;
   bubble.classList.add("show");
   clearTimeout(bubbleTimer);
@@ -1545,7 +1545,8 @@ function say(text, ms = 4200) {
     say(CONFIG.tips[tipIndex]);
     beep(1000, 0.05);
   });
-  setInterval(() => {
+  // на телефоне без периодических подсказок — облачко не должно закрывать контент
+  if (!LITE) setInterval(() => {
     if (bubble.classList.contains("show") || !bootDone) return;
     tipIndex = (tipIndex + 1) % CONFIG.tips.length;
     say(CONFIG.tips[tipIndex]);
