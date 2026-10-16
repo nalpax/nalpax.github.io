@@ -1032,7 +1032,7 @@ addEventListener("keydown", (e) => { if (!bootDone && (e.key === "Enter" || e.ke
   });
   if (LANG !== "en") return;
   document.documentElement.lang = "en";
-  document.title = "nalpax // portfolio";
+  document.title = "nalpax | BIO";
   const tg = (u, txt, extra = "") => `<a href="https://t.me/${u}" class="tg-inline"${extra}>${txt}</a>`;
   const HTML = {
     "#warp-now": "open now ↗",
