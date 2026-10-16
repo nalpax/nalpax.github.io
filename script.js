@@ -1840,14 +1840,17 @@ $("#dev-btn").addEventListener("click", toggleDev);
 
 /* =========================================================
    ПЛЕЕР: музыка, которую слушает nalpax
-   mp3 играет прямо на сайте; Яндекс Музыка / Spotify / SoundCloud —
-   через их официальные встраиваемые плееры
+   mp3 играет прямо на сайте (громкость и перемотка работают);
+   Яндекс Музыка / Spotify / SoundCloud — через их встраиваемые плееры:
+   ими сайт управлять не может, поэтому для них громкость и перемотка
+   остаются в самом встроенном плеере, а пауза и переключение — у нас
    ========================================================= */
 (() => {
   const player = $("#player"), panel = $("#pl-panel"), list = $("#pl-list"), embed = $("#pl-embed");
-  const audio = $("#pl-audio"), playBtn = $("#pl-play"), titleEl = $("#pl-title"), toggle = $("#pl-toggle");
+  const audio = $("#pl-audio"), playBtn = $("#pl-play"), pp = $("#pl-pp"), titleEl = $("#pl-title"), toggle = $("#pl-toggle");
+  const progress = $("#pl-progress"), volume = $("#pl-volume"), note = $("#pl-note");
   const tracks = CONFIG.music || [];
-  let cur = -1;
+  let cur = -1, playing = false, seeking = false;
 
   function source(url) {
     let m;
@@ -1857,9 +1860,13 @@ $("#dev-btn").addEventListener("click", toggleDev);
     if (/soundcloud\.com\//.test(url)) return { type: "embed", h: 120, src: `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&auto_play=true&visual=false&color=%23${THEME.hex.slice(1)}` };
     return { type: "link" };
   }
+  const fmt = (t) => (isFinite(t) ? `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}` : "0:00");
+  const kind = () => (cur >= 0 ? source(tracks[cur].url).type : null);
+
   function setPlaying(on) {
+    playing = on;
     player.classList.toggle("playing", on);
-    playBtn.textContent = on ? "❚❚" : "▶";
+    playBtn.textContent = pp.textContent = on ? "❚❚" : "▶";
   }
   function open(on = true) {
     panel.hidden = !on;
@@ -1869,7 +1876,17 @@ $("#dev-btn").addEventListener("click", toggleDev);
   }
   window.openPlayer = () => open(true);
 
-  function select(i) {
+  // громкость и перемотка доступны только для mp3
+  function updateControls() {
+    const isAudio = kind() === "audio";
+    progress.disabled = volume.disabled = !isAudio;
+    player.classList.toggle("embed-mode", kind() === "embed");
+    note.hidden = isAudio || cur < 0;
+    note.textContent = tr("Громкость и перемотка этого трека — в плеере Яндекса ниже ↓", "Volume and seeking for this track are in the Yandex player below ↓");
+    if (!isAudio) { progress.value = 0; $("#pl-cur").textContent = "0:00"; $("#pl-dur").textContent = "—"; }
+  }
+
+  function select(i, autoplay = true) {
     const t = tracks[i];
     if (!t) return;
     cur = i;
@@ -1878,6 +1895,8 @@ $("#dev-btn").addEventListener("click", toggleDev);
     const s = source(t.url);
     audio.pause();
     embed.innerHTML = "";
+    updateControls();
+    if (!autoplay) return setPlaying(false);
     if (s.type === "audio") {
       audio.src = t.url;
       audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
@@ -1890,27 +1909,75 @@ $("#dev-btn").addEventListener("click", toggleDev);
       setPlaying(false);
     }
   }
+  function togglePlay() {
+    if (!tracks.length) return open(!player.classList.contains("open"));
+    if (cur < 0) return select(0);
+    if (kind() === "audio") {
+      if (audio.paused) audio.play().then(() => setPlaying(true)).catch(() => {});
+      else { audio.pause(); setPlaying(false); }
+    } else if (kind() === "embed") {
+      // пауза для встроенного плеера: выгружаем его, повторное нажатие запускает трек заново
+      if (playing) { embed.innerHTML = ""; setPlaying(false); }
+      else select(cur);
+    }
+  }
+  const step = (d) => tracks.length && select((Math.max(cur, 0) + d + tracks.length) % tracks.length);
 
   if (!tracks.length) {
     titleEl.textContent = tr("плейлист скоро ✦", "playlist coming soon ✦");
     list.innerHTML = `<li class="empty">${tr("Скоро здесь будет музыка, которую слушает nalpax 🎧", "Music nalpax listens to is coming soon 🎧")}</li>`;
   } else {
-    titleEl.textContent = `${tracks[0].artist ? tracks[0].artist + " — " : ""}${tracks[0].title}`;
     list.innerHTML = tracks.map((t, i) => `<li data-i="${i}"><span class="n">${String(i + 1).padStart(2, "0")}</span><span class="t"><b>${t.title}</b><small>${t.artist || ""}</small></span><span class="eq-mini"><i></i><i></i><i></i></span></li>`).join("");
     list.addEventListener("click", (e) => { const li = e.target.closest("li[data-i]"); if (li) select(+li.dataset.i); });
+    select(0, false);
   }
-  playBtn.addEventListener("click", () => {
-    if (!tracks.length) return open(!player.classList.contains("open"));
-    if (cur < 0) return select(0);
-    if (source(tracks[cur].url).type === "audio") {
-      if (audio.paused) audio.play().then(() => setPlaying(true)).catch(() => {}); else { audio.pause(); setPlaying(false); }
-    } else open(!player.classList.contains("open"));
+  updateControls();
+
+  playBtn.addEventListener("click", togglePlay);
+  pp.addEventListener("click", togglePlay);
+  $("#pl-prev").addEventListener("click", () => step(-1));
+  $("#pl-next").addEventListener("click", () => step(1));
+
+  // громкость: запоминаем между визитами
+  let vol = 80;
+  try { vol = +(localStorage.getItem("nx-volume") ?? 80); } catch (e) {}
+  const setVol = (v) => {
+    vol = v; audio.volume = v / 100; volume.value = v; $("#pl-vol-val").textContent = v + "%";
+    volume.style.setProperty("--fill", v + "%");
+    try { localStorage.setItem("nx-volume", v); } catch (e) {}
+  };
+  setVol(vol);
+  volume.addEventListener("input", () => setVol(+volume.value));
+
+  // перемотка
+  audio.addEventListener("loadedmetadata", () => ($("#pl-dur").textContent = fmt(audio.duration)));
+  audio.addEventListener("timeupdate", () => {
+    if (seeking || !audio.duration) return;
+    progress.value = (audio.currentTime / audio.duration) * 1000;
+    progress.style.setProperty("--fill", progress.value / 10 + "%");
+    $("#pl-cur").textContent = fmt(audio.currentTime);
+  });
+  progress.addEventListener("input", () => {
+    seeking = true;
+    progress.style.setProperty("--fill", progress.value / 10 + "%");
+    if (audio.duration) $("#pl-cur").textContent = fmt((progress.value / 1000) * audio.duration);
+  });
+  progress.addEventListener("change", () => {
+    if (audio.duration) audio.currentTime = (progress.value / 1000) * audio.duration;
+    seeking = false;
   });
   audio.addEventListener("ended", () => (cur + 1 < tracks.length ? select(cur + 1) : setPlaying(false)));
+  audio.addEventListener("pause", () => kind() === "audio" && setPlaying(false));
+  audio.addEventListener("play", () => setPlaying(true));
+
   toggle.addEventListener("click", () => open(!player.classList.contains("open")));
   $("#pl-close").addEventListener("click", () => open(false));
   $("#sound-nav").addEventListener("click", () => open(!player.classList.contains("open")));
-  if (LANG === "en") { $("#pl-head-title").textContent = "what nalpax listens to"; }
+  if (LANG === "en") {
+    $("#pl-head-title").textContent = "what nalpax listens to";
+    const A = { "#pl-prev": "Previous track", "#pl-pp": "Play / pause", "#pl-next": "Next track", "#pl-progress": "Seek", "#pl-volume": "Volume" };
+    for (const [sel, l] of Object.entries(A)) $(sel).setAttribute("aria-label", l);
+  }
 })();
 
 /* =========================================================

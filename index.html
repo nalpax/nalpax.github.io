@@ -27,7 +27,7 @@
 <script>try{var th=localStorage.getItem("nx-theme");if(th==="synthwave"||th==="alert")document.documentElement.dataset.theme=th}catch(e){}</script>
 <script>if(matchMedia("(pointer: coarse)").matches||innerWidth<760||(navigator.hardwareConcurrency||8)<=2)document.documentElement.classList.add("lite")</script>
 <link rel="icon" id="favicon" href="icon.png">
-<link rel="stylesheet" href="style.css?v=1792176114">
+<link rel="stylesheet" href="style.css?v=1792176408">
 </head>
 <body>
 
@@ -380,6 +380,16 @@
   <div class="pl-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
   <div class="pl-panel" id="pl-panel" hidden>
     <div class="pl-head"><span>♫ <b id="pl-head-title">что слушает nalpax</b></span><button type="button" id="pl-close" aria-label="Закрыть">✕</button></div>
+    <div class="pl-controls">
+      <div class="pl-buttons">
+        <button type="button" id="pl-prev" data-cursor="PREV" aria-label="Предыдущий трек">⏮</button>
+        <button type="button" id="pl-pp" class="pl-pp" data-cursor="PLAY" aria-label="Играть / пауза">▶</button>
+        <button type="button" id="pl-next" data-cursor="NEXT" aria-label="Следующий трек">⏭</button>
+      </div>
+      <div class="pl-seek"><span id="pl-cur">0:00</span><input type="range" id="pl-progress" min="0" max="1000" value="0" aria-label="Перемотка"><span id="pl-dur">0:00</span></div>
+      <div class="pl-vol"><span aria-hidden="true">🔈</span><input type="range" id="pl-volume" min="0" max="100" value="80" aria-label="Громкость"><span id="pl-vol-val">80%</span></div>
+      <p class="pl-note" id="pl-note" hidden></p>
+    </div>
     <ol id="pl-list"></ol>
     <div id="pl-embed"></div>
     <audio id="pl-audio" preload="none"></audio>
@@ -409,6 +419,6 @@
   </svg>
 </div>
 
-<script src="script.js?v=1792176114"></script>
+<script src="script.js?v=1792176408"></script>
 </body>
 </html>

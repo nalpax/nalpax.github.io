@@ -1016,3 +1016,24 @@ body.theme-flash main, body.theme-flash .nav { animation: themeFlash .5s steps(3
   .pl-disc { width: 38px; height: 38px; }
   .pl-panel { left: 0; }
 }
+
+/* ================= Плеер: управление ================= */
+.pl-controls { padding: 12px 14px 8px; border-bottom: 1px solid var(--green-faint); }
+.pl-buttons { display: flex; justify-content: center; align-items: center; gap: 14px; margin-bottom: 10px; }
+.pl-buttons button {
+  width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--green-dim); background: transparent;
+  color: var(--green); font: inherit; font-size: 13px; cursor: pointer; transition: background .2s, color .2s, box-shadow .2s;
+}
+.pl-buttons button:hover { background: rgba(var(--acc),.15); box-shadow: 0 0 12px rgba(var(--acc),.4); }
+.pl-buttons .pl-pp { width: 46px; height: 46px; background: var(--green); color: var(--bg); border-color: var(--green); font-size: 15px; }
+.pl-buttons .pl-pp:hover { background: var(--green); box-shadow: 0 0 20px var(--green); }
+.pl-seek, .pl-vol { display: flex; align-items: center; gap: 8px; font-size: 10px; color: var(--muted); margin: 6px 0; }
+.pl-seek span, .pl-vol span { min-width: 30px; text-align: center; }
+.pl-controls input[type="range"] {
+  --fill: 0%; flex: 1; height: 4px; appearance: none; -webkit-appearance: none; border-radius: 2px; cursor: pointer;
+  background: linear-gradient(90deg, var(--green) var(--fill), rgba(var(--acc),.18) var(--fill));
+}
+.pl-controls input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+.pl-controls input[type="range"]::-moz-range-thumb { width: 12px; height: 12px; border: 0; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+.pl-controls input[type="range"]:disabled { opacity: .3; cursor: not-allowed; }
+.pl-note { font-size: 11px; color: var(--cyan); margin-top: 6px; line-height: 1.4; }
