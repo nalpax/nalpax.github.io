@@ -678,3 +678,104 @@ footer p:has(a:hover) a:not(:hover) { opacity: .3; filter: blur(2px); }
 }
 .contact::after { background: conic-gradient(from var(--ang), transparent 0 70%, #fff 85%, transparent); animation-duration: 3s; }
 @keyframes angSpin { to { --ang: 360deg; } }
+
+/* ================= Инструменты в шапке ================= */
+.nav-tools { display: flex; align-items: center; gap: 8px; }
+.nav-tool {
+  height: 34px; min-width: 40px; padding: 0 10px; font: inherit; font-size: 12px; font-weight: 800; cursor: pointer;
+  color: var(--cyan); background: transparent; border: 1px solid rgba(0,229,255,.4); transition: background .2s, color .2s, box-shadow .2s;
+}
+.nav-tool kbd { font: inherit; }
+.nav-tool:hover, .nav-tool[aria-pressed="true"] { background: var(--cyan); color: var(--bg); box-shadow: 0 0 16px rgba(0,229,255,.5); }
+
+/* ================= Командная палитра ================= */
+#palette { position: fixed; inset: 0; z-index: 260; display: flex; justify-content: center; align-items: flex-start; padding-top: 14vh; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); animation: warpIn .2s both; }
+#palette[hidden] { display: none; }
+.pal-box { width: min(620px, 92vw); border: 1px solid var(--green); background: rgba(2,10,6,.97); box-shadow: 0 0 60px rgba(0,255,106,.25), 0 30px 80px rgba(0,0,0,.6); animation: palIn .25s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes palIn { from { transform: translateY(-14px) scale(.97); opacity: 0; } }
+.pal-input { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--green-dim); }
+.pal-input span { color: var(--green); font-weight: 800; }
+#pal-in { flex: 1; min-width: 0; background: none; border: 0; outline: 0; font: inherit; font-size: 16px; color: #fff; caret-color: var(--green); }
+#palette kbd { font: inherit; font-size: 10px; padding: 1px 6px; border: 1px solid var(--green-dim); color: var(--muted); margin: 0 2px; }
+#pal-list { list-style: none; max-height: 46vh; overflow-y: auto; padding: 6px; }
+#pal-list li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; cursor: pointer; font-size: 14px; color: var(--text); }
+#pal-list li .pi { width: 22px; text-align: center; color: var(--green); }
+#pal-list li small { margin-left: auto; color: var(--muted); font-size: 11px; }
+#pal-list li mark { background: none; color: var(--green); text-decoration: underline; }
+#pal-list li.sel { background: rgba(0,255,106,.12); box-shadow: inset 2px 0 0 var(--green); }
+#pal-list li.empty { color: var(--muted); cursor: default; }
+.pal-foot { display: flex; gap: 18px; flex-wrap: wrap; padding: 10px 16px; border-top: 1px solid var(--green-faint); font-size: 11px; color: var(--muted); }
+
+/* ================= DEV MODE ================= */
+body.devmode main *:not(canvas):not(svg *):not(.ch) { outline: 1px dashed rgba(0,229,255,.28); outline-offset: -1px; }
+body.devmode main .dev-hover { outline: 2px solid var(--pink) !important; background-color: rgba(255,61,242,.06) !important; }
+body.devmode::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 55;
+  background: repeating-linear-gradient(90deg, rgba(255,61,242,.07) 0 1px, transparent 1px calc(100% / 12));
+}
+#dev-tip {
+  position: fixed; z-index: 380; pointer-events: none; display: none; padding: 4px 8px; font-size: 11px; white-space: nowrap;
+  color: #fff; background: rgba(40,0,50,.92); border: 1px solid var(--pink); box-shadow: 0 0 14px rgba(255,61,242,.4);
+}
+#dev-tip b { color: var(--pink); }
+#dev-tip i { color: var(--cyan); font-style: normal; }
+#dev-hud { position: fixed; top: 70px; right: 18px; z-index: 85; display: none; padding: 6px 10px; font-size: 11px; color: var(--cyan); background: rgba(0,10,14,.9); border: 1px solid var(--cyan); }
+#dev-hud b { color: var(--pink); }
+body.devmode #dev-tip, body.devmode #dev-hud { display: block; }
+
+/* ================= GOD MODE (konami) ================= */
+body.god main, body.god .nav { animation: godHue 1.2s linear infinite; }
+@keyframes godHue { to { filter: hue-rotate(360deg) saturate(1.6); } }
+
+/* ================= Отзывы ================= */
+.block-reviews { background: radial-gradient(ellipse at 30% 60%, rgba(255,210,63,.08), transparent 55%), radial-gradient(ellipse at 80% 20%, rgba(0,229,255,.08), transparent 50%), rgba(3,5,8,.94); }
+.bubbles { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.bubbles i {
+  position: absolute; bottom: -60px; font-style: normal; color: rgba(255,210,63,.35); text-shadow: 0 0 12px rgba(255,210,63,.4);
+  animation: rise linear infinite;
+}
+@keyframes rise { to { transform: translateY(-130vh) rotate(25deg); opacity: 0; } }
+.reviews-card {
+  position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;
+  padding: clamp(22px, 4vw, 46px); border: 1px solid rgba(255,210,63,.5); background: linear-gradient(135deg, rgba(255,210,63,.07), rgba(2,8,10,.92) 60%);
+  box-shadow: 0 0 50px rgba(255,210,63,.1);
+}
+.chat { border: 1px solid rgba(255,255,255,.08); background: #060b0d; height: 340px; display: flex; flex-direction: column; }
+.chat-head { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,.06); }
+.chat-ava { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--yellow), var(--pink)); color: #000; font-weight: 800; }
+.chat-head b { display: block; font-size: 14px; color: #fff; }
+.chat-head small { font-size: 11px; color: var(--cyan); }
+.typing i { display: inline-block; width: 4px; height: 4px; margin-left: 3px; border-radius: 50%; background: var(--cyan); animation: dot 1s infinite; }
+.typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes dot { 50% { transform: translateY(-4px); opacity: .3; } }
+.chat-body { flex: 1; overflow: hidden; padding: 14px; display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; }
+.msg { align-self: flex-start; width: min(78%, 280px); padding: 10px 12px; border-radius: 12px 12px 12px 2px; background: #10202a; animation: msgIn .45s cubic-bezier(.2,.8,.2,1) both; }
+.msg.me { align-self: flex-end; border-radius: 12px 12px 2px 12px; background: rgba(0,255,106,.14); }
+.msg i { display: block; height: 7px; border-radius: 4px; margin: 5px 0; background: linear-gradient(90deg, rgba(255,255,255,.1), rgba(255,255,255,.28), rgba(255,255,255,.1)); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
+.msg .stars-row { color: var(--yellow); font-size: 12px; letter-spacing: 2px; }
+@keyframes msgIn { from { opacity: 0; transform: translateY(16px) scale(.95); } }
+.reviews-info h3 { font-family: var(--display); font-size: clamp(28px, 4vw, 48px); line-height: 1.1; margin: 16px 0; color: var(--yellow); text-shadow: 0 0 20px rgba(255,210,63,.4); }
+.reviews-info p { margin-bottom: 26px; }
+.reviews-info .badge { color: var(--yellow); border-color: var(--yellow); }
+.reviews-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.reviews-actions .btn:first-child { background: var(--yellow); border-color: var(--yellow); }
+.reviews-actions .btn:first-child:hover { box-shadow: 0 0 26px var(--yellow); }
+
+/* ================= Контакты 2×2 ================= */
+.contacts { grid-template-columns: repeat(2, minmax(0, 380px)); }
+.contact-mgr { border-color: var(--pink); }
+.contact-mgr::before { background: var(--pink); }
+.contact-mgr strong { color: var(--pink); }
+.contact-rev { border-color: var(--yellow); }
+.contact-rev::before { background: var(--yellow); }
+.contact-rev strong { color: var(--yellow); }
+
+@media (max-width: 960px) {
+  .reviews-card { grid-template-columns: 1fr; }
+  #palette-btn { display: none; }
+}
+@media (max-width: 640px) {
+  .contacts { grid-template-columns: 1fr; }
+  .nav-tool { min-width: 34px; padding: 0 6px; }
+  .nav-cta { padding: 7px 10px; }
+}

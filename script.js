@@ -5,6 +5,8 @@ const CONFIG = {
   name: "NALPAX",
   telegram: "nalpax",
   team: "ghoursteam",
+  manager: "ceojobb",
+  reviews: "https://t.me/+IaY9WUZKbF03YzFi",
   roles: ["creative developer", "web designer", "founder of GHOURS TEAM", "делаю сайты, которые запоминают"],
   marquee: ["NALPAX", "CREATIVE CODE", "GHOURS TEAM", "INTERACTIVE WEB", "WEB DESIGN", "OPEN TO WORK", "@nalpax"],
   stats: [
@@ -46,6 +48,9 @@ const CONFIG = {
     "Есть секретная команда «red pill» 💊",
     "Заглядывай в GHOURS TEAM 👻",
     "Пиши nalpax в Telegram: @nalpax",
+    "По вопросам — менеджер @ceojobb",
+    "Нажми Ctrl+K — откроется командная палитра ⌘",
+    "Включи </> в шапке — увидишь сайт глазами разработчика",
   ],
   sectorTips: {
     "02": "Это глаз nalpax. Он видит тебя 👁",
@@ -54,7 +59,8 @@ const CONFIG = {
     "05": "GHOURS TEAM — главный проект. Жми на призрака!",
     "06": "Попробуй: help, neofetch, hack nasa…",
     "07": "Тут все работы nalpax. Фильтруй по категориям!",
-    "08": "Пиши — nalpax отвечает быстро ✈",
+    "08": "Отзывы — без фильтров, прямо в Telegram ★",
+    "09": "Пиши — nalpax отвечает быстро ✈",
   },
 };
 
@@ -785,8 +791,8 @@ function spawnBit(x, y, color) {
    Переход в Telegram с анимацией «соединения»
    ========================================================= */
 let warpTimer = null;
-function warpTo(url) {
-  const name = url.split("t.me/")[1] || url;
+function warpTo(url, label) {
+  const name = label || url.split("t.me/")[1] || url;
   if (reduceMotion) { location.href = url; return; }
   const warp = $("#warp"), fill = $("#warp-fill"), log = $("#warp-log");
   $("#warp-target").textContent = name;
@@ -796,7 +802,7 @@ function warpTo(url) {
   fill.style.transition = "none";
   fill.style.width = "0";
   requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.transition = "width 1.5s cubic-bezier(.6,0,.4,1)"; fill.style.width = "100%"; }));
-  const lines = ["> resolving t.me ... OK", "> handshake with @" + name + " ... OK", "> encrypting channel [AES-256] ... OK", "> opening Telegram ↗"];
+  const lines = ["> resolving t.me ... OK", "> handshake with " + (label ? name : "@" + name) + " ... OK", "> encrypting channel [AES-256] ... OK", "> opening Telegram ↗"];
   lines.forEach((l, i) => setTimeout(() => { if (!warp.hidden) { log.textContent += l + "\n"; beep(700 + i * 200, 0.04); } }, 250 + i * 330));
   clearTimeout(warpTimer);
   warpTimer = setTimeout(() => { if (!warp.hidden) { location.href = url; setTimeout(closeWarp, 800); } }, 1700);
@@ -806,7 +812,7 @@ document.addEventListener("click", (e) => {
   const a = e.target.closest('a[href*="t.me/"]');
   if (!a || a.id === "warp-now" || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
   e.preventDefault();
-  warpTo(a.href);
+  warpTo(a.href, a.dataset.warp);
 });
 $("#warp").addEventListener("click", (e) => { if (e.target.id === "warp") closeWarp(); });
 addEventListener("keydown", (e) => { if (e.key === "Escape") closeWarp(); });
@@ -1200,7 +1206,11 @@ const COMMANDS = {
     "  portfolio   — список работ",
     "  telegram    — перейти в мой Telegram",
     "  ghours      — перейти в GHOURS TEAM",
-    "  goto <раздел> — перейти (eye, about, skills, projects, portfolio, contact)",
+    "  manager     — менеджер @ceojobb",
+    "  reviews     — отзывы",
+    "  contact     — все контакты",
+    "  dev         — режим разработчика",
+    "  goto <раздел> — перейти (eye, about, skills, projects, portfolio, reviews, contact)",
     "  clear       — очистить экран",
     "  ...и несколько секретных 😉",
   ].join("\n"),
@@ -1226,7 +1236,16 @@ const COMMANDS = {
   projects: () => COMMANDS.portfolio(),
   telegram: () => { warpTo("https://t.me/" + CONFIG.telegram); return "Соединяюсь с @" + CONFIG.telegram + " ..."; },
   ghours: () => { warpTo("https://t.me/" + CONFIG.team); return "Соединяюсь с @" + CONFIG.team + " 👻"; },
-  contact: () => { printLink("@" + CONFIG.telegram + " — лично", "https://t.me/" + CONFIG.telegram); printLink("@" + CONFIG.team + " — проект", "https://t.me/" + CONFIG.team); return null; },
+  contact: () => {
+    printLink("@" + CONFIG.telegram + " — лично", "https://t.me/" + CONFIG.telegram);
+    printLink("@" + CONFIG.manager + " — менеджер, по вопросам", "https://t.me/" + CONFIG.manager);
+    printLink("@" + CONFIG.team + " — проект", "https://t.me/" + CONFIG.team);
+    printLink("отзывы", CONFIG.reviews);
+    return null;
+  },
+  manager: () => { warpTo("https://t.me/" + CONFIG.manager); return "Соединяюсь с менеджером @" + CONFIG.manager + " ..."; },
+  reviews: () => { warpTo(CONFIG.reviews, "отзывы"); return "Открываю отзывы ★"; },
+  dev: () => { toggleDev(); return "DEV MODE: " + (document.body.classList.contains("devmode") ? "on" : "off"); },
   ls: () => "about.md  skills.db  portfolio/  ghours/  secret.txt",
   "ls -a": () => ".  ..  .hidden  about.md  skills.db  portfolio/  ghours/  secret.txt",
   "cat secret.txt": () => "Подсказка: попробуй 'sudo hire nalpax' 😏",
@@ -1365,6 +1384,171 @@ $$(".window, .skill, .stat, .work-face, .eye-readout div").forEach((el) => el.cl
     });
     if (!reduceMotion) requestAnimationFrame(frame);
   })();
+})();
+
+/* =========================================================
+   ОТЗЫВЫ: живой чат-скелетон и всплывающие звёзды
+   ========================================================= */
+$("#bubbles").innerHTML = Array.from({ length: 22 }, () =>
+  `<i style="left:${rand(0, 100)}%;font-size:${rand(14, 34) | 0}px;animation-duration:${rand(9, 20)}s;animation-delay:${-rand(0, 20)}s">${["★", "✦", "❝", "✉", "♥"][(Math.random() * 5) | 0]}</i>`).join("");
+(() => {
+  const body = $("#chat-body");
+  let me = false, running = false;
+  async function loop() {
+    while (running) {
+      const m = document.createElement("div");
+      m.className = "msg" + (me ? " me" : "");
+      const bars = Array.from({ length: (rand(1, 4) | 0) }, () => `<i style="width:${rand(45, 100) | 0}%"></i>`).join("");
+      m.innerHTML = (me ? "" : '<span class="stars-row">★★★★★</span>') + bars;
+      body.appendChild(m);
+      while (body.children.length > 4) body.firstElementChild.remove();
+      me = !me;
+      await sleep(rand(1400, 2400));
+    }
+  }
+  new IntersectionObserver(([e]) => {
+    const was = running;
+    running = e.isIntersecting && !reduceMotion;
+    if (running && !was) loop();
+  }).observe(body);
+})();
+
+/* =========================================================
+   КОМАНДНАЯ ПАЛИТРА (Ctrl+K или /)
+   ========================================================= */
+const ACTIONS = [
+  ...$$("[data-sector]").filter((s) => s.id).map((s) => ({ icon: "#", name: "Перейти: " + s.id, hint: "раздел", run: () => s.scrollIntoView() })),
+  { icon: "✈", name: "Написать @nalpax", hint: "telegram", run: () => warpTo("https://t.me/" + CONFIG.telegram) },
+  { icon: "✉", name: "Менеджер @ceojobb — по вопросам", hint: "telegram", run: () => warpTo("https://t.me/" + CONFIG.manager) },
+  { icon: "★", name: "Отзывы", hint: "telegram", run: () => warpTo(CONFIG.reviews, "отзывы") },
+  { icon: "👻", name: "GHOURS TEAM", hint: "telegram", run: () => warpTo("https://t.me/" + CONFIG.team) },
+  { icon: "</>", name: "DEV MODE — показать разметку", hint: "toggle", run: () => toggleDev() },
+  { icon: "♪", name: "Звук вкл/выкл", hint: "toggle", run: () => $("#sound-btn").click() },
+  { icon: "▦", name: "Сменить цвет Матрицы", hint: "fx", run: () => COMMANDS.matrix() },
+  { icon: "💊", name: "Red pill / Blue pill", hint: "fx", run: () => (document.body.classList.contains("red-pill") ? COMMANDS["blue pill"]() : COMMANDS["red pill"]()) },
+  { icon: "👁", name: "Моргнуть глазом", hint: "fx", run: () => { $("#eye").scrollIntoView(); setTimeout(eye.blink, 600); } },
+  { icon: ">_", name: "Открыть терминал", hint: "раздел", run: () => { $("#terminal").scrollIntoView(); setTimeout(() => $("#term-in").focus({ preventScroll: true }), 700); } },
+];
+(() => {
+  const pal = $("#palette"), inp = $("#pal-in"), list = $("#pal-list");
+  let items = [], sel = 0;
+  const esc = (t) => t.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  function draw() {
+    const q = inp.value.trim().toLowerCase();
+    items = ACTIONS.filter((a) => !q || a.name.toLowerCase().includes(q) || a.hint.includes(q));
+    sel = Math.min(sel, Math.max(items.length - 1, 0));
+    list.innerHTML = items.length ? items.map((a, i) => {
+      let name = esc(a.name);
+      if (q) { const k = a.name.toLowerCase().indexOf(q); if (k >= 0) name = esc(a.name.slice(0, k)) + "<mark>" + esc(a.name.slice(k, k + q.length)) + "</mark>" + esc(a.name.slice(k + q.length)); }
+      return `<li role="option" data-i="${i}" class="${i === sel ? "sel" : ""}" aria-selected="${i === sel}"><span class="pi">${esc(a.icon)}</span>${name}<small>${a.hint}</small></li>`;
+    }).join("") : '<li class="empty">ничего не найдено — попробуй «отзывы» или «dev»</li>';
+    list.querySelector(".sel")?.scrollIntoView({ block: "nearest" });
+  }
+  window.openPalette = () => { pal.hidden = false; inp.value = ""; sel = 0; draw(); inp.focus(); beep(900, 0.04); };
+  const close = () => { pal.hidden = true; inp.blur(); };
+  function exec(i) { const a = items[i]; if (!a) return; close(); a.run(); }
+  inp.addEventListener("input", () => { sel = 0; draw(); });
+  inp.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") { sel = (sel + 1) % Math.max(items.length, 1); draw(); e.preventDefault(); }
+    else if (e.key === "ArrowUp") { sel = (sel - 1 + items.length) % Math.max(items.length, 1); draw(); e.preventDefault(); }
+    else if (e.key === "Enter") exec(sel);
+    else if (e.key === "Escape") close();
+  });
+  list.addEventListener("click", (e) => { const li = e.target.closest("li[data-i]"); if (li) exec(+li.dataset.i); });
+  list.addEventListener("mousemove", (e) => { const li = e.target.closest("li[data-i]"); if (li && +li.dataset.i !== sel) { sel = +li.dataset.i; draw(); } });
+  pal.addEventListener("click", (e) => { if (e.target === pal) close(); });
+  $("#palette-btn").addEventListener("click", openPalette);
+  addEventListener("keydown", (e) => {
+    const typing = /INPUT|TEXTAREA/.test(document.activeElement?.tagName);
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k" || (e.key === "/" && !typing && pal.hidden)) {
+      e.preventDefault();
+      pal.hidden ? openPalette() : close();
+    }
+  });
+})();
+
+/* =========================================================
+   DEV MODE: сайт глазами разработчика
+   ========================================================= */
+function toggleDev() {
+  const on = document.body.classList.toggle("devmode");
+  $("#dev-btn").setAttribute("aria-pressed", on);
+  say(on ? "DEV MODE: наведи на любой блок — увидишь тег и размер" : "DEV MODE выключен");
+  beep(on ? 1100 : 400, 0.06);
+}
+$("#dev-btn").addEventListener("click", toggleDev);
+(() => {
+  const tip = $("#dev-tip");
+  let hovered = null, frames = 0, lastT = performance.now();
+  document.addEventListener("mousemove", (e) => {
+    if (!document.body.classList.contains("devmode")) return;
+    const el = e.target.closest("main *");
+    if (hovered && hovered !== el) hovered.classList.remove("dev-hover");
+    hovered = el;
+    if (!el) { tip.style.display = "none"; return; }
+    el.classList.add("dev-hover");
+    const r = el.getBoundingClientRect();
+    const cls = [...el.classList].filter((c) => c !== "dev-hover" && c !== "spot").slice(0, 2).map((c) => "." + c).join("");
+    tip.style.display = "block";
+    tip.innerHTML = `<b>${el.tagName.toLowerCase()}</b>${el.id ? "#" + el.id : ""}<i>${cls}</i> · ${r.width | 0}×${r.height | 0}`;
+    tip.style.left = Math.min(e.clientX + 16, innerWidth - tip.offsetWidth - 8) + "px";
+    tip.style.top = e.clientY + 18 + "px";
+  });
+  (function fps(t) {
+    frames++;
+    if (t - lastT > 500) {
+      if (document.body.classList.contains("devmode")) {
+        $("#dev-fps").textContent = Math.round((frames * 1000) / (t - lastT));
+        $("#dev-nodes").textContent = document.getElementsByTagName("*").length;
+        $("#dev-vp").textContent = innerWidth + "×" + innerHeight;
+      }
+      frames = 0; lastT = t;
+    }
+    requestAnimationFrame(fps);
+  })(lastT);
+})();
+
+/* =========================================================
+   Пасхалки: Konami code, заголовок вкладки, консоль, фавиконка
+   ========================================================= */
+(() => {
+  const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+  let pos = 0;
+  addEventListener("keydown", (e) => {
+    pos = e.key.toLowerCase() === KONAMI[pos].toLowerCase() ? pos + 1 : e.key === KONAMI[0] ? 1 : 0;
+    if (pos < KONAMI.length) return;
+    pos = 0;
+    document.body.classList.add("god");
+    matrix.color = "#ffffff";
+    say("GOD MODE активирован ⚡ ты знаешь Konami code!");
+    for (let i = 0; i < 60; i++) setTimeout(() => spawnBit(rand(0, innerWidth), rand(0, innerHeight), ["#00ff6a", "#00e5ff", "#ff3df2", "#ffd23f"][i % 4]), i * 30);
+    setTimeout(() => { document.body.classList.remove("god"); matrix.color = "#00ff6a"; }, 6000);
+  });
+
+  const title = document.title;
+  document.addEventListener("visibilitychange", () => {
+    document.title = document.hidden ? "ERROR 404: user not found 👀" : "ACCESS GRANTED ✔";
+    if (!document.hidden) setTimeout(() => (document.title = title), 1500);
+  });
+
+  console.log("%c" + ASCII_LOGO, "color:#00ff6a;font-family:monospace;font-size:10px;text-shadow:0 0 6px #00ff6a");
+  console.log("%cЛюбишь смотреть исходники? Уважаю.%c\nНужен такой сайт — пиши: https://t.me/nalpax · по вопросам: https://t.me/ceojobb",
+    "color:#00e5ff;font-size:14px;font-weight:bold", "color:#c4ffd9");
+
+  // фавиконка с мигающим курсором
+  const c = document.createElement("canvas");
+  c.width = c.height = 32;
+  const x = c.getContext("2d");
+  let on = true;
+  function fav() {
+    x.fillStyle = "#020604"; x.fillRect(0, 0, 32, 32);
+    x.fillStyle = "#00ff6a"; x.font = "bold 22px monospace"; x.fillText("N", 3, 23);
+    if (on) x.fillRect(19, 22, 10, 4);
+    $("#favicon").href = c.toDataURL();
+    on = !on;
+  }
+  fav();
+  setInterval(fav, 600);
 })();
 
 /* ---------- Старт ---------- */

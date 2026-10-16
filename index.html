@@ -7,6 +7,7 @@
 <meta name="description" content="nalpax — портфолио в хакерском стиле">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Unbounded:wght@700;900&display=swap" rel="stylesheet">
+<link rel="icon" id="favicon" href="data:,">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -56,9 +57,14 @@
     <a href="#projects" data-n="04" data-label="team">team</a>
     <a href="#terminal" data-n="05" data-label="terminal">terminal</a>
     <a href="#portfolio" data-n="06" data-label="portfolio">portfolio</a>
-    <a href="#contact" data-n="07" data-label="contact">contact</a>
+    <a href="#reviews" data-n="07" data-label="reviews">reviews</a>
+    <a href="#contact" data-n="08" data-label="contact">contact</a>
   </div>
-  <a class="nav-cta" href="https://t.me/nalpax" data-cursor="TG">@nalpax</a>
+  <div class="nav-tools">
+    <button type="button" class="nav-tool" id="palette-btn" data-cursor="⌘K" aria-label="Командная палитра"><kbd>⌘K</kbd></button>
+    <button type="button" class="nav-tool" id="dev-btn" data-cursor="DEV" aria-label="Режим разработчика" aria-pressed="false">&lt;/&gt;</button>
+    <a class="nav-cta" href="https://t.me/nalpax" data-cursor="TG">@nalpax</a>
+  </div>
 </nav>
 
 <main>
@@ -74,7 +80,7 @@
       </h1>
       <p class="hero-hint" id="hero-hint">[ наведи курсор, чтобы восстановить файл ]</p>
       <p class="role">&gt; <span id="typed"></span><span class="cursor-blink">█</span></p>
-      <p class="hero-sub">Создаю сайты, интерфейсы и цифровые штуки, которые хочется трогать. Основатель <a href="https://t.me/ghoursteam" class="tg-inline">GHOURS TEAM</a>. Пиши: <a href="https://t.me/nalpax" class="tg-inline">@nalpax</a></p>
+      <p class="hero-sub">Создаю сайты, интерфейсы и цифровые штуки, которые хочется трогать. Основатель <a href="https://t.me/ghoursteam" class="tg-inline">GHOURS TEAM</a>. Пиши: <a href="https://t.me/nalpax" class="tg-inline">@nalpax</a>. По вопросам — менеджер <a href="https://t.me/ceojobb" class="tg-inline">@ceojobb</a>. <a href="https://t.me/+IaY9WUZKbF03YzFi" class="tg-inline" data-warp="отзывы">Отзывы →</a></p>
       <div class="hero-actions">
         <a href="#portfolio" class="btn" data-cursor="GO">./portfolio.sh</a>
         <a href="https://t.me/nalpax" class="btn btn-ghost" data-cursor="TG">связаться ↗</a>
@@ -140,6 +146,7 @@
           <div class="window-body">
             <div class="mon-row"><span>USER</span><a class="accent tg-inline" href="https://t.me/nalpax">@nalpax</a></div>
             <div class="mon-row"><span>TEAM</span><a class="accent tg-inline" href="https://t.me/ghoursteam">@ghoursteam</a></div>
+            <div class="mon-row"><span>MANAGER</span><a class="accent tg-inline" href="https://t.me/ceojobb">@ceojobb</a></div>
             <div class="mon-row"><span>UPTIME</span><b id="uptime">00:00:00</b></div>
             <div class="mon-row"><span>CPU / creativity</span><b id="cpu-val">97%</b></div>
             <div class="bars" id="cpu-bars"></div>
@@ -212,12 +219,35 @@
     </div>
   </section>
 
-  <!-- ===== 07 Контакты ===== -->
-  <section id="contact" class="block block-radar" data-sector="08">
+  <!-- ===== 07 Отзывы ===== -->
+  <section id="reviews" class="block block-reviews" data-sector="08">
+    <div class="bubbles" id="bubbles" aria-hidden="true"></div>
+    <div class="container">
+      <header class="sec-head reveal"><span class="sec-num">07</span><h2 class="glitch" data-text="reviews.log">reviews.log</h2><span class="sec-line"></span></header>
+      <div class="reviews-card reveal">
+        <div class="chat" aria-hidden="true">
+          <div class="chat-head"><span class="chat-ava">★</span><div><b>Отзывы · nalpax</b><small id="chat-status">печатает<span class="typing"><i></i><i></i><i></i></span></small></div></div>
+          <div class="chat-body" id="chat-body"></div>
+        </div>
+        <div class="reviews-info">
+          <span class="badge">// verified feedback</span>
+          <h3>Что говорят<br>клиенты</h3>
+          <p>Все отзывы собраны в отдельном Telegram-канале — без фильтров и редактуры. Заходи, читай, а потом пиши мне.</p>
+          <div class="reviews-actions">
+            <a class="btn" href="https://t.me/+IaY9WUZKbF03YzFi" data-warp="отзывы" data-cursor="READ">читать отзывы ↗</a>
+            <a class="btn btn-ghost" href="https://t.me/ceojobb" data-cursor="TG">менеджер @ceojobb</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 08 Контакты ===== -->
+  <section id="contact" class="block block-radar" data-sector="09">
     <div class="stars" id="stars" aria-hidden="true"></div>
     <div class="radar" aria-hidden="true"><i></i><i></i><i></i><b class="sweep"></b><em class="blip b1"></em><em class="blip b2"></em></div>
     <div class="container">
-      <header class="sec-head reveal"><span class="sec-num">07</span><h2 class="glitch" data-text="establish_connection">establish_connection</h2><span class="sec-line"></span></header>
+      <header class="sec-head reveal"><span class="sec-num">08</span><h2 class="glitch" data-text="establish_connection">establish_connection</h2><span class="sec-line"></span></header>
       <p class="contact-lead reveal">Есть идея, проект или просто хочешь сказать «привет»? <br>Сигнал принимается круглосуточно.</p>
       <div class="contacts reveal">
         <a class="contact" href="https://t.me/nalpax" data-cursor="TG">
@@ -232,6 +262,18 @@
           <strong>@ghoursteam</strong>
           <span class="c-go">вступить →</span>
         </a>
+        <a class="contact contact-mgr" href="https://t.me/ceojobb" data-cursor="TG">
+          <span class="c-icon">✉</span>
+          <small>Telegram · по вопросам</small>
+          <strong>@ceojobb</strong>
+          <span class="c-go">менеджер →</span>
+        </a>
+        <a class="contact contact-rev" href="https://t.me/+IaY9WUZKbF03YzFi" data-warp="отзывы" data-cursor="READ">
+          <span class="c-icon">★</span>
+          <small>Telegram · отзывы</small>
+          <strong>reviews</strong>
+          <span class="c-go">читать →</span>
+        </a>
       </div>
     </div>
   </section>
@@ -239,8 +281,21 @@
 
 <footer>
   <pre class="footer-ascii" aria-hidden="true" id="footer-ascii"></pre>
-  <p>© <span id="year"></span> <a href="https://t.me/nalpax" class="tg-inline">@nalpax</a> · <a href="https://t.me/ghoursteam" class="tg-inline">@ghoursteam</a> · made with code &amp; coffee · <button id="sound-btn" type="button">sound: off</button></p>
+  <p>© <span id="year"></span> <a href="https://t.me/nalpax" class="tg-inline">@nalpax</a> · <a href="https://t.me/ghoursteam" class="tg-inline">@ghoursteam</a> · менеджер <a href="https://t.me/ceojobb" class="tg-inline">@ceojobb</a> · <a href="https://t.me/+IaY9WUZKbF03YzFi" class="tg-inline" data-warp="отзывы">отзывы</a> · made with code &amp; coffee · <button id="sound-btn" type="button">sound: off</button></p>
 </footer>
+
+<!-- ===== Командная палитра ===== -->
+<div id="palette" role="dialog" aria-modal="true" aria-label="Командная палитра" hidden>
+  <div class="pal-box">
+    <div class="pal-input"><span>&gt;</span><input id="pal-in" placeholder="Введи команду или раздел…" autocomplete="off" spellcheck="false" aria-label="Команда"><kbd>esc</kbd></div>
+    <ul id="pal-list" role="listbox"></ul>
+    <div class="pal-foot"><span><kbd>↑</kbd><kbd>↓</kbd> выбрать</span><span><kbd>enter</kbd> выполнить</span><span><kbd>ctrl</kbd>+<kbd>k</kbd> / <kbd>/</kbd> открыть</span></div>
+  </div>
+</div>
+
+<!-- ===== DEV MODE ===== -->
+<div id="dev-tip" aria-hidden="true"></div>
+<div id="dev-hud" aria-hidden="true"><b>DEV MODE</b> · <span id="dev-fps">60</span> fps · <span id="dev-nodes">0</span> nodes · <span id="dev-vp"></span></div>
 
 <!-- ===== Персонаж-хакер ===== -->
 <div class="mascot" id="mascot" data-cursor="?">
