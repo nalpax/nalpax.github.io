@@ -63,7 +63,11 @@ const CONFIG = {
   // Плеер: музыка, которую слушает nalpax.
   // url — ссылка на трек: Яндекс Музыка, Spotify, SoundCloud или свой mp3 (например "music/track.mp3")
   // пример: { title: "Название", artist: "Исполнитель", url: "https://music.yandex.ru/album/123/track/456" },
-  music: [],
+  music: [
+    { title: tr("Трек 01", "Track 01"), artist: "Яндекс Музыка", url: "https://music.yandex.ru/album/299902/track/2792346" },
+    { title: tr("Трек 02", "Track 02"), artist: "Яндекс Музыка", url: "https://music.yandex.ru/album/2746518/track/23746993" },
+    { title: tr("Трек 03", "Track 03"), artist: "Яндекс Музыка", url: "https://music.yandex.ru/album/5838264/track/68015705" },
+  ],
   tips: [
     tr("Привет! Я Байт — помощник nalpax 👾", "Hi! I’m Byte — nalpax’s assistant 👾"),
     tr("Наведи курсор на ERROR 404 — файл восстановится", "Hover over ERROR 404 — the file will restore"),
