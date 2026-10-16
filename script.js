@@ -12,7 +12,7 @@ const CONFIG = {
   stats: [
     { n: 6, suffix: "", label: "направлений в стеке" },
     { n: 24, suffix: "/7", label: "на связи в Telegram" },
-    { n: 1000, suffix: "+", label: "чашек кофе" },
+    { n: 1000, suffix: "+", label: "строк кода" },
     { n: 1, suffix: "", label: "своя команда — GHOURS" },
   ],
   skills: [
@@ -993,7 +993,7 @@ function render() {
   $("#mq2").innerHTML = mq + mq;
 
   $("#stats").innerHTML = CONFIG.stats.map((s) => `
-    <div class="stat"><b data-count="${s.n}" data-suffix="${s.suffix}">0</b><span>${s.label}</span></div>`).join("");
+    <div class="stat" data-cursor="DECODE"><b data-count="${s.n}" data-suffix="${s.suffix}">0</b><span>${s.label}</span><small class="stat-hint">${finePointer ? "▸ наведи — расшифрую" : "▸ нажми — расшифрую"}</small></div>`).join("");
 
   $("#skills-list").innerHTML = CONFIG.skills.map((s) => `
     <div class="skill">
@@ -1111,7 +1111,6 @@ const revealIO = new IntersectionObserver((entries) => {
     if (!e.isIntersecting) return;
     e.target.classList.add("visible");
     $$(".skill-fill", e.target).forEach((f) => (f.style.width = f.dataset.level + "%"));
-    $$("[data-count]", e.target).forEach(countUp);
     const h2 = $("h2.glitch", e.target);
     if (h2) glitchOnce(h2, 500);
     revealIO.unobserve(e.target);
@@ -1120,23 +1119,42 @@ const revealIO = new IntersectionObserver((entries) => {
 $$(".reveal, .skills-grid").forEach((s) => revealIO.observe(s));
 
 function countUp(el) {
+  const tok = (el._tok = (el._tok || 0) + 1);
   const target = +el.dataset.count, suffix = el.dataset.suffix;
   const fmt = new Intl.NumberFormat("ru-RU");
   let x = 0, v = 0, last = performance.now();
   (function tick(now) {
-    // пружина: stiffness 80, damping 60 — быстрый старт и мягкий доезд
-    const dt = Math.min((now - last) / 1000, 0.05);
+    // пружина: быстрый разгон и мягкий доезд без перелёта
+    const dt = Math.min((now - last) / 1000, 0.25);
     last = now;
-    for (let k = 0; k < 4; k++) {
-      const a = 80 * (target - x) - 60 * v;
-      v += a * (dt / 4);
-      x += v * (dt / 4);
+    const steps = Math.ceil(dt / 0.008);
+    for (let k = 0; k < steps; k++) {
+      const a = 170 * (target - x) - 26 * v;
+      v += a * (dt / steps);
+      x += v * (dt / steps);
     }
+    if (el._tok !== tok) return;
     el.textContent = fmt.format(Math.round(x)) + suffix;
     if (Math.abs(target - x) > 0.5 || Math.abs(v) > 0.5) requestAnimationFrame(tick);
     else el.textContent = fmt.format(target) + suffix;
   })(last);
 }
+
+/* Счётчики: пока курсор не наведён — быстро мелькает двоичный код, при наведении расшифровываются */
+$$(".stat").forEach((stat) => {
+  const b = $("b", stat);
+  const len = Math.max(4, (new Intl.NumberFormat("ru-RU").format(+b.dataset.count) + b.dataset.suffix).length);
+  let open = false, timer;
+  const binary = () => { if (!open) b.textContent = Array.from({ length: len }, () => (Math.random() > 0.5 ? 1 : 0)).join(""); };
+  b.classList.add("bin");
+  binary();
+  setInterval(binary, 70);
+  const show = () => { clearTimeout(timer); open = true; b.classList.remove("bin"); stat.classList.add("open"); countUp(b); beep(1000, 0.04); };
+  const hide = () => { timer = setTimeout(() => { open = false; b._tok++; b.classList.add("bin"); stat.classList.remove("open"); }, 350); };
+  stat.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") show(); });
+  stat.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") hide(); });
+  stat.addEventListener("click", (e) => { if (e.pointerType !== "mouse") (open ? hide : show)(); });
+});
 
 /* Системный монитор: график CPU и hex-дамп */
 (() => {

@@ -779,3 +779,9 @@ body.god main, body.god .nav { animation: godHue 1.2s linear infinite; }
   .nav-tool { min-width: 34px; padding: 0 6px; }
   .nav-cta { padding: 7px 10px; }
 }
+
+/* счётчики: двоичный шум до наведения */
+.stat { cursor: pointer; }
+.stat b.bin { color: var(--cyan); text-shadow: 0 0 14px rgba(0,229,255,.6); letter-spacing: .04em; opacity: .85; }
+.stat-hint { display: block; margin-top: 6px; font-size: 10px; color: var(--green-dim); letter-spacing: .08em; transition: opacity .3s; }
+.stat.open .stat-hint { opacity: 0; }
