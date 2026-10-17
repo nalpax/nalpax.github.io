@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sound Live Records — концепт сайта · nalpax</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Концепт-дизайн сайта для студии звукозаписи Sound Live Records (Ярославль). Неофициальный сайт, дизайн — nalpax.">
+<meta name="theme-color" content="#0b0706">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;800;900&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0706;
+  --bg-2: #140c0a;
+  --card: #1a100d;
+  --line: rgba(255, 170, 90, .14);
+  --text: #f6e9df;
+  --muted: #a8918a;
+  --amber: #ffae42;
+  --red: #ff3b30;
+  --hot: #ff6a2b;
+  --display: "Unbounded", system-ui, sans-serif;
+  --body: "Manrope", system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.6; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
+
+/* плашка «концепт» — всегда видна, чтобы сайт не путали с официальным */
+.concept {
+  position: sticky; top: 0; z-index: 50; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+  padding: 8px 16px; font-size: 12px; text-align: center; color: #1a0e08; background: var(--amber);
+}
+.concept b { font-weight: 800; }
+.concept a { text-decoration: underline; font-weight: 800; }
+
+/* шапка */
+.top { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; }
+.brand { display: flex; align-items: center; gap: 12px; font-family: var(--display); font-weight: 800; font-size: 15px; letter-spacing: .04em; }
+.onair {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 800; letter-spacing: .2em;
+  color: #fff; background: #3a0d09; border: 1px solid #5c1a12; transition: background .4s, box-shadow .4s;
+}
+.onair i { width: 8px; height: 8px; border-radius: 50%; background: #5c1a12; }
+.onair.live { background: var(--red); border-color: var(--red); box-shadow: 0 0 24px rgba(255, 59, 48, .7), 0 0 60px rgba(255, 59, 48, .35); }
+.onair.live i { background: #fff; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: .2; } }
+.nav { display: flex; gap: 26px; font-size: 14px; color: var(--muted); }
+.nav a:hover { color: var(--amber); }
+
+/* главный экран */
+.hero { position: relative; min-height: calc(100vh - 110px); display: grid; align-content: center; padding: 40px 0 80px; }
+#wave { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(ellipse at 70% 40%, rgba(255, 106, 43, .18), transparent 55%), linear-gradient(to bottom, transparent 70%, var(--bg)); }
+.hero-in { position: relative; z-index: 1; }
+.kicker { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: var(--amber); letter-spacing: .2em; text-transform: uppercase; }
+.kicker::before { content: ""; width: 34px; height: 1px; background: var(--amber); }
+h1 { font-family: var(--display); font-weight: 900; font-size: clamp(44px, 9vw, 120px); line-height: .92; letter-spacing: -.03em; margin: 18px 0 22px; }
+h1 span { display: block; color: transparent; -webkit-text-stroke: 2px var(--amber); }
+.lead { max-width: 560px; font-size: clamp(16px, 2vw, 20px); color: #e5d2c6; }
+.cta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 34px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px; padding: 16px 28px; border-radius: 999px; font-weight: 800; font-size: 15px;
+  background: linear-gradient(135deg, var(--hot), var(--red)); color: #fff; box-shadow: 0 10px 40px rgba(255, 59, 48, .35); transition: transform .2s, box-shadow .2s;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 14px 50px rgba(255, 59, 48, .5); }
+.btn.ghost { background: transparent; border: 1px solid var(--line); box-shadow: none; color: var(--text); }
+.btn.ghost:hover { border-color: var(--amber); color: var(--amber); }
+.facts { display: flex; gap: 40px; flex-wrap: wrap; margin-top: 54px; font-size: 13px; color: var(--muted); }
+.facts b { display: block; font-family: var(--display); font-size: 22px; color: var(--text); }
+
+/* бегущая строка */
+.ticker { overflow: hidden; border-block: 1px solid var(--line); background: var(--bg-2); }
+.ticker div { display: inline-block; white-space: nowrap; padding: 16px 0; font-family: var(--display); font-size: clamp(16px, 2.4vw, 24px); animation: run 30s linear infinite; }
+.ticker span { margin: 0 26px; }
+.ticker em { font-style: normal; color: var(--amber); }
+@keyframes run { to { transform: translateX(-50%); } }
+
+/* секции */
+section.block { padding: 110px 0; }
+.sec-title { font-family: var(--display); font-weight: 800; font-size: clamp(30px, 5vw, 56px); line-height: 1.05; margin-bottom: 14px; }
+.sec-title em { font-style: normal; color: var(--amber); }
+.sec-sub { color: var(--muted); max-width: 560px; margin-bottom: 50px; }
+
+/* услуги */
+.services { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+.svc {
+  position: relative; padding: 28px; border-radius: 22px; background: var(--card); border: 1px solid var(--line); overflow: hidden;
+  transition: transform .3s, border-color .3s;
+}
+.svc::after { content: ""; position: absolute; inset: auto -40% -60% auto; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(rgba(255, 106, 43, .25), transparent 70%); opacity: 0; transition: opacity .4s; }
+.svc:hover { transform: translateY(-6px); border-color: rgba(255, 174, 66, .5); }
+.svc:hover::after { opacity: 1; }
+.svc .ico { font-size: 28px; }
+.svc h3 { font-family: var(--display); font-size: 19px; margin: 16px 0 8px; }
+.svc p { color: var(--muted); font-size: 14px; }
+.svc .price { display: inline-block; margin-top: 16px; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 800; color: var(--amber); background: rgba(255, 174, 66, .1); }
+
+/* микшер */
+.mixer-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.mixer { display: flex; justify-content: space-between; gap: 10px; padding: 26px 22px; border-radius: 26px; background: linear-gradient(180deg, #1f1410, #120b09); border: 1px solid var(--line); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04), 0 30px 80px rgba(0, 0, 0, .5); }
+.ch { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.meter { width: 10px; height: 160px; border-radius: 6px; background: #0b0605; position: relative; overflow: hidden; }
+.meter i { position: absolute; left: 0; right: 0; bottom: 0; height: 30%; background: linear-gradient(to top, #2ecc71 0 60%, var(--amber) 60% 85%, var(--red) 85%); transition: height .08s; }
+.ch input[type="range"] { writing-mode: vertical-lr; direction: rtl; width: 34px; height: 150px; appearance: none; -webkit-appearance: none; background: none; cursor: grab; }
+.ch input[type="range"]::-webkit-slider-runnable-track { width: 4px; background: #2a1a14; border-radius: 2px; }
+.ch input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 32px; height: 16px; border-radius: 4px; background: linear-gradient(#ddd, #888); box-shadow: 0 4px 10px rgba(0, 0, 0, .6); margin-left: -14px; }
+.ch input[type="range"]::-moz-range-track { width: 4px; background: #2a1a14; }
+.ch input[type="range"]::-moz-range-thumb { width: 32px; height: 16px; border-radius: 4px; background: linear-gradient(#ddd, #888); border: 0; }
+.ch label { font-size: 11px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+
+/* тарифы */
+.plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.plan { padding: 34px 28px; border-radius: 26px; background: var(--card); border: 1px solid var(--line); display: flex; flex-direction: column; }
+.plan.top-plan { background: linear-gradient(160deg, #3a160c, #1a0d09); border-color: var(--hot); box-shadow: 0 20px 70px rgba(255, 106, 43, .2); position: relative; }
+.plan.top-plan::before { content: "хит"; position: absolute; top: -12px; right: 24px; padding: 3px 12px; border-radius: 999px; font-size: 11px; font-weight: 800; text-transform: uppercase; background: var(--hot); color: #fff; }
+.plan h3 { font-family: var(--display); font-size: 20px; }
+.plan .sum { font-family: var(--display); font-weight: 900; font-size: 40px; margin: 18px 0 6px; }
+.plan .sum small { font-size: 18px; color: var(--muted); }
+.plan p { color: var(--muted); font-size: 14px; flex: 1; }
+.plan .btn { margin-top: 26px; justify-content: center; }
+.note { margin-top: 18px; font-size: 13px; color: var(--muted); }
+
+/* как работаем */
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; counter-reset: s; }
+.step { padding: 26px; border-top: 2px solid var(--line); counter-increment: s; transition: border-color .3s; }
+.step:hover { border-color: var(--amber); }
+.step::before { content: "0" counter(s); font-family: var(--display); font-weight: 900; font-size: 42px; color: transparent; -webkit-text-stroke: 1px var(--amber); }
+.step h3 { font-family: var(--display); font-size: 17px; margin: 10px 0 6px; }
+.step p { font-size: 14px; color: var(--muted); }
+
+/* контакты */
+.contact { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; padding: clamp(28px, 5vw, 60px); border-radius: 32px; background: radial-gradient(ellipse at 0% 0%, rgba(255, 106, 43, .25), transparent 60%), var(--card); border: 1px solid var(--line); }
+.contact h2 { font-family: var(--display); font-weight: 900; font-size: clamp(30px, 5vw, 58px); line-height: 1; }
+.contact h2 em { font-style: normal; color: var(--amber); }
+.c-list { display: grid; gap: 14px; align-content: center; }
+.c-item { display: flex; gap: 14px; align-items: center; padding: 16px 18px; border-radius: 18px; background: rgba(0, 0, 0, .25); border: 1px solid var(--line); transition: border-color .2s; }
+.c-item:hover { border-color: var(--amber); }
+.c-item b { display: block; font-size: 16px; }
+.c-item small { color: var(--muted); font-size: 12px; }
+.c-item .ci { font-size: 22px; width: 32px; text-align: center; }
+
+footer { padding: 50px 0 70px; text-align: center; color: var(--muted); font-size: 13px; }
+footer a { color: var(--amber); text-decoration: underline; }
+
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s, transform .8s; }
+.reveal.in { opacity: 1; transform: none; }
+
+@media (max-width: 900px) {
+  .nav { display: none; }
+  .mixer-wrap, .contact { grid-template-columns: 1fr; }
+  .plans { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 520px) {
+  .steps { grid-template-columns: 1fr; }
+  .facts { gap: 24px; }
+  .meter { height: 120px; }
+  .ch input[type="range"] { height: 110px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="concept" role="note">
+  <span><b>Концепт</b> — это не официальный сайт Sound Live Records.</span>
+  <span>Дизайн и разработка: <a href="https://t.me/nalpax" target="_blank" rel="noopener">@nalpax</a></span>
+</div>
+
+<div class="wrap">
+  <header class="top">
+    <a href="#" class="brand"><span class="onair" id="onair"><i></i>ON AIR</span> SOUND LIVE</a>
+    <nav class="nav">
+      <a href="#services">Услуги</a>
+      <a href="#mixer">Микшер</a>
+      <a href="#plans">Тарифы</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+  </header>
+</div>
+
+<section class="hero">
+  <canvas id="wave" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <p class="kicker">Студия звукозаписи · Ярославль</p>
+    <h1>SOUND LIVE<span>RECORDS</span></h1>
+    <p class="lead">Запись вокала, сведение, мастеринг и написание песен. Приходи с идеей — уходи с готовым треком.</p>
+    <div class="cta">
+      <a class="btn" href="tel:+79610214876">● Записаться на сессию</a>
+      <a class="btn ghost" href="#plans">Тарифы и цены</a>
+    </div>
+    <div class="facts">
+      <div><b>от 2 500 ₽</b>сведение трека</div>
+      <div><b>5 000 ₽</b>написание песни</div>
+      <div><b>10:00–23:00</b>ежедневно*</div>
+    </div>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true"><div id="ticker"></div></div>
+
+<section class="block" id="services">
+  <div class="wrap">
+    <h2 class="sec-title reveal">Что мы <em>делаем</em></h2>
+    <p class="sec-sub reveal">Полный цикл: от первой строчки текста до трека, который не стыдно выпустить на площадки.</p>
+    <div class="services">
+      <article class="svc reveal"><span class="ico">🎙️</span><h3>Запись вокала</h3><p>Запись голоса в студии, помощь с подачей и дублями.</p></article>
+      <article class="svc reveal"><span class="ico">🎚️</span><h3>Тюнинг вокала</h3><p>Аккуратная коррекция высоты и тайминга — звучит ровно, но живо.</p></article>
+      <article class="svc reveal"><span class="ico">🎛️</span><h3>Сведение</h3><p>Баланс, эффекты, пространство: собираем все дорожки в цельный трек.</p><span class="price">от 2 500 ₽</span></article>
+      <article class="svc reveal"><span class="ico">💿</span><h3>Мастеринг</h3><p>Финальная громкость и окраска, чтобы трек звучал на любых колонках.</p></article>
+      <article class="svc reveal"><span class="ico">✍️</span><h3>Написание песни</h3><p>Текст и музыка под твою идею, стиль и голос.</p><span class="price">5 000 ₽</span></article>
+      <article class="svc reveal"><span class="ico">🎬</span><h3>Клипы и дизайн</h3><p>Видео и обложка для релиза — чтобы трек заметили.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="mixer" style="background: var(--bg-2)">
+  <div class="wrap mixer-wrap">
+    <div class="reveal">
+      <h2 class="sec-title">Попробуй <em>свести</em> сам</h2>
+      <p class="sec-sub">Подвигай фейдеры — волна на главном экране отзовётся. А настоящее сведение оставь нам 😉</p>
+      <a class="btn" href="tel:+79610214876">Записаться</a>
+    </div>
+    <div class="mixer reveal" id="mixer-board">
+      <div class="ch"><div class="meter"><i></i></div><input type="range" min="0" max="100" value="70" aria-label="Вокал"><label>Vocal</label></div>
+      <div class="ch"><div class="meter"><i></i></div><input type="range" min="0" max="100" value="55" aria-label="Бас"><label>Bass</label></div>
+      <div class="ch"><div class="meter"><i></i></div><input type="range" min="0" max="100" value="60" aria-label="Барабаны"><label>Drums</label></div>
+      <div class="ch"><div class="meter"><i></i></div><input type="range" min="0" max="100" value="40" aria-label="Синтезатор"><label>Synth</label></div>
+      <div class="ch"><div class="meter"><i></i></div><input type="range" min="0" max="100" value="80" aria-label="Мастер"><label>Master</label></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="plans">
+  <div class="wrap">
+    <h2 class="sec-title reveal">Тарифы</h2>
+    <p class="sec-sub reveal">Выбери формат — от одного трека до большого релиза.</p>
+    <div class="plans">
+      <div class="plan reveal"><h3>Стандартный</h3><div class="sum">8 490 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><a class="btn ghost" href="tel:+79610214876">Выбрать</a></div>
+      <div class="plan top-plan reveal"><h3>Расширенный</h3><div class="sum">24 990 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><a class="btn" href="tel:+79610214876">Выбрать</a></div>
+      <div class="plan reveal"><h3>Премиальный</h3><div class="sum">38 490 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><a class="btn ghost" href="tel:+79610214876">Выбрать</a></div>
+    </div>
+    <p class="note reveal">* Цены и график взяты из открытых каталогов и могут быть неактуальны — это демонстрационный концепт.</p>
+  </div>
+</section>
+
+<section class="block" style="background: var(--bg-2)">
+  <div class="wrap">
+    <h2 class="sec-title reveal">Как мы <em>работаем</em></h2>
+    <p class="sec-sub reveal">Четыре шага от идеи до релиза.</p>
+    <div class="steps">
+      <div class="step reveal"><h3>Заявка</h3><p>Звонишь или пишешь, обсуждаем идею и выбираем время.</p></div>
+      <div class="step reveal"><h3>Запись</h3><p>Приходишь в студию и записываем вокал и инструменты.</p></div>
+      <div class="step reveal"><h3>Сведение</h3><p>Собираем дорожки, правим, согласуем с тобой.</p></div>
+      <div class="step reveal"><h3>Релиз</h3><p>Мастеринг — и трек готов к выпуску на площадки.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="contacts">
+  <div class="wrap">
+    <div class="contact reveal">
+      <h2>Готов<br>к <em>записи?</em></h2>
+      <div class="c-list">
+        <a class="c-item" href="tel:+79610214876"><span class="ci">📞</span><span><b>+7 961 021-48-76</b><small>позвонить и записаться</small></span></a>
+        <a class="c-item" href="https://yandex.ru/maps/?text=%D0%AF%D1%80%D0%BE%D1%81%D0%BB%D0%B0%D0%B2%D0%BB%D1%8C%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%90%D0%BA%D0%B0%D0%B4%D0%B5%D0%BC%D0%B8%D0%BA%D0%B0%20%D0%9A%D0%BE%D0%BB%D0%BC%D0%BE%D0%B3%D0%BE%D1%80%D0%BE%D0%B2%D0%B0%2C%2024%D0%BA2" target="_blank" rel="noopener"><span class="ci">📍</span><span><b>ул. Академика Колмогорова, 24 к2</b><small>Ярославль · открыть на карте</small></span></a>
+        <div class="c-item"><span class="ci">🕙</span><span><b>Ежедневно 10:00–23:00</b><small>по данным каталогов, уточняйте по телефону</small></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Концепт сайта для Sound Live Records · неофициальный · дизайн и разработка <a href="https://t.me/nalpax" target="_blank" rel="noopener">@nalpax</a> · <a href="https://nalpax.github.io" target="_blank" rel="noopener">nalpax.github.io</a>
+</footer>
+
+<script>
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const lite = matchMedia("(pointer: coarse)").matches || innerWidth < 760;
+
+// бегущая строка
+const words = ["ЗАПИСЬ ВОКАЛА", "СВЕДЕНИЕ", "МАСТЕРИНГ", "НАПИСАНИЕ ПЕСЕН", "КЛИПЫ", "ДИЗАЙН ОБЛОЖЕК", "ЯРОСЛАВЛЬ"];
+const row = words.map((w) => `<span>${w}</span><em>✦</em>`).join("");
+document.getElementById("ticker").innerHTML = row + row;
+
+// фейдеры микшера управляют волной на главном экране
+const faders = [...document.querySelectorAll(".ch input")];
+const meters = [...document.querySelectorAll(".meter i")];
+const mix = () => faders.map((f) => f.value / 100);
+
+// живая звуковая волна: реагирует на курсор/палец и на микшер
+const canvas = document.getElementById("wave");
+const ctx = canvas.getContext("2d");
+let W, H, mx = 0.5, my = 0.5, energy = 0.4;
+function size() {
+  const dpr = Math.min(devicePixelRatio || 1, lite ? 1 : 2);
+  W = canvas.clientWidth; H = canvas.clientHeight;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+size();
+addEventListener("resize", size);
+addEventListener("pointermove", (e) => { mx = e.clientX / innerWidth; my = e.clientY / innerHeight; energy = Math.min(1, energy + 0.05); });
+
+const LINES = lite ? 3 : 5;
+const COLORS = ["255,174,66", "255,106,43", "255,59,48", "255,200,140", "255,140,60"];
+let running = true;
+new IntersectionObserver(([e]) => { running = e.isIntersecting; if (running) requestAnimationFrame(draw); }).observe(canvas);
+function draw(t) {
+  if (!running) return;
+  const m = mix();
+  energy += (0.25 + m[4] * 0.35 - energy) * 0.02;
+  ctx.clearRect(0, 0, W, H);
+  for (let l = 0; l < LINES; l++) {
+    const amp = H * 0.12 * (0.4 + m[l % 4] * 1.2) * (0.5 + energy);
+    ctx.beginPath();
+    for (let x = 0; x <= W; x += lite ? 8 : 4) {
+      const k = x / W;
+      const focus = Math.exp(-((k - mx) ** 2) / 0.04);
+      const y = H * (0.45 + (my - 0.5) * 0.15) +
+        Math.sin(k * (8 + l * 3) + t / (700 - l * 90)) * amp * (0.35 + focus) +
+        Math.sin(k * 23 + t / 300 + l) * amp * 0.15;
+      x ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.strokeStyle = `rgba(${COLORS[l]},${0.55 - l * 0.08})`;
+    ctx.lineWidth = l === 0 ? 2.5 : 1.2;
+    if (!lite) { ctx.shadowColor = `rgb(${COLORS[l]})`; ctx.shadowBlur = l === 0 ? 18 : 0; }
+    ctx.stroke();
+  }
+  ctx.shadowBlur = 0;
+  if (!reduce) requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+// индикаторы уровня на микшере «пляшут» в такт
+setInterval(() => {
+  const m = mix();
+  meters.forEach((el, i) => (el.style.height = Math.max(4, m[i] * 100 * (0.55 + Math.random() * 0.45)) + "%"));
+}, 90);
+
+// табличка ON AIR загорается, когда двигаешь фейдер или наводишь на кнопку записи
+const onair = document.getElementById("onair");
+let offTimer;
+function light() { onair.classList.add("live"); clearTimeout(offTimer); offTimer = setTimeout(() => onair.classList.remove("live"), 1800); }
+faders.forEach((f) => f.addEventListener("input", light));
+document.querySelectorAll(".btn").forEach((b) => b.addEventListener("pointerenter", light));
+setTimeout(light, 600);
+
+// появление блоков при прокрутке
+const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { threshold: 0.15 });
+document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+</script>
+</body>
+</html>
