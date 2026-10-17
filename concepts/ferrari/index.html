@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ferrari — фан-концепт · nalpax</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Фан-концепт сайта Ferrari для портфолио: 3D-модели, анатомия 812 Superfast, конфигуратор. Неофициальный сайт, дизайн и разработка — nalpax.">
+<meta name="theme-color" content="#09090a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%23d40000%22/%3E%3Cpath d=%22M9 24 13 8h11l-1 4h-7l-1 3h6l-1 4h-6l-1 5z%22 fill=%22%23fff%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
+<link rel="modulepreload" href="vendor/three.module.min.js">
+<style>
+:root {
+  --ink: #09090a;
+  --ink-2: #111113;
+  --ink-3: #18181b;
+  --paper: #f3f0ea;
+  --mute: #8f8b86;
+  --line: rgba(243, 240, 234, .09);
+  --rosso: #d40000;
+  --rosso-hi: #ff2a1a;
+  --rosso-deep: #6e0000;
+  --giallo: #ffd400;
+  --display: "Oswald", "Arial Narrow", sans-serif;
+  --body: "Inter Tight", system-ui, sans-serif;
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { overflow-x: clip; scroll-behavior: smooth; }
+body { background: var(--ink); color: var(--paper); font-family: var(--body); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+::selection { background: var(--rosso); color: #fff; }
+.wrap { position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; padding: 0 clamp(18px, 4vw, 48px); }
+.it { font-family: var(--serif); font-style: italic; font-weight: 500; text-transform: none; letter-spacing: 0; }
+
+/* ============ стартовые огни ============ */
+.lights { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; }
+.lights .half { position: absolute; inset: 0; background: #050506; transition: transform 1.1s cubic-bezier(.77, 0, .18, 1); }
+.lights .half.a { clip-path: polygon(0 0, 62% 0, 38% 100%, 0 100%); }
+.lights .half.b { clip-path: polygon(62% 0, 100% 0, 100% 100%, 38% 100%); }
+.lights.go .half.a { transform: translateX(-75%); }
+.lights.go .half.b { transform: translateX(75%); }
+.lights .gantry { position: relative; z-index: 1; display: flex; gap: clamp(8px, 2vw, 18px); padding: 16px clamp(12px, 3vw, 22px); border-radius: 10px; background: #0f0f11; box-shadow: 0 0 0 1px #1d1d20, 0 30px 80px #000; transition: opacity .4s, transform .6s var(--ease); }
+.lights.go .gantry, .lights.go .l-cap { opacity: 0; transform: scale(.9); }
+.pod { display: grid; gap: 8px; padding: 8px; border-radius: 8px; background: #060607; }
+.pod i { width: clamp(26px, 6vw, 44px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #2a0505, #120202 70%); box-shadow: inset 0 0 0 2px #000; transition: background .08s, box-shadow .08s; }
+.pod.on i { background: radial-gradient(circle at 40% 35%, #ff8a7a, #ff1a0a 40%, #a00000 75%); box-shadow: 0 0 22px #ff1a0a, 0 0 60px rgba(255, 26, 10, .5); }
+.l-cap { position: absolute; z-index: 1; bottom: 16vh; left: 0; right: 0; text-align: center; font-family: var(--display); font-size: 13px; letter-spacing: .5em; color: var(--mute); transition: opacity .4s; }
+.l-cap b { color: var(--paper); font-weight: 500; }
+.l-skip { position: absolute; z-index: 2; right: 22px; bottom: calc(22px + var(--safe-b)); font-size: 11px; letter-spacing: .3em; color: var(--mute); text-transform: uppercase; }
+body.intro { overflow: hidden; }
+
+/* ============ курсор-спидометр и след стоп-сигналов ============ */
+#streak { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 140; pointer-events: none; display: none; }
+.cur { position: fixed; left: 0; top: 0; z-index: 141; width: 46px; height: 46px; margin: -23px 0 0 -23px; pointer-events: none; display: none; transition: width .35s var(--ease), height .35s var(--ease), margin .35s var(--ease); }
+.cur svg { width: 100%; height: 100%; overflow: visible; }
+.cur .trk { fill: none; stroke: rgba(243, 240, 234, .18); stroke-width: 1.5; stroke-dasharray: 3 3; }
+.cur .val { fill: none; stroke: var(--rosso-hi); stroke-width: 2.4; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; filter: drop-shadow(0 0 4px var(--rosso)); }
+.cur .dot { fill: var(--paper); }
+.cur .kmh { position: absolute; left: 50%; top: 100%; transform: translate(-50%, 4px); font-family: var(--display); font-size: 9px; letter-spacing: .15em; color: var(--mute); white-space: nowrap; }
+.cur.hot { width: 64px; height: 64px; margin: -32px 0 0 -32px; }
+.cur.hot .trk { stroke: var(--rosso); stroke-dasharray: none; }
+.cur.hot .dot { fill: var(--rosso-hi); }
+body.has-cur #streak, body.has-cur .cur { display: block; }
+body.has-cur, body.has-cur * { cursor: none !important; }
+body.has-cur input[type="text"] { cursor: text !important; }
+
+/* ============ навигация: передача и шифт-лампы ============ */
+.shift { position: fixed; top: 0; left: 0; right: 0; z-index: 120; display: flex; gap: 3px; height: 4px; padding: 0 3px; }
+.shift i { flex: 1; border-radius: 0 0 2px 2px; background: rgba(243, 240, 234, .06); transition: background .15s, box-shadow .15s; }
+.shift i.on { background: #19d65b; box-shadow: 0 0 8px #19d65b; }
+.shift i.on.r { background: var(--rosso-hi); box-shadow: 0 0 8px var(--rosso-hi); }
+.shift i.on.b { background: #3b7bff; box-shadow: 0 0 8px #3b7bff; }
+.nav { position: fixed; top: 4px; left: 0; right: 0; z-index: 110; transition: background .4s, backdrop-filter .4s; }
+.nav.solid { background: rgba(9, 9, 10, .72); backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--line); }
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 66px; gap: 20px; }
+.mark { display: flex; align-items: baseline; gap: 10px; }
+.mark b { font-family: var(--display); font-weight: 600; font-size: 20px; letter-spacing: .32em; }
+.mark small { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--mute); }
+.links { display: flex; gap: 30px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--mute); }
+.links a { position: relative; padding: 6px 0; transition: color .3s; }
+.links a::before { content: ""; position: absolute; left: -12px; top: 50%; width: 5px; height: 5px; margin-top: -2.5px; background: var(--rosso); transform: scale(0) rotate(45deg); transition: transform .35s var(--ease); }
+.links a:hover, .links a.on { color: var(--paper); }
+.links a:hover::before, .links a.on::before { transform: scale(1) rotate(45deg); }
+.gear { display: flex; align-items: center; gap: 10px; }
+.gear-box { position: relative; width: 44px; height: 44px; overflow: hidden; border-radius: 8px; background: #050506; box-shadow: inset 0 0 0 1px #262629, inset 0 0 16px rgba(255, 26, 10, .12); }
+.gear-box span { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--display); font-weight: 600; font-size: 26px; color: var(--rosso-hi); text-shadow: 0 0 12px rgba(255, 42, 26, .7); transition: transform .45s var(--ease), opacity .45s; }
+.gear-box span.out { transform: translateY(-100%); opacity: 0; }
+.gear-box span.in { transform: translateY(100%); opacity: 0; }
+.gear small { display: block; font-size: 10px; letter-spacing: .25em; color: var(--mute); text-transform: uppercase; line-height: 1.3; }
+.gear small b { color: var(--paper); font-weight: 600; }
+
+/* ============ кнопки: скошенные, удержание ============ */
+.btn { position: relative; display: inline-flex; align-items: center; gap: 14px; padding: 17px 30px 17px 28px; font-family: var(--display); font-weight: 500; font-size: 14px; letter-spacing: .22em; text-transform: uppercase;
+  clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%); background: var(--paper); color: var(--ink); overflow: hidden; isolation: isolate; transition: color .35s; }
+.btn::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--rosso); transform: translateX(-102%) skewX(-18deg); transform-origin: left; transition: transform .5s var(--ease); width: 120%; left: -10%; }
+.btn:hover { color: #fff; }
+.btn:hover::before { transform: translateX(0) skewX(-18deg); }
+.btn .arr { display: inline-block; width: 22px; height: 1px; background: currentColor; position: relative; transition: width .4s var(--ease); }
+.btn .arr::after { content: ""; position: absolute; right: 0; top: -3px; width: 7px; height: 7px; border-top: 1px solid currentColor; border-right: 1px solid currentColor; transform: rotate(45deg); }
+.btn:hover .arr { width: 34px; }
+.btn.line { background: transparent; color: var(--paper); box-shadow: inset 0 0 0 1px rgba(243, 240, 234, .3); clip-path: none; transform: skewX(-12deg); padding: 16px 26px; }
+.btn.line > * { transform: skewX(12deg); }
+.btn.line::before { left: 0; width: 100%; transform: scaleX(0); transform-origin: left; }
+.btn.line:hover::before { transform: scaleX(1); }
+.hold { position: relative; width: 104px; height: 104px; border-radius: 50%; display: grid; place-items: center; text-align: center; touch-action: none; user-select: none; -webkit-user-select: none;
+  background: radial-gradient(circle at 50% 40%, #2a0606, #0d0303 70%); box-shadow: 0 0 0 1px #3a0d0d, 0 0 0 6px #0b0b0c, 0 0 0 7px #26262a, 0 18px 50px rgba(212, 0, 0, .25); transition: transform .2s; }
+.hold:active { transform: scale(.96); }
+.hold svg { position: absolute; inset: -9px; width: calc(100% + 18px); height: calc(100% + 18px); transform: rotate(-90deg); pointer-events: none; }
+.hold .ring { fill: none; stroke: var(--rosso-hi); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; filter: drop-shadow(0 0 6px var(--rosso)); }
+.hold b { display: block; font-family: var(--display); font-weight: 600; font-size: 14px; letter-spacing: .12em; line-height: 1.05; }
+.hold small { display: block; margin-top: 4px; font-size: 8.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--mute); }
+.hold.live { box-shadow: 0 0 0 1px var(--rosso), 0 0 0 6px #0b0b0c, 0 0 0 7px var(--rosso), 0 0 60px rgba(255, 26, 10, .6); }
+.hold.live b { color: var(--rosso-hi); }
+
+/* ============ главный экран ============ */
+.hero { position: relative; height: 100svh; min-height: 620px; overflow: hidden;
+  background: radial-gradient(ellipse 70% 50% at 50% 78%, rgba(212, 0, 0, .28), transparent 70%), radial-gradient(ellipse 50% 40% at 50% 30%, #17171a, transparent 70%), var(--ink); }
+.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; background: linear-gradient(transparent, var(--ink)); pointer-events: none; z-index: 3; }
+.word { position: absolute; z-index: 0; left: 0; right: 0; top: 17%; text-align: center; font-family: var(--display); font-weight: 700; font-size: clamp(74px, 21vw, 340px); line-height: .8; letter-spacing: .04em;
+  color: transparent; background: linear-gradient(180deg, #f3f0ea 0%, #f3f0ea 40%, rgba(243, 240, 234, .05) 100%); -webkit-background-clip: text; background-clip: text; user-select: none; white-space: nowrap; }
+.word span { display: inline-block; transform: translateY(40%) skewY(8deg); opacity: 0; transition: transform 1.2s var(--ease), opacity 1.2s; }
+body.ready .word span { transform: none; opacity: 1; }
+#hero-gl { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; touch-action: pan-y; }
+.hero-ui { position: absolute; z-index: 4; left: 0; right: 0; bottom: 0; }
+.hero-ui .wrap { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 30px; padding-bottom: calc(34px + var(--safe-b)); }
+.model-tag small { display: block; font-size: 11px; letter-spacing: .3em; color: var(--rosso-hi); text-transform: uppercase; }
+.model-tag h1 { font-family: var(--display); font-weight: 600; font-size: clamp(34px, 4.6vw, 64px); line-height: 1; letter-spacing: .02em; margin: 6px 0 8px; }
+.model-tag p { font-family: var(--serif); font-style: italic; font-size: clamp(18px, 1.8vw, 24px); color: #cdc8c0; }
+.hero-cta { display: flex; justify-content: flex-end; gap: 14px; flex-wrap: wrap; }
+.mini-stats { position: absolute; z-index: 4; top: 96px; right: clamp(18px, 4vw, 48px); display: grid; gap: 10px; text-align: right; }
+.mini-stats div { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--mute); }
+.mini-stats b { display: block; font-family: var(--display); font-weight: 500; font-size: 26px; letter-spacing: .02em; color: var(--paper); }
+.drag-hint { white-space: nowrap; position: absolute; z-index: 4; left: 50%; top: 58%; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; font-size: 10px; letter-spacing: .3em; color: var(--mute); text-transform: uppercase; pointer-events: none; transition: opacity .6s; }
+.drag-hint::before, .drag-hint::after { content: ""; width: 26px; height: 1px; background: linear-gradient(90deg, transparent, var(--mute)); }
+.drag-hint::after { transform: scaleX(-1); }
+
+/* ============ общие секции ============ */
+section { position: relative; }
+.sec { padding: clamp(90px, 12vw, 160px) 0; }
+.eyebrow { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--mute); }
+.eyebrow::before { content: ""; width: 9px; height: 9px; background: var(--rosso); transform: skewX(-18deg); }
+.title { font-family: var(--display); font-weight: 600; font-size: clamp(40px, 6.4vw, 96px); line-height: .95; letter-spacing: .005em; text-transform: uppercase; }
+.title .it { color: var(--rosso-hi); font-size: 1.05em; }
+.lede { max-width: 560px; margin-top: 22px; color: #bcb7af; font-size: clamp(15px, 1.4vw, 18px); }
+.rv { opacity: 0; transform: translateY(40px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.rv.in { opacity: 1; transform: none; }
+
+/* ============ характеристики ============ */
+.specs-grid { display: grid; grid-template-columns: .95fr 1.05fr; gap: clamp(30px, 5vw, 80px); align-items: center; margin-top: 70px; }
+.tacho { position: relative; width: min(100%, 520px); aspect-ratio: 1; margin: 0 auto; }
+.tacho svg { width: 100%; height: 100%; overflow: visible; }
+.tacho .read { position: absolute; left: 0; right: 0; top: 56%; text-align: center; }
+.tacho .read b { display: block; font-family: var(--display); font-weight: 600; font-size: clamp(44px, 6vw, 76px); line-height: 1; font-variant-numeric: tabular-nums; }
+.tacho .read small { font-size: 11px; letter-spacing: .3em; color: var(--mute); text-transform: uppercase; }
+.cells { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.cell { position: relative; padding: 28px 26px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; }
+.cell::after { content: ""; position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--rosso); transform: scaleX(0); transform-origin: left; transition: transform .9s var(--ease); }
+.cell:hover::after { transform: scaleX(1); }
+.cell small { font-size: 11px; letter-spacing: .25em; text-transform: uppercase; color: var(--mute); }
+.cell b { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; font-family: var(--display); font-weight: 600; font-size: clamp(42px, 5vw, 70px); line-height: 1; font-variant-numeric: tabular-nums; }
+.cell b em { font-style: normal; font-size: .34em; font-weight: 400; color: var(--mute); letter-spacing: .1em; }
+.launch { margin-top: 34px; padding: 26px; background: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line); }
+.launch-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; }
+.launch-head span { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--mute); }
+.launch-head button { font-family: var(--display); font-size: 12px; letter-spacing: .25em; color: var(--rosso-hi); text-transform: uppercase; }
+.lane { display: grid; grid-template-columns: 82px 1fr 64px; gap: 14px; align-items: center; margin: 12px 0; font-size: 13px; color: #bcb7af; }
+.lane .track { position: relative; height: 10px; background: repeating-linear-gradient(90deg, rgba(243, 240, 234, .06) 0 2px, transparent 2px 10%); }
+.lane .track i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, var(--rosso-deep), var(--rosso-hi)); box-shadow: 0 0 14px rgba(255, 42, 26, .6); }
+.lane .track i::after { content: ""; position: absolute; right: -2px; top: -4px; bottom: -4px; width: 3px; background: #fff; box-shadow: 0 0 10px #fff; }
+.lane b { font-family: var(--display); font-weight: 500; font-size: 18px; text-align: right; color: var(--paper); font-variant-numeric: tabular-nums; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 34px; background: var(--line); }
+.facts div { padding: 18px 20px; background: var(--ink); font-size: 14px; }
+.facts small { display: block; font-size: 10px; letter-spacing: .25em; text-transform: uppercase; color: var(--mute); margin-bottom: 4px; }
+
+/* ============ анатомия (разборка на скролле) ============ */
+.anatomy { height: 340vh; background: linear-gradient(180deg, var(--ink), #0d0d0f 30%, #0d0d0f 70%, var(--ink)); }
+.stick { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+.stick::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(243, 240, 234, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(243, 240, 234, .035) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse at 50% 55%, #000 30%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse at 50% 55%, #000 30%, transparent 75%); }
+#ana-gl { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ana-head { position: absolute; z-index: 3; top: 96px; left: 0; right: 0; }
+.ana-head .title { font-size: clamp(34px, 5vw, 72px); }
+.ana-head p { max-width: 380px; margin-top: 12px; color: #bcb7af; font-size: 14px; }
+.assembly { position: absolute; z-index: 3; right: clamp(18px, 4vw, 48px); bottom: calc(34px + var(--safe-b)); width: min(280px, 60vw); }
+.assembly .row { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: .25em; text-transform: uppercase; color: var(--mute); }
+.assembly .row b { font-family: var(--display); font-weight: 500; font-size: 30px; letter-spacing: .02em; color: var(--paper); font-variant-numeric: tabular-nums; }
+.assembly .bar { position: relative; height: 3px; margin-top: 10px; background: rgba(243, 240, 234, .1); }
+.assembly .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--rosso-hi); box-shadow: 0 0 10px var(--rosso); }
+.ana-scroll { position: absolute; z-index: 3; left: clamp(18px, 4vw, 48px); bottom: calc(34px + var(--safe-b)); font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--mute); }
+.ana-scroll b { color: var(--paper); font-weight: 600; }
+.callouts { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.co { position: absolute; left: 0; top: 0; opacity: 0; transition: opacity .3s; will-change: transform; }
+.co i { position: absolute; left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 50%; background: var(--rosso-hi); box-shadow: 0 0 0 4px rgba(255, 42, 26, .2), 0 0 12px var(--rosso); }
+.co span { position: absolute; left: 14px; top: -34px; transition: transform .25s; padding: 8px 12px; white-space: nowrap; background: rgba(9, 9, 10, .82); backdrop-filter: blur(6px); border-left: 2px solid var(--rosso-hi); font-size: 12px; line-height: 1.3; }
+.co span::before { content: ""; position: absolute; left: -14px; top: 34px; width: 14px; height: 1px; background: var(--rosso-hi); transform-origin: left; transform: rotate(-60deg); }
+.co span b { display: block; font-family: var(--display); font-weight: 500; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
+.co span small { color: var(--mute); }
+.co.l span { left: auto; right: 14px; border-left: 0; border-right: 2px solid var(--rosso-hi); text-align: right; }
+.co.l span::before { left: auto; right: -14px; transform-origin: right; transform: rotate(60deg); }
+
+/* ============ конфигуратор ============ */
+.config { padding-bottom: 60px; }
+.tabs { display: flex; gap: 6px; margin: 46px 0 0; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: none; position: relative; padding: 14px 20px 12px; text-align: left; background: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line); transition: background .3s; }
+.tab small { display: block; font-size: 10px; letter-spacing: .2em; color: var(--mute); text-transform: uppercase; }
+.tab b { font-family: var(--display); font-weight: 500; font-size: 17px; letter-spacing: .06em; white-space: nowrap; }
+.tab::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--rosso-hi); transform: scaleX(0); transition: transform .4s var(--ease); }
+.tab:hover { background: var(--ink-3); }
+.tab.on { background: #1b0a0a; }
+.tab.on::after { transform: scaleX(1); }
+.tab .fav { color: var(--giallo); }
+.studio { display: grid; grid-template-columns: 1.45fr 1fr; align-items: start; margin-top: 14px; background: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line); }
+.viewer { position: sticky; top: 80px; height: min(78vh, 680px); overflow: hidden; background: radial-gradient(ellipse 60% 40% at 50% 72%, rgba(243, 240, 234, .07), transparent 70%), linear-gradient(180deg, #121215, #0b0b0d); }
+#cfg-gl { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: pan-y; }
+.viewer .v-top { position: absolute; z-index: 2; left: 26px; top: 22px; right: 26px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; }
+.viewer .v-name small { font-size: 10px; letter-spacing: .3em; color: var(--rosso-hi); text-transform: uppercase; }
+.viewer .v-name h3 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 3.4vw, 46px); line-height: 1; letter-spacing: .02em; }
+.viewer .v-name p { font-family: var(--serif); font-style: italic; font-size: 18px; color: #bcb7af; }
+.viewer .v-angle { font-family: var(--display); font-size: 12px; letter-spacing: .2em; color: var(--mute); text-align: right; }
+.viewer .v-angle b { display: block; font-size: 26px; color: var(--paper); font-weight: 500; font-variant-numeric: tabular-nums; }
+.viewer .v-bottom { position: absolute; z-index: 2; left: 26px; right: 26px; bottom: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); }
+.viewer .v-bottom div { padding: 12px 14px; background: rgba(11, 11, 13, .85); backdrop-filter: blur(8px); }
+.viewer .v-bottom small { display: block; font-size: 9.5px; letter-spacing: .22em; color: var(--mute); text-transform: uppercase; }
+.viewer .v-bottom b { font-family: var(--display); font-weight: 500; font-size: 20px; font-variant-numeric: tabular-nums; }
+.panel { padding: 30px 28px; border-left: 1px solid var(--line); display: flex; flex-direction: column; gap: 26px; }
+.opt h4 { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; font-size: 11px; font-weight: 600; letter-spacing: .25em; text-transform: uppercase; color: var(--mute); }
+.opt h4 span { font-family: var(--serif); font-style: italic; font-size: 17px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--paper); }
+.sw { display: flex; flex-wrap: wrap; gap: 10px; }
+.sw button { position: relative; width: 38px; height: 38px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .15), inset -6px -8px 14px rgba(0, 0, 0, .45), inset 6px 6px 12px rgba(255, 255, 255, .22); transition: transform .3s var(--ease); }
+.sw button::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; box-shadow: 0 0 0 1.5px var(--paper); opacity: 0; transform: scale(.8); transition: .3s var(--ease); }
+.sw button:hover { transform: translateY(-3px); }
+.sw button.on::after { opacity: 1; transform: none; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 1px; background: var(--line); box-shadow: inset 0 0 0 1px var(--line); }
+.seg button { padding: 11px 8px; background: var(--ink-2); font-size: 12px; line-height: 1.25; text-align: center; transition: background .25s, color .25s; color: #bcb7af; }
+.seg button small { display: block; font-size: 10px; color: var(--mute); margin-top: 2px; }
+.seg button:hover { background: var(--ink-3); color: var(--paper); }
+.seg button.on { background: var(--paper); color: var(--ink); }
+.seg button.on small { color: #5d5955; }
+.total { margin-top: auto; padding-top: 22px; border-top: 1px solid var(--line); }
+.total small { font-size: 11px; letter-spacing: .25em; text-transform: uppercase; color: var(--mute); }
+.odo { display: flex; align-items: center; height: 1.1em; margin: 8px 0 18px; overflow: hidden; font-family: var(--display); font-weight: 600; font-size: clamp(38px, 4vw, 54px); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.odo .d { display: inline-block; height: 1.1em; overflow: hidden; }
+.odo .d i { display: flex; flex-direction: column; font-style: normal; transition: transform 1s var(--ease); }
+.odo .d i span { height: 1.1em; }
+.odo .s { display: inline-block; }
+.total .note { margin-top: 12px; font-size: 11px; color: var(--mute); }
+
+/* ============ лист сборки (новый оверлей) ============ */
+.sheet-wrap { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 20px; pointer-events: none; }
+.sheet-wrap::before { content: ""; position: absolute; inset: 0; background: rgba(5, 5, 6, .7); backdrop-filter: blur(6px); opacity: 0; transition: opacity .5s; }
+.sheet { position: relative; width: min(460px, 100%); max-height: calc(100svh - 40px); overflow-y: auto; padding: 30px 28px 26px; background: var(--paper); color: var(--ink);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%); transform: translateY(40px) rotate(-2deg); opacity: 0; transition: transform .7s var(--ease), opacity .4s; }
+.sheet-wrap.open { pointer-events: auto; }
+.sheet-wrap.open::before { opacity: 1; }
+.sheet-wrap.open .sheet { transform: none; opacity: 1; }
+.sheet header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 16px; border-bottom: 2px solid var(--ink); }
+.sheet header small { font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: #6f6a64; }
+.sheet header h3 { font-family: var(--display); font-weight: 600; font-size: 30px; line-height: 1; letter-spacing: .02em; text-transform: uppercase; }
+.sheet .code { font-family: ui-monospace, Menlo, monospace; font-size: 11px; padding: 4px 8px; background: var(--ink); color: var(--paper); }
+.sheet dl { display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; margin: 18px 0; font-size: 14px; }
+.sheet dt { color: #4d4944; }
+.sheet dd { text-align: right; font-weight: 600; }
+.sheet .sum { display: flex; justify-content: space-between; align-items: baseline; padding-top: 14px; border-top: 1px dashed #9d978f; }
+.sheet .sum b { font-family: var(--display); font-weight: 600; font-size: 34px; }
+.sheet .stripe { height: 6px; margin: -30px -28px 24px; background: linear-gradient(90deg, #0a8f3c 0 33.3%, #f3f0ea 33.3% 66.6%, var(--rosso) 66.6%); }
+.sheet .acts { display: flex; gap: 10px; margin-top: 18px; }
+.sheet .acts button { flex: 1; padding: 13px; font-family: var(--display); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; box-shadow: inset 0 0 0 1px var(--ink); }
+.sheet .acts button.dark { background: var(--ink); color: var(--paper); }
+
+/* ============ подвал ============ */
+footer { position: relative; z-index: 2; padding: 90px 0 calc(40px + var(--safe-b)); border-top: 1px solid var(--line); }
+footer .big { font-family: var(--display); font-weight: 700; font-size: clamp(60px, 14vw, 220px); line-height: .85; letter-spacing: .02em; text-transform: uppercase; color: var(--ink-3); -webkit-text-stroke: 1px rgba(243, 240, 234, .14); }
+footer .row { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-top: 30px; font-size: 13px; color: var(--mute); }
+footer .row a { color: var(--paper); border-bottom: 1px solid var(--rosso); }
+.fb { position: absolute; inset: 0; display: none; place-items: center; padding: 30px; text-align: center; color: var(--mute); font-size: 14px; }
+body.no-gl .fb { display: grid; }
+
+/* ============ адаптив ============ */
+.hero-grid > *, .specs-grid > *, .studio > * { min-width: 0; }
+@media (max-width: 980px) {
+  .links { display: none; }
+  .specs-grid, .studio { grid-template-columns: 1fr; }
+  .panel { border-left: 0; border-top: 1px solid var(--line); }
+  .viewer { position: relative; top: 0; height: auto; aspect-ratio: 4 / 3.4; }
+  .hero-ui .wrap { grid-template-columns: 1fr; gap: 18px; }
+  .hero-ui .hold { position: absolute; right: clamp(18px, 4vw, 48px); bottom: calc(150px + var(--safe-b)); width: 86px; height: 86px; }
+  .hero-cta { justify-content: flex-start; }
+}
+@media (max-width: 600px) {
+  .mark small { display: none; }
+  .mini-stats { top: auto; bottom: calc(260px + var(--safe-b)); left: clamp(18px, 4vw, 48px); right: auto; text-align: left; grid-auto-flow: column; gap: 18px; }
+  .mini-stats b { font-size: 20px; }
+  .word { top: 21%; }
+  .hero-cta .btn { padding: 15px 22px; font-size: 12px; }
+  .hero-ui .hold { bottom: calc(196px + var(--safe-b)); }
+  .cells { grid-template-columns: 1fr 1fr; }
+  .cell { padding: 20px 16px; }
+  .facts { grid-template-columns: 1fr; }
+  .lane { grid-template-columns: 66px 1fr 56px; }
+  .viewer { aspect-ratio: 4 / 4.6; }
+  .viewer .v-bottom { left: 12px; right: 12px; bottom: 12px; }
+  .viewer .v-bottom div { padding: 8px 8px; }
+  .viewer .v-bottom small { font-size: 8px; letter-spacing: .14em; }
+  .viewer .v-bottom b { font-size: 13px; }
+  .viewer .v-top { left: 16px; right: 16px; top: 16px; }
+  .panel { padding: 24px 18px; }
+  .co span { padding: 5px 8px; }
+  .co span b { font-size: 11px; }
+  .co span small { display: none; }
+  .co span::before { top: 22px; }
+  .co span { top: -22px; }
+  .assembly { left: clamp(18px, 4vw, 48px); right: clamp(18px, 4vw, 48px); width: auto; bottom: calc(64px + var(--safe-b)); }
+  .assembly .row b { font-size: 22px; }
+  .drag-hint { top: 62%; }
+  .ana-head { top: 84px; }
+  .ana-head p { font-size: 13px; max-width: 280px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  .rv { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body class="intro">
+
+<!-- стартовые огни -->
+<div class="lights" id="lights" aria-hidden="true">
+  <div class="half a"></div><div class="half b"></div>
+  <div class="gantry"><div class="pod"><i></i><i></i></div><div class="pod"><i></i><i></i></div><div class="pod"><i></i><i></i></div><div class="pod"><i></i><i></i></div><div class="pod"><i></i><i></i></div></div>
+  <div class="l-cap" id="l-cap">LIGHTS OUT AND <b>AWAY WE GO</b></div>
+  <button type="button" class="l-skip" id="l-skip">Пропустить</button>
+</div>
+
+<canvas id="streak" aria-hidden="true"></canvas>
+<div class="cur" aria-hidden="true"><svg viewBox="0 0 46 46"><circle class="trk" cx="23" cy="23" r="20"/><circle class="val" cx="23" cy="23" r="20" pathLength="100" transform="rotate(135 23 23)"/><circle class="dot" cx="23" cy="23" r="2.4"/></svg><span class="kmh" id="kmh">0 KM/H</span></div>
+
+<div class="shift" id="shift" aria-hidden="true"></div>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a href="#top" class="mark"><b>FERRARI</b><small>fan concept · nalpax</small></a>
+    <nav class="links" aria-label="Разделы">
+      <a href="#top" data-sec="hero">F80</a>
+      <a href="#specs" data-sec="specs">Характеристики</a>
+      <a href="#anatomy" data-sec="anatomy">Анатомия</a>
+      <a href="#config" data-sec="config">Конфигуратор</a>
+    </nav>
+    <div class="gear" aria-hidden="true"><small>Gear<br><b id="gear-name">Neutral</b></small><div class="gear-box" id="gear-box"><span>N</span></div></div>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="top" data-gear="N" data-gname="Neutral">
+  <div class="word" aria-hidden="true"><span>F</span><span>E</span><span>R</span><span>R</span><span>A</span><span>R</span><span>I</span></div>
+  <canvas id="hero-gl" aria-label="3D-модель Ferrari F80, можно вращать"></canvas>
+  <div class="fb">3D недоступно в этом браузере — откройте сайт в Chrome, Яндекс Браузере или Safari.</div>
+  <div class="mini-stats"><div><b>1 200</b>л.с.</div><div><b>2,15 с</b>0–100</div><div><b>350</b>км/ч</div></div>
+  <div class="drag-hint" id="drag-hint">тяни, чтобы повернуть</div>
+  <div class="hero-ui">
+    <div class="wrap">
+      <div class="model-tag rv">
+        <small>Новейший гиперкар</small>
+        <h1>F80</h1>
+        <p>Il futuro, adesso — 799 экземпляров.</p>
+      </div>
+      <button type="button" class="hold" id="engine" aria-label="Удерживай, чтобы завести двигатель">
+        <svg viewBox="0 0 122 122"><circle class="ring" cx="61" cy="61" r="58" pathLength="100"/></svg>
+        <span><b>ENGINE<br>START</b><small>удерживай</small></span>
+      </button>
+      <div class="hero-cta rv">
+        <a href="#specs" class="btn">Характеристики <span class="arr"></span></a>
+        <a href="#config" class="btn line"><span>Собрать свою</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="specs" data-gear="1" data-gname="First">
+  <div class="wrap">
+    <p class="eyebrow rv">F80 · технические данные</p>
+    <h2 class="title rv">1 200 сил <span class="it">и ни одного</span><br>компромисса</h2>
+    <p class="lede rv">Гибрид: V6 3,0 л с двумя турбинами и три электромотора. Полный привод, активная аэродинамика и кузов из карбона.</p>
+    <div class="specs-grid">
+      <div class="tacho rv" id="tacho"><div class="read"><b id="rpm-read">0</b><small>об/мин × 1000</small></div></div>
+      <div>
+        <div class="cells rv">
+          <div class="cell"><small>Мощность</small><b><span data-count="1200" data-sep>0</span><em>л.с.</em></b></div>
+          <div class="cell"><small>0–100 км/ч</small><b><span data-count="2.15" data-dec="2">0</span><em>сек</em></b></div>
+          <div class="cell"><small>Макс. скорость</small><b><span data-count="350">0</span><em>км/ч</em></b></div>
+          <div class="cell"><small>Тираж</small><b><span data-count="799">0</span><em>шт.</em></b></div>
+        </div>
+        <div class="launch rv" id="launch">
+          <div class="launch-head"><span>Launch control</span><button type="button" id="relaunch">↻ Ещё раз</button></div>
+          <div class="lane"><span>0–100</span><div class="track"><i data-t="2.15"></i></div><b data-t="2.15">0.00</b></div>
+          <div class="lane"><span>0–200</span><div class="track"><i data-t="5.75"></i></div><b data-t="5.75">0.00</b></div>
+        </div>
+        <div class="facts rv">
+          <div><small>Двигатель</small>V6 3,0 л biturbo + 3 эл. мотора</div>
+          <div><small>Привод</small>полный</div>
+          <div><small>Сухая масса</small>≈ 1 525 кг</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="anatomy" id="anatomy" data-gear="2" data-gname="Second">
+  <div class="stick">
+    <canvas id="ana-gl" aria-label="812 Superfast в разобранном виде"></canvas>
+    <div class="fb">3D недоступно в этом браузере.</div>
+    <div class="callouts" id="callouts"></div>
+    <div class="ana-head">
+      <div class="wrap">
+        <p class="eyebrow">Анатомия · 812 Superfast</p>
+        <h2 class="title">Разбери <span class="it">легенду</span></h2>
+        <p>Листай вниз — машина соберётся. Вверх — разлетится на детали. Красная с чёрной крышей, как надо.</p>
+      </div>
+    </div>
+    <div class="ana-scroll">↓ <b>собрать</b> &nbsp;·&nbsp; ↑ разобрать</div>
+    <div class="assembly"><div class="row"><span>Сборка</span><b id="asm">0%</b></div><div class="bar"><i id="asm-bar"></i></div></div>
+  </div>
+</section>
+
+<section class="sec config" id="config" data-gear="3" data-gname="Third">
+  <div class="wrap">
+    <p class="eyebrow rv">Конфигуратор</p>
+    <h2 class="title rv">Собери <span class="it">свою</span></h2>
+    <p class="lede rv">Выбери модель, покрути её, подбери цвет и комплектацию. Цены — ориентировочные базовые цены в долларах США, опции — условные.</p>
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <div class="studio">
+      <div class="viewer">
+        <canvas id="cfg-gl" aria-label="3D-модель выбранной машины, тяни чтобы повернуть"></canvas>
+        <div class="fb">3D недоступно в этом браузере.</div>
+        <div class="v-top">
+          <div class="v-name"><small id="v-years">2024 —</small><h3 id="v-name">812 Superfast</h3><p id="v-tag">—</p></div>
+          <div class="v-angle"><b id="v-angle">0°</b>тяни ↔</div>
+        </div>
+        <div class="v-bottom">
+          <div><small>Мощность</small><b id="v-hp">—</b></div>
+          <div><small>0–100</small><b id="v-acc">—</b></div>
+          <div><small>Макс.</small><b id="v-top">—</b></div>
+          <div><small>Мотор</small><b id="v-eng">—</b></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="opt"><h4>Цвет <span id="o-color">Rosso Corsa</span></h4><div class="sw" id="o-colors"></div></div>
+        <div class="opt"><h4>Крыша <span id="o-roof">—</span></h4><div class="seg" id="o-roofs"></div></div>
+        <div class="opt"><h4>Диски <span id="o-wheel">—</span></h4><div class="seg" id="o-wheels"></div></div>
+        <div class="opt"><h4>Суппорта <span id="o-cal">—</span></h4><div class="sw" id="o-cals"></div></div>
+        <div class="opt"><h4>Комплектация <span id="o-pack">—</span></h4><div class="seg" id="o-packs"></div></div>
+        <div class="total">
+          <small>Итого, ориентировочно</small>
+          <div class="odo" id="odo" aria-live="polite"></div>
+          <button type="button" class="btn" id="build">Лист сборки <span class="arr"></span></button>
+          <p class="note">* Фан-концепт. Цены по открытым данным и могут отличаться у дилера.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer data-gear="4" data-gname="Fourth">
+  <div class="wrap">
+    <div class="big">Forza</div>
+    <div class="row">
+      <span>Фан-концепт для портфолио. Не официальный сайт и не связан с Ferrari S.p.A. Названия моделей принадлежат их владельцам, 3D-модели стилизованные.</span>
+      <span>Дизайн и разработка — <a href="https://t.me/nalpax" target="_blank" rel="noopener">@nalpax</a> · <a href="https://nalpax.github.io" target="_blank" rel="noopener">портфолио</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="sheet-wrap" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" aria-hidden="true">
+  <div class="sheet">
+    <div class="stripe"></div>
+    <header><div><small>Лист сборки</small><h3 id="sheet-title">—</h3></div><span class="code" id="sheet-code">—</span></header>
+    <dl id="sheet-list"></dl>
+    <div class="sum"><span>Итого</span><b id="sheet-sum">—</b></div>
+    <div class="acts"><button type="button" id="sheet-copy">Скопировать</button><button type="button" class="dark" id="sheet-close">Закрыть</button></div>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
