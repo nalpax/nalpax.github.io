@@ -8,7 +8,7 @@
 <meta name="description" content="Концепт-дизайн сайта для студии звукозаписи Sound Live Records (Ярославль). Неофициальный сайт, дизайн — nalpax.">
 <meta name="theme-color" content="#0b0706">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;800;900&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;800;900&family=Playfair+Display:ital,wght@1,600;1,700&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #0b0706;
@@ -22,6 +22,7 @@
   --hot: #ff6a2b;
   --display: "Unbounded", system-ui, sans-serif;
   --body: "Manrope", system-ui, sans-serif;
+  --serif: "Playfair Display", Georgia, serif;
   --safe-b: env(safe-area-inset-bottom, 0px);
   --ease: cubic-bezier(.2, .8, .2, 1);
 }
@@ -62,21 +63,10 @@ button { font: inherit; color: inherit; }
   background: conic-gradient(from 45deg, #24150f 0 25%, #150d0a 0 50%, #1d120e 0 75%, #0f0806 0) 0 0 / 46px 46px;
   -webkit-mask: radial-gradient(ellipse at 70% 50%, #000 10%, transparent 70%); mask: radial-gradient(ellipse at 70% 50%, #000 10%, transparent 70%); }
 
-/* ================= курсор ================= */
-.c-dot, .c-ring, #trail { display: none; }
-body.cur, body.cur * { cursor: none !important; }
-body.cur input:not([type="range"]), body.cur textarea { cursor: text !important; }
-body.cur .c-dot, body.cur .c-ring { display: block; position: fixed; left: 0; top: 0; z-index: 130; pointer-events: none; border-radius: 50%; }
-body.cur #trail { display: block; position: fixed; inset: 0; width: 100%; height: 100%; z-index: 129; pointer-events: none; }
-.c-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; background: var(--amber); box-shadow: 0 0 12px var(--amber); }
-.c-ring { width: 38px; height: 38px; margin: -19px 0 0 -19px; border: 1px solid rgba(255, 174, 66, .55); display: grid !important; place-items: center;
-  transition: width .3s var(--ease), height .3s var(--ease), margin .3s var(--ease), background .3s, border-color .3s; }
-body:not(.cur) .c-ring { display: none !important; }
-.c-ring span { font-size: 9px; font-weight: 800; letter-spacing: .15em; color: #1a0e08; opacity: 0; transition: opacity .2s; }
-.c-ring.hot { width: 64px; height: 64px; margin: -32px 0 0 -32px; background: rgba(255, 174, 66, .9); border-color: transparent; mix-blend-mode: normal; }
-.c-ring.hot span { opacity: 1; }
-.c-ring.lab + .c-dot { opacity: 0; }
-.c-ring.hot:not(.lab) { width: 50px; height: 50px; margin: -25px 0 0 -25px; background: rgba(255, 174, 66, .14); border-color: var(--amber); }
+/* ================= тёплый свет за мышью (обычный курсор остаётся) ================= */
+.lamp-glow { position: fixed; left: 0; top: 0; z-index: 1; width: 560px; height: 560px; margin: -280px 0 0 -280px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 150, 70, .16), rgba(255, 106, 43, .06) 40%, transparent 70%); opacity: 0; transition: opacity .6s; will-change: transform; }
+.lamp-glow.on { opacity: 1; }
 
 /* ================= плашка «концепт» ================= */
 .concept { position: sticky; top: 0; z-index: 70; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
@@ -116,7 +106,7 @@ body:not(.cur) .c-ring { display: none !important; }
 h1 { font-family: var(--display); font-weight: 900; font-size: clamp(44px, 6.6vw, 94px); line-height: .9; letter-spacing: -.03em; margin: 18px 0 24px; }
 h1 .line { display: block; overflow: hidden; padding-bottom: .04em; }
 h1 .line > span { display: inline-block; animation: rise 1s var(--ease) both; }
-h1 .line:nth-child(2) > span { animation-delay: .12s; color: var(--amber); }
+h1 .line:nth-child(2) > span { animation-delay: .12s; color: var(--amber); font-family: var(--serif); font-style: italic; font-weight: 700; letter-spacing: -.01em; font-size: 1.12em; line-height: .95; }
 h1 .line:nth-child(3) > span { animation: rise 1s .24s var(--ease) both, shine 7s linear infinite;
   background: linear-gradient(90deg, var(--hot), var(--red), #ff8a5c, var(--red), var(--hot)); background-size: 300% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent; }
@@ -169,23 +159,35 @@ h1 .line:nth-child(3) > span { animation: rise 1s .24s var(--ease) both, shine 7
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* бегущие ленты */
-.tapes { position: relative; z-index: 2; overflow: hidden; padding: 34px 0; }
-.ticker { width: 110%; margin-left: -5%; overflow: hidden; border-block: 1px solid var(--line); background: rgba(18, 11, 9, .9); transform: rotate(-2deg); }
-.ticker + .ticker { margin-top: -26px; transform: rotate(1.4deg); background: var(--amber); color: #1a0e08; position: relative; z-index: -1; opacity: .9; }
-.ticker div { display: inline-block; white-space: nowrap; padding: 14px 0; font-family: var(--display); font-size: clamp(15px, 2.2vw, 22px); animation: run 36s linear infinite; }
-.ticker + .ticker div { animation-direction: reverse; animation-duration: 44s; font-size: clamp(12px, 1.6vw, 15px); padding: 10px 0; letter-spacing: .1em; }
-.ticker span { margin: 0 24px; }
-.ticker em { font-style: normal; color: var(--amber); }
-.ticker + .ticker em { color: #7a1a0c; }
-@keyframes run { to { transform: translateX(-50%); } }
+/* студийная стойка со стрелочными индикаторами */
+.rack { position: relative; z-index: 2; padding: 26px 0 10px; }
+.rack-unit { position: relative; display: grid; grid-template-columns: repeat(4, 1fr) 1.25fr; gap: 14px; align-items: stretch; padding: 18px 46px; border-radius: 14px;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, .02) 0 1px, transparent 1px 3px), linear-gradient(180deg, #2a1c15, #150d0a);
+  border: 1px solid rgba(255, 190, 120, .16); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), inset 0 -2px 0 rgba(0, 0, 0, .5), 0 30px 70px rgba(0, 0, 0, .5); }
+.rack-unit::before, .rack-unit::after { content: ""; position: absolute; top: 50%; width: 11px; height: 11px; margin-top: -5px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #bbb, #444 70%); box-shadow: 0 0 0 3px #120b08, 0 0 0 4px rgba(255, 255, 255, .06); }
+.rack-unit::before { left: 17px; } .rack-unit::after { right: 17px; }
+.vu { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.vu-face { position: relative; width: 100%; aspect-ratio: 120 / 72; border-radius: 8px; overflow: hidden;
+  background: radial-gradient(ellipse at 50% 120%, #fff4dc, #f2d9ad 55%, #d9b27a); box-shadow: inset 0 0 0 2px #0d0806, inset 0 6px 14px rgba(0, 0, 0, .35), 0 0 26px rgba(255, 174, 66, .18); }
+.vu-face::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(255, 255, 255, .35), transparent 40%); pointer-events: none; }
+.vu-face svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.vu .ndl { transform-box: view-box; transform-origin: 60px 68px; transform: rotate(-48deg); }
+.vu label { font-size: 10px; font-weight: 800; letter-spacing: .25em; color: var(--muted); }
+.rack-info { display: flex; flex-direction: column; justify-content: center; gap: 4px; padding-left: 18px; border-left: 1px solid rgba(255, 190, 120, .12); }
+.rack-info .lamp { display: inline-flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; letter-spacing: .25em; color: var(--muted); }
+.rack-info .lamp::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--red); box-shadow: 0 0 10px var(--red); animation: blink 1.6s steps(1) infinite; }
+.rack-info b { font-family: var(--serif); font-style: italic; font-size: 26px; line-height: 1.1; color: var(--text); }
+.rack-info small { font-size: 12px; color: var(--muted); }
 
 /* ================= секции ================= */
 section.block { position: relative; overflow: hidden; padding: 120px 0; }
-.sec-idx { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 16px; font-size: 12px; font-weight: 800; letter-spacing: .25em; text-transform: uppercase; color: var(--muted); }
-.sec-idx b { color: var(--amber); }
-.sec-idx::after { content: ""; width: 60px; height: 1px; background: linear-gradient(90deg, var(--amber), transparent); }
+.sec-idx { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 18px; padding: 6px 16px 6px 7px; border-radius: 999px; border: 1px solid var(--line);
+  background: rgba(26, 16, 13, .6); font-size: 12px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.sec-idx i { width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(circle, #111 0 9%, var(--amber) 10% 30%, #0c0c0c 32%), repeating-radial-gradient(circle, #161616 0 1px, #0c0c0c 1px 2px);
+  box-shadow: 0 0 0 1px #000; animation: spin 2.4s linear infinite; }
 .sec-title { font-family: var(--display); font-weight: 800; font-size: clamp(30px, 5vw, 58px); line-height: 1.05; margin-bottom: 14px; }
-.sec-title em { font-style: normal; color: var(--amber); }
+.sec-title em, .final h2 em { font-family: var(--serif); font-style: italic; font-weight: 700; letter-spacing: 0; color: var(--amber); }
 .sec-sub { color: var(--muted); max-width: 560px; margin-bottom: 54px; }
 .alt { background: rgba(18, 11, 9, .7); }
 .alt::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--line), transparent); }
@@ -198,8 +200,6 @@ section.block { position: relative; overflow: hidden; padding: 120px 0; }
   background: radial-gradient(320px circle at var(--mx) var(--my), rgba(255, 140, 60, .16), transparent 60%); }
 .svc:hover { border-color: rgba(255, 174, 66, .45); }
 .svc:hover::before { opacity: 1; }
-.svc .n { position: absolute; right: 22px; top: 18px; font-family: var(--display); font-weight: 900; font-size: 44px; line-height: 1; color: transparent; -webkit-text-stroke: 1px rgba(255, 174, 66, .22); transition: -webkit-text-stroke-color .3s; }
-.svc:hover .n { -webkit-text-stroke-color: var(--amber); }
 .svc .ico { display: inline-grid; place-items: center; width: 54px; height: 54px; border-radius: 16px; color: var(--amber);
   background: linear-gradient(145deg, rgba(255, 174, 66, .14), rgba(255, 59, 48, .06)); border: 1px solid var(--line); }
 .svc .ico svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
@@ -372,8 +372,8 @@ section.block { position: relative; overflow: hidden; padding: 120px 0; }
 .step .jack { position: absolute; left: 0; top: -34px; width: 28px; height: 28px; border-radius: 50%; background: radial-gradient(circle, #050505 0 26%, #555 30% 44%, #222 48%); box-shadow: 0 0 0 2px #2a1a14; transition: box-shadow .4s; }
 .step.on .jack { box-shadow: 0 0 0 2px var(--amber), 0 0 18px var(--hot); }
 .step.on { border-color: rgba(255, 174, 66, .35); background: rgba(40, 22, 15, .7); }
-.step::before { content: "0" counter(s); font-family: var(--display); font-weight: 900; font-size: 42px; color: transparent; -webkit-text-stroke: 1px var(--amber); transition: color .4s; }
-.step.on::before { color: rgba(255, 174, 66, .15); }
+.step::before { content: "№" counter(s); font-family: var(--serif); font-style: italic; font-weight: 700; font-size: 40px; line-height: 1; color: rgba(255, 174, 66, .45); transition: color .4s; }
+.step.on::before { color: var(--amber); }
 .step h3 { font-family: var(--display); font-size: 17px; margin: 10px 0 6px; }
 .step p { font-size: 14px; color: var(--muted); }
 
@@ -383,7 +383,6 @@ section.block { position: relative; overflow: hidden; padding: 120px 0; }
 .final .fdisc { position: absolute !important; z-index: 0; width: min(560px, 80vw); right: -14%; top: 50%; translate: 0 -50%; opacity: .28; --spd: 18s; }
 .final .fdisc.l { right: auto; left: -18%; width: min(380px, 60vw); opacity: .16; --spd: 24s; }
 .final h2 { font-family: var(--display); font-weight: 900; font-size: clamp(32px, 6.4vw, 72px); line-height: 1; margin-bottom: 18px; }
-.final h2 em { font-style: normal; color: var(--amber); }
 .final p { color: var(--muted); margin-bottom: 30px; }
 .final .cta { justify-content: center; animation: none; }
 
@@ -417,16 +416,20 @@ body.drawer-open .drawer { transform: none; }
 
 
 /* ================= заставка ================= */
-.loader { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; align-content: center; gap: 24px; background: radial-gradient(circle at 50% 45%, #1d0f0a, var(--bg) 60%);
-  clip-path: inset(0 0 0 0); transition: clip-path 1s cubic-bezier(.7, 0, .2, 1); }
-.loader.done { clip-path: inset(0 0 100% 0); pointer-events: none; }
-.ld-disc { width: min(190px, 44vw); }
-.ld-disc svg { animation: spin 1s linear infinite; }
-.ld-txt { text-align: center; font-family: var(--display); }
-.ld-txt b { display: block; font-size: 46px; line-height: 1; color: var(--amber); font-variant-numeric: tabular-nums; }
-.ld-txt span { display: block; margin-top: 10px; font-size: 11px; letter-spacing: .35em; color: var(--muted); }
-.ld-bar { width: min(240px, 60vw); height: 2px; background: rgba(255, 174, 66, .12); border-radius: 2px; overflow: hidden; }
-.ld-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--amber), var(--red)); box-shadow: 0 0 10px var(--hot); }
+.loader { position: fixed; inset: 0; z-index: 200; pointer-events: none; }
+.ld-half { position: absolute; left: 0; right: 0; height: 50.5%; background: #0d0806; transition: transform 1s cubic-bezier(.7, 0, .2, 1); pointer-events: auto; }
+.ld-half.t { top: 0; border-bottom: 1px solid rgba(255, 174, 66, .25); }
+.ld-half.b { bottom: 0; }
+.ld-in { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 16px; text-align: center; transition: opacity .4s, transform .6s var(--ease); }
+.ld-disc { width: min(170px, 40vw); animation: roll 1s var(--ease) both; }
+.ld-disc svg { animation: spin 1.2s linear infinite; }
+@keyframes roll { from { transform: translateX(-60vw) rotate(-540deg); } }
+.ld-name { font-family: var(--display); font-weight: 800; font-size: 22px; animation: fade .8s .3s both; }
+.ld-name em { font-family: var(--serif); font-style: italic; color: var(--amber); font-size: 1.15em; }
+.ld-sub { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); animation: fade .8s .45s both; }
+.loader.done .ld-half.t { transform: translateY(-100%); }
+.loader.done .ld-half.b { transform: translateY(100%); }
+.loader.done .ld-in { opacity: 0; transform: scale(.92); }
 body.loading .hero * { animation-play-state: paused !important; }
 
 /* ================= прогресс прокрутки ================= */
@@ -452,6 +455,8 @@ body.loading .hero * { animation-play-state: paused !important; }
 
 /* ================= планшет и телефон ================= */
 @media (max-width: 960px) {
+  .rack-unit { grid-template-columns: repeat(4, 1fr); padding: 16px 34px; }
+  .rack-info { grid-column: 1 / -1; padding: 12px 0 0; border-left: 0; border-top: 1px solid rgba(255, 190, 120, .12); }
   .nav a { display: none; }
   .hero { padding-bottom: 100px; }
   .hero-grid, .jukebox, .mixer-wrap { grid-template-columns: 1fr; }
@@ -472,6 +477,8 @@ body.loading .hero * { animation-play-state: paused !important; }
   .crate { order: 1; } .deck { order: 2; } .info { order: 3; }
 }
 @media (max-width: 560px) {
+  .rack-unit { grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px 30px; }
+  .rack-unit::before { left: 10px; } .rack-unit::after { right: 10px; }
   .onair, .nav .nav-cta, .brand { white-space: nowrap; }
   .brand { font-size: 13px; gap: 8px; }
   .brand .eq { display: none; }
@@ -505,17 +512,15 @@ body.loading .hero * { animation-play-state: paused !important; }
 </style>
 </head>
 <body class="loading">
-<div class="loader" id="loader" aria-hidden="true"><span class="ld-disc" data-vinyl="#ff6a2b|SOUND LIVE|A1"></span><div class="ld-txt"><b id="ld-n">0</b><span>SOUND LIVE RECORDS</span></div><div class="ld-bar"><i id="ld-bar"></i></div></div>
-<button type="button" class="to-top" id="to-top" aria-label="Наверх" data-cur="UP"><svg class="pr" viewBox="0 0 44 44"><circle class="trk" cx="22" cy="22" r="20"/><circle class="val" id="to-top-val" cx="22" cy="22" r="20" pathLength="100"/></svg><span class="tt-disc" data-vinyl="#ffae42|UP|↑"></span></button>
+<div class="loader" id="loader" aria-hidden="true"><i class="ld-half t"></i><i class="ld-half b"></i><div class="ld-in"><span class="ld-disc" data-vinyl="#ff6a2b|SOUND LIVE|A1"></span><p class="ld-name">Sound <em>Live</em> Records</p><p class="ld-sub">студия звукозаписи · Ярославль</p></div></div>
+<button type="button" class="to-top" id="to-top" aria-label="Наверх"><svg class="pr" viewBox="0 0 44 44"><circle class="trk" cx="22" cy="22" r="20"/><circle class="val" id="to-top-val" cx="22" cy="22" r="20" pathLength="100"/></svg><span class="tt-disc" data-vinyl="#ffae42|UP|↑"></span></button>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="swg" x1="0" x2="1"><stop offset="0" stop-color="#ffae42"/><stop offset="1" stop-color="#ff3b30"/></linearGradient></defs></svg>
 <div class="bg-orbs" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="beam" aria-hidden="true"></div>
 <canvas id="dust" aria-hidden="true"></canvas>
 <div class="grain" aria-hidden="true"></div>
-<canvas id="trail" aria-hidden="true"></canvas>
-<div class="c-ring" aria-hidden="true"><span></span></div>
-<div class="c-dot" aria-hidden="true"></div>
+<div class="lamp-glow" aria-hidden="true"></div>
 
 <div class="concept" role="note">
   <span><b>Концепт</b> — это не официальный сайт Sound Live Records.</span>
@@ -530,7 +535,7 @@ body.loading .hero * { animation-play-state: paused !important; }
       <a href="#records">Пластинки</a>
       <a href="#mixer">Микшер</a>
       <a href="#plans">Тарифы</a>
-      <button type="button" class="nav-cta" data-open-contact data-cur="WRITE">Связь с нами</button>
+      <button type="button" class="nav-cta" data-open-contact>Связь с нами</button>
     </nav>
   </header>
 </div>
@@ -540,11 +545,11 @@ body.loading .hero * { animation-play-state: paused !important; }
   <div class="wrap hero-grid">
     <div>
       <p class="kicker">Студия звукозаписи · Ярославль</p>
-      <h1><span class="line"><span>SOUND</span></span><span class="line"><span>LIVE</span></span><span class="line"><span>RECORDS</span></span></h1>
+      <h1><span class="line"><span>SOUND</span></span><span class="line"><span>Live</span></span><span class="line"><span>RECORDS</span></span></h1>
       <p class="lead">Запись вокала, сведение, мастеринг и написание песен. Приходи с идеей — уходи с готовым треком.</p>
       <div class="cta">
-        <a class="btn" href="tel:+79610214876" data-cur="CALL"><span class="dot"></span>Записаться на сессию</a>
-        <a class="btn ghost" href="#records" data-cur="PLAY">Выбрать пластинку ↓</a>
+        <a class="btn" href="tel:+79610214876"><span class="dot"></span>Записаться на сессию</a>
+        <a class="btn ghost" href="#records">Выбрать пластинку ↓</a>
       </div>
       <div class="facts">
         <div><b>от 2 500 ₽</b>сведение трека</div>
@@ -563,25 +568,32 @@ body.loading .hero * { animation-play-state: paused !important; }
   <div class="scroll-cue">scroll</div>
 </section>
 
-<div class="tapes" aria-hidden="true">
-  <div class="ticker"><div id="ticker"></div></div>
-  <div class="ticker"><div id="ticker2"></div></div>
+<div class="rack" aria-hidden="true">
+  <div class="wrap">
+    <div class="rack-unit reveal">
+      <div class="vu"><div class="vu-face"></div><label>VOCAL</label></div>
+      <div class="vu"><div class="vu-face"></div><label>BASS</label></div>
+      <div class="vu"><div class="vu-face"></div><label>MIX</label></div>
+      <div class="vu"><div class="vu-face"></div><label>MASTER</label></div>
+      <div class="rack-info"><span class="lamp">ON AIR</span><b>Ярославль</b><small>ул. Академика Колмогорова, 24 к2 · ежедневно 10:00–23:00*</small></div>
+    </div>
+  </div>
 </div>
 
 <section class="block" id="services">
   <div class="waves-bg" aria-hidden="true"></div>
   <div class="bigword" data-drift=".25" style="top:4%">RECORD</div>
   <div class="wrap">
-    <p class="sec-idx reveal"><b>01</b> Услуги</p>
+    <p class="sec-idx reveal"><i></i>Услуги</p>
     <h2 class="sec-title reveal">Что мы <em>делаем</em></h2>
     <p class="sec-sub reveal">Полный цикл: от первой строчки текста до трека, который не стыдно выпустить на площадки.</p>
     <div class="services">
-      <article class="svc reveal"><span class="n">01</span><span class="ico"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8"/></svg></span><h3>Запись вокала</h3><p>Запись голоса в студии, помощь с подачей и дублями.</p></article>
-      <article class="svc reveal"><span class="n">02</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 12h3l2-6 4 12 3-9 2 3h4"/></svg></span><h3>Тюнинг вокала</h3><p>Аккуратная коррекция высоты и тайминга — звучит ровно, но живо.</p></article>
-      <article class="svc reveal"><span class="n">03</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M6 4v16M12 4v16M18 4v16"/><rect x="4" y="13" width="4" height="3" rx="1"/><rect x="10" y="7" width="4" height="3" rx="1"/><rect x="16" y="15" width="4" height="3" rx="1"/></svg></span><h3>Сведение</h3><p>Баланс, эффекты, пространство: собираем все дорожки в цельный трек.</p><span class="price">от 2 500 ₽</span></article>
-      <article class="svc reveal"><span class="n">04</span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3a9 9 0 0 1 9 9"/></svg></span><h3>Мастеринг</h3><p>Финальная громкость и окраска, чтобы трек звучал на любых колонках.</p></article>
-      <article class="svc reveal"><span class="n">05</span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></span><h3>Написание песни</h3><p>Текст и музыка под твою идею, стиль и голос.</p><span class="price">5 000 ₽</span></article>
-      <article class="svc reveal"><span class="n">06</span><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg></span><h3>Клипы и дизайн</h3><p>Видео и обложка для релиза — чтобы трек заметили.</p></article>
+      <article class="svc reveal"><span class="ico"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8"/></svg></span><h3>Запись вокала</h3><p>Запись голоса в студии, помощь с подачей и дублями.</p></article>
+      <article class="svc reveal"><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 12h3l2-6 4 12 3-9 2 3h4"/></svg></span><h3>Тюнинг вокала</h3><p>Аккуратная коррекция высоты и тайминга — звучит ровно, но живо.</p></article>
+      <article class="svc reveal"><span class="ico"><svg viewBox="0 0 24 24"><path d="M6 4v16M12 4v16M18 4v16"/><rect x="4" y="13" width="4" height="3" rx="1"/><rect x="10" y="7" width="4" height="3" rx="1"/><rect x="16" y="15" width="4" height="3" rx="1"/></svg></span><h3>Сведение</h3><p>Баланс, эффекты, пространство: собираем все дорожки в цельный трек.</p><span class="price">от 2 500 ₽</span></article>
+      <article class="svc reveal"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3a9 9 0 0 1 9 9"/></svg></span><h3>Мастеринг</h3><p>Финальная громкость и окраска, чтобы трек звучал на любых колонках.</p></article>
+      <article class="svc reveal"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></span><h3>Написание песни</h3><p>Текст и музыка под твою идею, стиль и голос.</p><span class="price">5 000 ₽</span></article>
+      <article class="svc reveal"><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg></span><h3>Клипы и дизайн</h3><p>Видео и обложка для релиза — чтобы трек заметили.</p></article>
     </div>
   </div>
 </section>
@@ -589,7 +601,7 @@ body.loading .hero * { animation-play-state: paused !important; }
 <section class="block alt" id="records">
   <div class="bigword" data-drift="-.25" style="bottom:2%">VINYL</div>
   <div class="wrap">
-    <p class="sec-idx reveal"><b>02</b> Пластинки</p>
+    <p class="sec-idx reveal"><i></i>Пластинки</p>
     <h2 class="sec-title reveal">Выбери <em>пластинку</em></h2>
     <p class="sec-sub reveal">Каждая пластинка — раздел о студии. Поставь её на проигрыватель, переключай 33/45 и жми START/STOP.</p>
     <div class="jukebox">
@@ -618,15 +630,15 @@ body.loading .hero * { animation-play-state: paused !important; }
           </div>
           <div class="ctrls">
             <div class="speed"><button type="button" class="on" data-rpm="33" aria-label="33 оборота">33</button><button type="button" data-rpm="45" aria-label="45 оборотов">45</button></div>
-            <button type="button" class="ss" id="startstop" disabled data-cur="START">START<br>STOP</button>
+            <button type="button" class="ss" id="startstop" disabled>START<br>STOP</button>
           </div>
         </div>
       </div>
       <div class="records-col">
         <div class="crate reveal" id="crate">
-          <button type="button" class="sleeve" data-rec="about" data-cur="PLAY"><span class="sl-disc" data-vinyl="#ff6a2b|О НАС|A1"></span><span class="cover art-about"><span class="tag">● играет</span><span class="num">A1</span><span class="lbl">О НАС</span></span><b>О нас</b><small>кто мы и что делаем</small></button>
-          <button type="button" class="sleeve" data-rec="contacts" data-cur="PLAY"><span class="sl-disc" data-vinyl="#ffae42|КОНТАКТЫ|A2"></span><span class="cover art-contacts"><span class="tag">● играет</span><span class="num">A2</span><span class="lbl">КОНТАКТЫ</span></span><b>Контакты</b><small>адрес, телефон, часы</small></button>
-          <button type="button" class="sleeve" data-rec="reviews" data-cur="PLAY"><span class="sl-disc" data-vinyl="#ff3b30|ОТЗЫВЫ|B1"></span><span class="cover art-reviews"><span class="tag">● играет</span><span class="num">B1</span><span class="lbl">ОТЗЫВЫ</span></span><b>Отзывы</b><small>что говорят артисты</small></button>
+          <button type="button" class="sleeve" data-rec="about"><span class="sl-disc" data-vinyl="#ff6a2b|О НАС|A1"></span><span class="cover art-about"><span class="tag">● играет</span><span class="num">A1</span><span class="lbl">О НАС</span></span><b>О нас</b><small>кто мы и что делаем</small></button>
+          <button type="button" class="sleeve" data-rec="contacts"><span class="sl-disc" data-vinyl="#ffae42|КОНТАКТЫ|A2"></span><span class="cover art-contacts"><span class="tag">● играет</span><span class="num">A2</span><span class="lbl">КОНТАКТЫ</span></span><b>Контакты</b><small>адрес, телефон, часы</small></button>
+          <button type="button" class="sleeve" data-rec="reviews"><span class="sl-disc" data-vinyl="#ff3b30|ОТЗЫВЫ|B1"></span><span class="cover art-reviews"><span class="tag">● играет</span><span class="num">B1</span><span class="lbl">ОТЗЫВЫ</span></span><b>Отзывы</b><small>что говорят артисты</small></button>
         </div>
         <div class="info reveal" id="info" aria-live="polite">
           <div class="info-head"><span class="now" id="i-side">Side — · пусто</span><span id="i-status">нет пластинки</span></div>
@@ -644,10 +656,10 @@ body.loading .hero * { animation-play-state: paused !important; }
   <div class="bigword" data-drift=".2" style="top:8%">MIX</div>
   <div class="wrap mixer-wrap">
     <div class="reveal">
-      <p class="sec-idx"><b>03</b> Микшер</p>
+      <p class="sec-idx"><i></i>Микшер</p>
       <h2 class="sec-title">Попробуй <em>свести</em> сам</h2>
       <p class="sec-sub">Подвигай фейдеры — волна и визуализатор на главном экране отзовутся. А настоящее сведение оставь нам 😉</p>
-      <a class="btn" href="tel:+79610214876" data-cur="CALL">Записаться</a>
+      <a class="btn" href="tel:+79610214876">Записаться</a>
     </div>
     <div class="mixer reveal">
       <div class="ch"><span class="kn"></span><div class="meter"><i></i></div><input type="range" min="0" max="100" value="70" aria-label="Вокал"><label>Vocal</label></div>
@@ -662,13 +674,13 @@ body.loading .hero * { animation-play-state: paused !important; }
 <section class="block alt" id="plans">
   <div class="bigword" data-drift="-.2" style="top:6%">PRICE</div>
   <div class="wrap">
-    <p class="sec-idx reveal"><b>04</b> Тарифы</p>
+    <p class="sec-idx reveal"><i></i>Тарифы</p>
     <h2 class="sec-title reveal">Выбери <em>формат</em></h2>
     <p class="sec-sub reveal">От одного трека до большого релиза.</p>
     <div class="plans">
-      <div class="plan reveal"><span class="pdisc rot" data-vinyl="#ffae42|STD|S1"></span><span class="kind">Side S1</span><h3>Стандартный</h3><div class="sum">8 490 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><button type="button" class="btn ghost" data-open-contact data-plan="Стандартный" data-cur="WRITE">Выбрать</button></div>
-      <div class="plan top-plan reveal"><span class="badge">хит</span><span class="pdisc rot" data-vinyl="#ff6a2b|EXT|S2"></span><span class="kind">Side S2</span><h3>Расширенный</h3><div class="sum">24 990 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><button type="button" class="btn" data-open-contact data-plan="Расширенный" data-cur="WRITE">Выбрать</button></div>
-      <div class="plan reveal"><span class="pdisc rot" data-vinyl="#ff3b30|PRM|S3"></span><span class="kind">Side S3</span><h3>Премиальный</h3><div class="sum">38 490 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><button type="button" class="btn ghost" data-open-contact data-plan="Премиальный" data-cur="WRITE">Выбрать</button></div>
+      <div class="plan reveal"><span class="pdisc rot" data-vinyl="#ffae42|STD|S1"></span><span class="kind">Side S1</span><h3>Стандартный</h3><div class="sum">8 490 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><button type="button" class="btn ghost" data-open-contact data-plan="Стандартный">Выбрать</button></div>
+      <div class="plan top-plan reveal"><span class="badge">хит</span><span class="pdisc rot" data-vinyl="#ff6a2b|EXT|S2"></span><span class="kind">Side S2</span><h3>Расширенный</h3><div class="sum">24 990 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><button type="button" class="btn" data-open-contact data-plan="Расширенный">Выбрать</button></div>
+      <div class="plan reveal"><span class="pdisc rot" data-vinyl="#ff3b30|PRM|S3"></span><span class="kind">Side S3</span><h3>Премиальный</h3><div class="sum">38 490 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><button type="button" class="btn ghost" data-open-contact data-plan="Премиальный">Выбрать</button></div>
     </div>
     <p class="note reveal">* Цены и график взяты из открытых каталогов и могут быть неактуальны — это демонстрационный концепт.</p>
   </div>
@@ -677,7 +689,7 @@ body.loading .hero * { animation-play-state: paused !important; }
 <section class="block" id="how">
   <div class="waves-bg" aria-hidden="true" style="animation-direction: reverse"></div>
   <div class="wrap">
-    <p class="sec-idx reveal"><b>05</b> Процесс</p>
+    <p class="sec-idx reveal"><i></i>Процесс</p>
     <h2 class="sec-title reveal">Как мы <em>работаем</em></h2>
     <p class="sec-sub reveal">Четыре шага от идеи до релиза — подключаемся по цепочке.</p>
     <div class="steps" id="steps">
@@ -698,8 +710,8 @@ body.loading .hero * { animation-play-state: paused !important; }
       <h2>Готов<br>к <em>записи?</em></h2>
       <p>Позвони или оставь заявку — подберём время для сессии.</p>
       <div class="cta">
-        <a class="btn" href="tel:+79610214876" data-cur="CALL">📞 Позвонить</a>
-        <button type="button" class="btn ghost" data-open-contact data-cur="WRITE">Связь с нами</button>
+        <a class="btn" href="tel:+79610214876">📞 Позвонить</a>
+        <button type="button" class="btn ghost" data-open-contact>Связь с нами</button>
       </div>
     </div>
   </div>
@@ -710,7 +722,7 @@ body.loading .hero * { animation-play-state: paused !important; }
 </footer>
 
 <!-- «Связь с нами» -->
-<button type="button" class="contact-tab" data-open-contact data-cur="WRITE">Связь с нами</button>
+<button type="button" class="contact-tab" data-open-contact>Связь с нами</button>
 <div class="mbar"><a class="btn" href="tel:+79610214876">📞 Позвонить</a><button type="button" class="btn ghost" data-open-contact>Связь с нами</button></div>
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" aria-hidden="true">
@@ -732,8 +744,8 @@ body.loading .hero * { animation-play-state: paused !important; }
     <input id="f-when" placeholder="например, в субботу вечером">
     <label for="f-msg">Комментарий</label>
     <textarea id="f-msg" placeholder="Жанр, референсы, что хочешь получить"></textarea>
-    <button type="submit" class="btn">Отправить заявку по SMS</button>
-    <p class="hint">Откроется приложение сообщений с готовым текстом на номер студии.</p>
+    <button type="submit" class="btn" id="f-send">Отправить заявку</button>
+    <p class="hint" id="f-hint">Заявка уйдёт студии по SMS: откроется приложение сообщений с готовым текстом на номер +7 961 021-48-76.</p>
   </form>
 </aside>
 
@@ -779,13 +791,6 @@ $$("[data-vinyl]").forEach((el) => {
   el.classList.add("vinyl-wrap");
   el.innerHTML = vinylSVG(c, t, s) + '<i class="sheen"></i>';
 });
-
-// бегущие ленты
-const words = ["ЗАПИСЬ ВОКАЛА", "СВЕДЕНИЕ", "МАСТЕРИНГ", "НАПИСАНИЕ ПЕСЕН", "КЛИПЫ", "ДИЗАЙН ОБЛОЖЕК", "ЯРОСЛАВЛЬ"];
-const row = words.map((w) => `<span>${w}</span><em>✦</em>`).join("");
-$("#ticker").innerHTML = row + row;
-const row2 = ["ON AIR", "33⅓ RPM", "STEREO", "SIDE A", "SIDE B", "REC ●", "LIVE"].map((w) => `<span>${w}</span><em>●</em>`).join("");
-$("#ticker2").innerHTML = row2 + row2 + row2;
 
 /* ---------- пылинки в луче света ---------- */
 (() => {
@@ -922,39 +927,16 @@ if (!lite && !reduce) {
   hero.addEventListener("pointerleave", () => (tilt.style.transform = ""));
 }
 
-/* ---------- курсор и светящийся след ---------- */
+/* ---------- тёплый свет за мышью ---------- */
 if (fine && !reduce) {
-  document.body.classList.add("cur");
-  const dot = $(".c-dot"), ring = $(".c-ring"), label = ring.querySelector("span"), tc = $("#trail"), tx = tc.getContext("2d");
-  let x = -100, y = -100, rx = x, ry = y, pts = [], still = 0;
-  const size = () => { tc.width = innerWidth; tc.height = innerHeight; };
-  size(); addEventListener("resize", size);
-  addEventListener("pointermove", (e) => {
-    // резкий скачок (вход в окно, первое движение) — без длинной линии через экран
-    if (Math.hypot(e.clientX - x, e.clientY - y) > 250) { pts = []; rx = e.clientX; ry = e.clientY; }
-    x = e.clientX; y = e.clientY; still = 0;
-  });
-  document.addEventListener("pointerover", (e) => {
-    const el = e.target.closest("a, button, input, select, textarea, [data-cur]");
-    ring.classList.toggle("hot", !!el);
-    const txt = el && !el.disabled ? el.dataset.cur || "" : "";
-    label.textContent = txt; ring.classList.toggle("lab", !!txt);
-  });
-  document.addEventListener("pointerleave", () => { x = y = -100; });
+  const glow = $(".lamp-glow");
+  let x = innerWidth / 2, y = innerHeight / 2, gx = x, gy = y;
+  addEventListener("pointermove", (e) => { x = e.clientX; y = e.clientY; glow.classList.add("on"); });
+  document.addEventListener("pointerleave", () => glow.classList.remove("on"));
   (function loop() {
     requestAnimationFrame(loop);
-    rx += (x - rx) * .18; ry += (y - ry) * .18;
-    dot.style.transform = `translate(${x}px,${y}px)`;
-    ring.style.transform = `translate(${rx}px,${ry}px)`;
-    pts.push({ x, y }); if (pts.length > 24) pts.shift();
-    if (still++ > 30) { if (still === 32) tx.clearRect(0, 0, tc.width, tc.height); return; }
-    tx.clearRect(0, 0, tc.width, tc.height);
-    tx.lineCap = "round"; tx.shadowColor = "#ff6a2b"; tx.shadowBlur = 12;
-    for (let i = 1; i < pts.length; i++) {
-      const k = i / pts.length;
-      tx.strokeStyle = `rgba(255,${120 + k * 80 | 0},60,${k * .55})`; tx.lineWidth = k * 4;
-      tx.beginPath(); tx.moveTo(pts[i - 1].x, pts[i - 1].y); tx.lineTo(pts[i].x, pts[i].y); tx.stroke();
-    }
+    gx += (x - gx) * .08; gy += (y - gy) * .08;
+    glow.style.transform = `translate(${gx}px,${gy}px)`;
   })();
 }
 
@@ -986,6 +968,37 @@ const turnKnobs = () => mix().forEach((v, i) => (knobs[i].style.transform = `rot
 turnKnobs();
 faders.forEach((f) => f.addEventListener("input", turnKnobs));
 
+
+/* ---------- стрелочные индикаторы в стойке ---------- */
+(() => {
+  const faces = $$(".vu-face"), marks = [["-20", -43], ["-10", -24], ["-5", -5], ["0", 21], ["+3", 41]];
+  const pt = (a, r) => [60 + Math.sin(a * Math.PI / 180) * r, 68 - Math.cos(a * Math.PI / 180) * r];
+  let ticks = "";
+  for (let a = -45; a <= 45; a += 4.5) { const [x1, y1] = pt(a, 50), [x2, y2] = pt(a, a % 9 === 0 ? 43 : 46); ticks += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`; }
+  const labels = marks.map(([t, a]) => { const [x, y] = pt(a, 36); return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}">${t}</text>`; }).join("");
+  const [rx1, ry1] = pt(22, 52), [rx2, ry2] = pt(45, 52);
+  faces.forEach((f) => (f.innerHTML = `<svg viewBox="0 0 120 72" aria-hidden="true">
+    <path d="M${rx1.toFixed(1)} ${ry1.toFixed(1)} A52 52 0 0 1 ${rx2.toFixed(1)} ${ry2.toFixed(1)}" fill="none" stroke="#d9381e" stroke-width="5"/>
+    <g stroke="#2a1a12" stroke-width=".8">${ticks}</g>
+    <g font-family="Manrope,sans-serif" font-size="6.5" font-weight="800" fill="#2a1a12" text-anchor="middle">${labels}</g>
+    <text x="38" y="62" text-anchor="middle" font-family="Playfair Display,serif" font-style="italic" font-size="10" fill="#2a1a12">VU</text>
+    <g class="ndl"><line x1="60" y1="68" x2="60" y2="16" stroke="#1a0e08" stroke-width="1.3" stroke-linecap="round"/></g>
+    <circle cx="60" cy="68" r="5" fill="#1a0e08"/></svg>`));
+  const needles = faces.map((f) => f.querySelector(".ndl")), cur = needles.map(() => -45);
+  let on = false;
+  new IntersectionObserver(([e]) => { on = e.isIntersecting; if (on && !reduce) requestAnimationFrame(tick); }).observe($(".rack"));
+  function tick(t) {
+    if (!on) return;
+    const m = mix();
+    needles.forEach((n, i) => {
+      const target = -45 + level(t * .8, i * 1.3 + 2) * (60 + m[i === 3 ? 4 : i] * 30);
+      cur[i] += (target - cur[i]) * (target > cur[i] ? .25 : .07);
+      n.style.transform = `rotate(${cur[i].toFixed(1)}deg)`;
+    });
+    requestAnimationFrame(tick);
+  }
+})();
+
 // табличка ON AIR
 const onair = $("#onair");
 let offTimer;
@@ -1006,8 +1019,8 @@ const RECORDS = {
     side: "A2", name: "Контакты", title: "КОНТАКТЫ", color: "#ffae42", len: 165,
     html: `<h3>Где нас найти</h3>
       <div class="rows">
-        <a href="tel:+79610214876" data-cur="CALL"><span>📞</span><span>+7 961 021-48-76<small>позвонить и записаться</small></span></a>
-        <a href="https://yandex.ru/maps/?text=%D0%AF%D1%80%D0%BE%D1%81%D0%BB%D0%B0%D0%B2%D0%BB%D1%8C%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%90%D0%BA%D0%B0%D0%B4%D0%B5%D0%BC%D0%B8%D0%BA%D0%B0%20%D0%9A%D0%BE%D0%BB%D0%BC%D0%BE%D0%B3%D0%BE%D1%80%D0%BE%D0%B2%D0%B0%2C%2024%D0%BA2" target="_blank" rel="noopener" data-cur="MAP"><span>📍</span><span>ул. Академика Колмогорова, 24 к2<small>открыть на карте</small></span></a>
+        <a href="tel:+79610214876"><span>📞</span><span>+7 961 021-48-76<small>позвонить и записаться</small></span></a>
+        <a href="https://yandex.ru/maps/?text=%D0%AF%D1%80%D0%BE%D1%81%D0%BB%D0%B0%D0%B2%D0%BB%D1%8C%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%90%D0%BA%D0%B0%D0%B4%D0%B5%D0%BC%D0%B8%D0%BA%D0%B0%20%D0%9A%D0%BE%D0%BB%D0%BC%D0%BE%D0%B3%D0%BE%D1%80%D0%BE%D0%B2%D0%B0%2C%2024%D0%BA2" target="_blank" rel="noopener"><span>📍</span><span>ул. Академика Колмогорова, 24 к2<small>открыть на карте</small></span></a>
         <div><span>🕙</span><span>Ежедневно 10:00–23:00<small>по данным каталогов</small></span></div>
       </div>`,
   },
@@ -1025,7 +1038,7 @@ const RECORDS = {
   const fmt = (s) => (s / 60 | 0) + ":" + String(s % 60 | 0).padStart(2, "0");
   lcdBars.innerHTML = "<i></i>".repeat(20);
   const barEls = [...lcdBars.children];
-  $("#tracklist").innerHTML = Object.entries(RECORDS).map(([k, r]) => `<li><button type="button" data-play="${k}" data-cur="PLAY"><em>${r.side}</em><span>${r.name}</span><span>${fmt(r.len)}</span></button></li>`).join("");
+  $("#tracklist").innerHTML = Object.entries(RECORDS).map(([k, r]) => `<li><button type="button" data-play="${k}"><em>${r.side}</em><span>${r.name}</span><span>${fmt(r.len)}</span></button></li>`).join("");
   let busy = false, current = null, spinning = false, rpm = 33, pos = 0;
 
   function render() {
@@ -1034,7 +1047,6 @@ const RECORDS = {
     $("#i-status").textContent = !r ? "нет пластинки" : spinning ? "играет" : "пауза";
     ss.disabled = !r;
     ss.classList.toggle("on", spinning);
-    ss.dataset.cur = spinning ? "STOP" : "START";
     deck.classList.toggle("spinning", spinning);
     lcdRpm.textContent = rpm === 33 ? "33⅓ RPM" : "45 RPM";
     $$("#tracklist button").forEach((b) => b.classList.toggle("on", b.dataset.play === current));
@@ -1143,33 +1155,42 @@ const RECORDS = {
   $("#drawer-close").addEventListener("click", close);
   $("#scrim").addEventListener("click", close);
   addEventListener("keydown", (e) => e.key === "Escape" && close());
-  $("#lead-form").addEventListener("submit", (e) => {
+  // Куда уходит заявка. Сейчас сервера нет, поэтому заявка открывается как SMS на номер студии.
+  // Для боевого сайта сюда ставится адрес обработчика (Telegram-бот студии или отправка на почту) —
+  // тогда заявка прилетает студии автоматически, а клиент видит «Заявка отправлена».
+  const LEAD_ENDPOINT = "";
+  const form = $("#lead-form");
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const data = { name: $("#f-name").value, service: $("#f-service").value, when: $("#f-when").value, comment: $("#f-msg").value };
     const text = [
       `Здравствуйте! Хочу записаться.`,
-      `Имя: ${$("#f-name").value}`,
-      `Услуга: ${$("#f-service").value}`,
-      $("#f-when").value && `Когда удобно: ${$("#f-when").value}`,
-      $("#f-msg").value && `Комментарий: ${$("#f-msg").value}`,
+      `Имя: ${data.name}`,
+      `Услуга: ${data.service}`,
+      data.when && `Когда удобно: ${data.when}`,
+      data.comment && `Комментарий: ${data.comment}`,
     ].filter(Boolean).join("\n");
+    if (LEAD_ENDPOINT) {
+      $("#f-send").disabled = true;
+      try {
+        const r = await fetch(LEAD_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...data, text }) });
+        if (!r.ok) throw new Error(r.status);
+        form.innerHTML = `<h3>Заявка отправлена ✓</h3><p class="hint">Студия свяжется с тобой по телефону или в мессенджере.</p>`;
+        return;
+      } catch (err) { $("#f-send").disabled = false; $("#f-hint").textContent = "Не получилось отправить — открываем SMS с готовым текстом."; }
+    }
     location.href = `sms:+79610214876?&body=${encodeURIComponent(text)}`;
   });
 })();
 
 
-/* ---------- заставка: пластинка раскручивается, счётчик до 100 ---------- */
+/* ---------- заставка: пластинка вкатывается, шторка раскрывается ---------- */
 (() => {
-  const loader = $("#loader"), n = $("#ld-n"), bar = $("#ld-bar");
+  const loader = $("#loader");
   let seen = false;
   try { seen = sessionStorage.getItem("sl-intro") === "1"; sessionStorage.setItem("sl-intro", "1"); } catch (e) {}
-  const finish = () => { loader.classList.add("done"); document.body.classList.remove("loading"); setTimeout(() => loader.remove(), 1100); };
   if (reduce || seen) { loader.remove(); document.body.classList.remove("loading"); return; }
-  const t0 = performance.now(), dur = 1300;
-  (function step(t) {
-    const k = clamp((t - t0) / dur), e = 1 - (1 - k) ** 3;
-    n.textContent = Math.round(e * 100); bar.style.width = e * 100 + "%";
-    if (k < 1) requestAnimationFrame(step); else setTimeout(finish, 150);
-  })(t0);
+  setTimeout(() => { loader.classList.add("done"); document.body.classList.remove("loading"); setTimeout(() => loader.remove(), 1100); }, 1500);
 })();
 
 /* ---------- прогресс прокрутки на мини-пластинке ---------- */
