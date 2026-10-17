@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sound Live Records — концепт сайта · nalpax</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="description" content="Концепт-дизайн сайта для студии звукозаписи Sound Live Records (Ярославль). Неофициальный сайт, дизайн — nalpax.">
@@ -12,7 +12,7 @@
 <style>
 :root {
   --bg: #0b0706;
-  --bg-2: #140c0a;
+  --bg-2: #120b09;
   --card: #1a100d;
   --line: rgba(255, 170, 90, .14);
   --text: #f6e9df;
@@ -22,82 +22,183 @@
   --hot: #ff6a2b;
   --display: "Unbounded", system-ui, sans-serif;
   --body: "Manrope", system-ui, sans-serif;
+  --safe-b: env(safe-area-inset-bottom, 0px);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.6; overflow-x: hidden; }
 a { color: inherit; text-decoration: none; }
-.wrap { max-width: 1160px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
+button { font: inherit; color: inherit; }
+.wrap { position: relative; z-index: 2; max-width: 1160px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
 
-/* плашка «концепт» — всегда видна, чтобы сайт не путали с официальным */
-.concept {
-  position: sticky; top: 0; z-index: 50; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
-  padding: 8px 16px; font-size: 12px; text-align: center; color: #1a0e08; background: var(--amber);
-}
+/* ================= ФОН: свет, пыль в луче, волны, зерно ================= */
+.bg-orbs { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.bg-orbs i { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .5; animation: orb 28s ease-in-out infinite alternate; }
+.bg-orbs i:nth-child(1) { width: 46vmax; height: 46vmax; left: -12vmax; top: -10vmax; background: radial-gradient(rgba(255, 106, 43, .45), transparent 65%); }
+.bg-orbs i:nth-child(2) { width: 40vmax; height: 40vmax; right: -14vmax; top: 30vh; background: radial-gradient(rgba(255, 174, 66, .3), transparent 65%); animation-duration: 34s; animation-delay: -10s; }
+.bg-orbs i:nth-child(3) { width: 36vmax; height: 36vmax; left: 20vw; bottom: -18vmax; background: radial-gradient(rgba(255, 59, 48, .28), transparent 65%); animation-duration: 40s; animation-delay: -18s; }
+@keyframes orb { to { transform: translate(8vw, 6vh) scale(1.15); } }
+/* луч прожектора из угла */
+.beam { position: fixed; z-index: 0; pointer-events: none; top: -20vh; left: 55vw; width: 60vw; height: 160vh; transform: rotate(28deg); transform-origin: top center;
+  background: linear-gradient(to bottom, rgba(255, 200, 140, .08), transparent 70%); clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%); animation: beam 12s ease-in-out infinite alternate; }
+@keyframes beam { to { transform: rotate(18deg); opacity: .7; } }
+#dust { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+/* лёгкое плёночное зерно */
+.grain { position: fixed; inset: -50%; z-index: 60; pointer-events: none; opacity: .045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(5) infinite; }
+@keyframes grain { 20% { transform: translate(-4%, 3%); } 40% { transform: translate(3%, -4%); } 60% { transform: translate(-2%, 5%); } 80% { transform: translate(4%, -2%); } }
+/* тонкие звуковые волны как фактура секций */
+.waves-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .5;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='120'%3E%3Cpath d='M0 60 Q 75 10 150 60 T 300 60 T 450 60 T 600 60' fill='none' stroke='%23ffae42' stroke-opacity='.07' stroke-width='1.5'/%3E%3Cpath d='M0 80 Q 75 40 150 80 T 300 80 T 450 80 T 600 80' fill='none' stroke='%23ff6a2b' stroke-opacity='.05' stroke-width='1'/%3E%3C/svg%3E") repeat;
+  animation: wavesMove 40s linear infinite; }
+@keyframes wavesMove { to { background-position: 600px 0; } }
+
+/* ================= плашка «концепт» ================= */
+.concept { position: sticky; top: 0; z-index: 70; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+  padding: 7px 16px; font-size: 12px; text-align: center; color: #1a0e08; background: var(--amber); }
 .concept b { font-weight: 800; }
 .concept a { text-decoration: underline; font-weight: 800; }
 
-/* шапка */
-.top { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; }
+/* ================= шапка ================= */
+.top { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; }
 .brand { display: flex; align-items: center; gap: 12px; font-family: var(--display); font-weight: 800; font-size: 15px; letter-spacing: .04em; }
-.onair {
-  display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 800; letter-spacing: .2em;
-  color: #fff; background: #3a0d09; border: 1px solid #5c1a12; transition: background .4s, box-shadow .4s;
-}
+.onair { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 800; letter-spacing: .2em;
+  color: #fff; background: #3a0d09; border: 1px solid #5c1a12; transition: background .4s, box-shadow .4s; }
 .onair i { width: 8px; height: 8px; border-radius: 50%; background: #5c1a12; }
 .onair.live { background: var(--red); border-color: var(--red); box-shadow: 0 0 24px rgba(255, 59, 48, .7), 0 0 60px rgba(255, 59, 48, .35); }
 .onair.live i { background: #fff; animation: blink 1s steps(1) infinite; }
 @keyframes blink { 50% { opacity: .2; } }
-.nav { display: flex; gap: 26px; font-size: 14px; color: var(--muted); }
+.nav { display: flex; align-items: center; gap: 24px; font-size: 14px; color: var(--muted); }
 .nav a:hover { color: var(--amber); }
+.nav .nav-cta { padding: 9px 16px; border-radius: 999px; color: var(--text); border: 1px solid var(--line); cursor: pointer; background: none; transition: border-color .2s, color .2s; }
+.nav .nav-cta:hover { border-color: var(--amber); color: var(--amber); }
+.eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+.eq i { width: 3px; background: var(--amber); border-radius: 1px; animation: eq 1s ease-in-out infinite alternate; }
+.eq i:nth-child(2) { animation-delay: -.3s; } .eq i:nth-child(3) { animation-delay: -.6s; } .eq i:nth-child(4) { animation-delay: -.15s; }
+@keyframes eq { from { height: 20%; } to { height: 100%; } }
 
-/* главный экран */
-.hero { position: relative; min-height: calc(100vh - 110px); display: grid; align-content: center; padding: 40px 0 80px; }
-#wave { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
-.hero::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(ellipse at 70% 40%, rgba(255, 106, 43, .18), transparent 55%), linear-gradient(to bottom, transparent 70%, var(--bg)); }
-.hero-in { position: relative; z-index: 1; }
+/* ================= главный экран ================= */
+.hero { position: relative; min-height: calc(100vh - 110px); display: grid; align-content: center; padding: 30px 0 90px; }
+#wave { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(to bottom, transparent 70%, var(--bg)); }
+.hero .wrap { z-index: 3; }
 .kicker { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: var(--amber); letter-spacing: .2em; text-transform: uppercase; }
 .kicker::before { content: ""; width: 34px; height: 1px; background: var(--amber); }
-h1 { font-family: var(--display); font-weight: 900; font-size: clamp(44px, 9vw, 120px); line-height: .92; letter-spacing: -.03em; margin: 18px 0 22px; }
-h1 span { display: block; color: transparent; -webkit-text-stroke: 2px var(--amber); }
-.lead { max-width: 560px; font-size: clamp(16px, 2vw, 20px); color: #e5d2c6; }
-.cta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 34px; }
-.btn {
-  display: inline-flex; align-items: center; gap: 10px; padding: 16px 28px; border-radius: 999px; font-weight: 800; font-size: 15px;
-  background: linear-gradient(135deg, var(--hot), var(--red)); color: #fff; box-shadow: 0 10px 40px rgba(255, 59, 48, .35); transition: transform .2s, box-shadow .2s;
-}
+h1 { font-family: var(--display); font-weight: 900; font-size: clamp(42px, 9vw, 120px); line-height: .92; letter-spacing: -.03em; margin: 18px 0 22px; }
+h1 .line { display: block; overflow: hidden; }
+h1 .line > span { display: inline-block; animation: rise 1s cubic-bezier(.2, .8, .2, 1) both; }
+h1 .line:nth-child(2) > span { animation-delay: .15s; color: var(--amber); text-shadow: 0 0 40px rgba(255, 174, 66, .35); }
+@keyframes rise { from { transform: translateY(105%); } }
+.lead { max-width: 560px; font-size: clamp(16px, 2vw, 20px); color: #e5d2c6; animation: fade 1s .4s both; }
+@keyframes fade { from { opacity: 0; transform: translateY(14px); } }
+.cta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 34px; animation: fade 1s .55s both; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 28px; border-radius: 999px; font-weight: 800; font-size: 15px; border: 0; cursor: pointer;
+  background: linear-gradient(135deg, var(--hot), var(--red)); color: #fff; box-shadow: 0 10px 40px rgba(255, 59, 48, .35); transition: transform .2s, box-shadow .2s; }
 .btn:hover { transform: translateY(-2px); box-shadow: 0 14px 50px rgba(255, 59, 48, .5); }
-.btn.ghost { background: transparent; border: 1px solid var(--line); box-shadow: none; color: var(--text); }
+.btn.ghost { background: rgba(0, 0, 0, .25); border: 1px solid var(--line); box-shadow: none; color: var(--text); }
 .btn.ghost:hover { border-color: var(--amber); color: var(--amber); }
-.facts { display: flex; gap: 40px; flex-wrap: wrap; margin-top: 54px; font-size: 13px; color: var(--muted); }
+.facts { display: flex; gap: 40px; flex-wrap: wrap; margin-top: 54px; font-size: 13px; color: var(--muted); animation: fade 1s .7s both; }
 .facts b { display: block; font-family: var(--display); font-size: 22px; color: var(--text); }
+.scroll-cue { position: absolute; left: 50%; bottom: 26px; z-index: 3; transform: translateX(-50%); font-size: 11px; letter-spacing: .3em; color: var(--muted); text-transform: uppercase; }
+.scroll-cue::after { content: ""; display: block; width: 1px; height: 36px; margin: 8px auto 0; background: linear-gradient(var(--amber), transparent); animation: cue 2s ease-in-out infinite; }
+@keyframes cue { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
 
 /* бегущая строка */
-.ticker { overflow: hidden; border-block: 1px solid var(--line); background: var(--bg-2); }
-.ticker div { display: inline-block; white-space: nowrap; padding: 16px 0; font-family: var(--display); font-size: clamp(16px, 2.4vw, 24px); animation: run 30s linear infinite; }
+.ticker { position: relative; z-index: 2; overflow: hidden; border-block: 1px solid var(--line); background: rgba(18, 11, 9, .85); }
+.ticker div { display: inline-block; white-space: nowrap; padding: 16px 0; font-family: var(--display); font-size: clamp(16px, 2.4vw, 24px); animation: run 34s linear infinite; }
 .ticker span { margin: 0 26px; }
 .ticker em { font-style: normal; color: var(--amber); }
 @keyframes run { to { transform: translateX(-50%); } }
 
-/* секции */
-section.block { padding: 110px 0; }
+/* ================= секции ================= */
+section.block { position: relative; padding: 110px 0; }
 .sec-title { font-family: var(--display); font-weight: 800; font-size: clamp(30px, 5vw, 56px); line-height: 1.05; margin-bottom: 14px; }
 .sec-title em { font-style: normal; color: var(--amber); }
 .sec-sub { color: var(--muted); max-width: 560px; margin-bottom: 50px; }
+.alt { background: rgba(18, 11, 9, .7); }
 
 /* услуги */
 .services { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
-.svc {
-  position: relative; padding: 28px; border-radius: 22px; background: var(--card); border: 1px solid var(--line); overflow: hidden;
-  transition: transform .3s, border-color .3s;
-}
-.svc::after { content: ""; position: absolute; inset: auto -40% -60% auto; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(rgba(255, 106, 43, .25), transparent 70%); opacity: 0; transition: opacity .4s; }
+.svc { position: relative; padding: 28px; border-radius: 22px; background: rgba(26, 16, 13, .85); border: 1px solid var(--line); overflow: hidden; transition: transform .35s, border-color .35s; }
+.svc::after { content: ""; position: absolute; width: 240px; height: 240px; right: -90px; bottom: -110px; border-radius: 50%; background: radial-gradient(rgba(255, 106, 43, .28), transparent 70%); opacity: .35; transition: opacity .4s, transform .6s; }
 .svc:hover { transform: translateY(-6px); border-color: rgba(255, 174, 66, .5); }
-.svc:hover::after { opacity: 1; }
-.svc .ico { font-size: 28px; }
-.svc h3 { font-family: var(--display); font-size: 19px; margin: 16px 0 8px; }
+.svc:hover::after { opacity: 1; transform: scale(1.2); }
+.svc .ico { display: inline-grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; font-size: 24px; background: rgba(255, 174, 66, .08); border: 1px solid var(--line); animation: float 5s ease-in-out infinite; }
+.svc:nth-child(2n) .ico { animation-delay: -2.5s; }
+@keyframes float { 50% { transform: translateY(-6px); } }
+.svc h3 { font-family: var(--display); font-size: 19px; margin: 18px 0 8px; }
 .svc p { color: var(--muted); font-size: 14px; }
 .svc .price { display: inline-block; margin-top: 16px; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 800; color: var(--amber); background: rgba(255, 174, 66, .1); }
+
+/* ================= ПЛАСТИНКИ И ПРОИГРЫВАТЕЛЬ ================= */
+.jukebox { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.crate { display: flex; gap: 18px; margin-bottom: 30px; }
+.sleeve { position: relative; isolation: isolate; width: 150px; flex: none; background: none; border: 0; cursor: pointer; text-align: left; padding: 0; }
+.sleeve .cover { position: relative; display: block; aspect-ratio: 1; border-radius: 10px; overflow: hidden; box-shadow: 0 16px 40px rgba(0, 0, 0, .5); transition: transform .35s; }
+.sleeve .cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255, 255, 255, .14), transparent 45%); }
+.sleeve .vinyl { position: absolute; top: 6%; left: 6%; width: 88%; transition: transform .45s cubic-bezier(.2, .8, .2, 1); z-index: -1; }
+.sleeve:hover .vinyl, .sleeve:focus-visible .vinyl { transform: translateY(-34%); }
+.sleeve:hover .cover { transform: translateY(4px); }
+.sleeve.out .vinyl { opacity: 0; }
+.sleeve.out .cover { opacity: .55; }
+.sleeve b { display: block; margin-top: 12px; font-family: var(--display); font-size: 14px; }
+.sleeve small { color: var(--muted); font-size: 12px; }
+.c-about { background: linear-gradient(135deg, #ff6a2b, #7a1a0c); }
+.c-contacts { background: linear-gradient(135deg, #ffae42, #8a4a06); }
+.c-reviews { background: linear-gradient(135deg, #ff3b30, #3a0814); }
+.cover .lbl { position: absolute; left: 12px; bottom: 10px; font-family: var(--display); font-weight: 900; font-size: 20px; line-height: 1; color: rgba(0, 0, 0, .55); }
+.cover .num { position: absolute; right: 10px; top: 8px; font-size: 11px; font-weight: 800; color: rgba(255, 255, 255, .8); }
+
+/* виниловый диск */
+.vinyl { display: block; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle, var(--lab, #ff6a2b) 0 17%, #0d0d0d 17.5% 19%, transparent 19.5%),
+    repeating-radial-gradient(circle, #111 0 1.5px, #1c1c1c 1.5px 3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .6), inset 0 0 0 2px #050505; position: relative; }
+.vinyl::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 20deg, transparent 0 15%, rgba(255, 255, 255, .13) 20%, transparent 26% 62%, rgba(255, 255, 255, .08) 67%, transparent 73%); }
+.vinyl::after { content: ""; position: absolute; inset: 48.5%; border-radius: 50%; background: #000; }
+
+/* проигрыватель */
+.deck { position: relative; aspect-ratio: 1.15; border-radius: 28px; padding: 6%;
+  background: linear-gradient(145deg, #2a1a14, #120b09); border: 1px solid var(--line);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 40px 90px rgba(0, 0, 0, .55); }
+.platter { position: absolute; left: 7%; top: 8%; width: 70%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #2a2a2a, #0a0a0a 70%); box-shadow: inset 0 0 0 6px #181818, 0 8px 20px rgba(0, 0, 0, .5); }
+.platter .vinyl { position: absolute; inset: 3%; width: 94%; opacity: 0; transition: opacity .3s; }
+.deck.has .platter .vinyl { opacity: 1; animation: spin 3.2s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.tonearm { position: absolute; right: 9%; top: 9%; width: 12%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #ccc, #555); box-shadow: 0 6px 14px rgba(0, 0, 0, .6); transform-origin: 50% 50%; transform: rotate(0deg); transition: transform 1s cubic-bezier(.4, .1, .2, 1); z-index: 3; }
+.tonearm::before { content: ""; position: absolute; left: 44%; top: 50%; width: 9%; height: 420%; background: linear-gradient(90deg, #888, #ddd, #888); border-radius: 4px; transform-origin: top center; }
+.tonearm::after { content: ""; position: absolute; left: 30%; top: 450%; width: 38%; height: 70%; border-radius: 4px; background: linear-gradient(#ddd, #777); }
+.deck.has .tonearm { transform: rotate(24deg); }
+.deck-ui { position: absolute; right: 7%; bottom: 8%; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+.led { width: 10px; height: 10px; border-radius: 50%; background: #3a0d09; }
+.deck.has .led { background: var(--red); box-shadow: 0 0 12px var(--red); }
+.knob { width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #666, #1c1c1c); box-shadow: 0 4px 10px rgba(0, 0, 0, .6); position: relative; transition: transform 1s; }
+.knob::after { content: ""; position: absolute; left: 50%; top: 4px; width: 2px; height: 12px; margin-left: -1px; background: var(--amber); }
+.deck.has .knob { transform: rotate(120deg); }
+.deck-hint { position: absolute; left: 7%; bottom: 7%; font-size: 12px; color: var(--muted); letter-spacing: .1em; }
+/* летящая пластинка */
+.flying { position: fixed; z-index: 80; pointer-events: none; transition: transform .9s cubic-bezier(.5, 0, .2, 1), width .9s cubic-bezier(.5, 0, .2, 1); }
+/* экран с информацией */
+.info { position: relative; min-height: 340px; padding: 30px; border-radius: 26px; background: rgba(26, 16, 13, .85); border: 1px solid var(--line); overflow: hidden; }
+.info::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, .02) 0 1px, transparent 1px 4px); pointer-events: none; }
+.info .idle { color: var(--muted); display: grid; place-items: center; text-align: center; min-height: 280px; }
+.info .idle b { display: block; font-family: var(--display); font-size: 20px; color: var(--text); margin-bottom: 6px; }
+.info .track { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--amber); display: flex; align-items: center; gap: 10px; }
+.info h3 { font-family: var(--display); font-size: clamp(24px, 3vw, 34px); margin: 12px 0 14px; }
+.info p { color: #dccbc0; }
+.info .panel { animation: panelIn .6s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes panelIn { from { opacity: 0; transform: translateY(16px); filter: blur(6px); } }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.chips span { padding: 6px 12px; border-radius: 999px; font-size: 12px; background: rgba(255, 174, 66, .08); border: 1px solid var(--line); }
+.info .rows { display: grid; gap: 10px; margin-top: 16px; }
+.info .rows a, .info .rows div { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 14px; background: rgba(0, 0, 0, .25); border: 1px solid var(--line); }
+.info .rows a:hover { border-color: var(--amber); }
+.info .rows small { display: block; color: var(--muted); font-size: 12px; }
+.rev { padding: 14px; border-radius: 14px; background: rgba(0, 0, 0, .25); border: 1px dashed var(--line); margin-top: 12px; }
+.rev i { display: block; height: 8px; border-radius: 4px; margin: 6px 0; background: linear-gradient(90deg, rgba(255, 174, 66, .08), rgba(255, 174, 66, .22), rgba(255, 174, 66, .08)); background-size: 200% 100%; animation: shimmer 1.6s linear infinite; }
+.rev .stars { color: var(--amber); letter-spacing: 2px; font-size: 13px; }
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 
 /* микшер */
 .mixer-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
@@ -105,7 +206,7 @@ section.block { padding: 110px 0; }
 .ch { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .meter { width: 10px; height: 160px; border-radius: 6px; background: #0b0605; position: relative; overflow: hidden; }
 .meter i { position: absolute; left: 0; right: 0; bottom: 0; height: 30%; background: linear-gradient(to top, #2ecc71 0 60%, var(--amber) 60% 85%, var(--red) 85%); transition: height .08s; }
-.ch input[type="range"] { writing-mode: vertical-lr; direction: rtl; width: 34px; height: 150px; appearance: none; -webkit-appearance: none; background: none; cursor: grab; }
+.ch input[type="range"] { writing-mode: vertical-lr; direction: rtl; width: 34px; height: 150px; appearance: none; -webkit-appearance: none; background: none; cursor: grab; touch-action: none; }
 .ch input[type="range"]::-webkit-slider-runnable-track { width: 4px; background: #2a1a14; border-radius: 2px; }
 .ch input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 32px; height: 16px; border-radius: 4px; background: linear-gradient(#ddd, #888); box-shadow: 0 4px 10px rgba(0, 0, 0, .6); margin-left: -14px; }
 .ch input[type="range"]::-moz-range-track { width: 4px; background: #2a1a14; }
@@ -114,17 +215,18 @@ section.block { padding: 110px 0; }
 
 /* тарифы */
 .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-.plan { padding: 34px 28px; border-radius: 26px; background: var(--card); border: 1px solid var(--line); display: flex; flex-direction: column; }
+.plan { padding: 34px 28px; border-radius: 26px; background: rgba(26, 16, 13, .85); border: 1px solid var(--line); display: flex; flex-direction: column; transition: transform .35s; }
+.plan:hover { transform: translateY(-6px); }
 .plan.top-plan { background: linear-gradient(160deg, #3a160c, #1a0d09); border-color: var(--hot); box-shadow: 0 20px 70px rgba(255, 106, 43, .2); position: relative; }
 .plan.top-plan::before { content: "хит"; position: absolute; top: -12px; right: 24px; padding: 3px 12px; border-radius: 999px; font-size: 11px; font-weight: 800; text-transform: uppercase; background: var(--hot); color: #fff; }
 .plan h3 { font-family: var(--display); font-size: 20px; }
 .plan .sum { font-family: var(--display); font-weight: 900; font-size: 40px; margin: 18px 0 6px; }
 .plan .sum small { font-size: 18px; color: var(--muted); }
 .plan p { color: var(--muted); font-size: 14px; flex: 1; }
-.plan .btn { margin-top: 26px; justify-content: center; }
+.plan .btn { margin-top: 26px; }
 .note { margin-top: 18px; font-size: 13px; color: var(--muted); }
 
-/* как работаем */
+/* этапы */
 .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; counter-reset: s; }
 .step { padding: 26px; border-top: 2px solid var(--line); counter-increment: s; transition: border-color .3s; }
 .step:hover { border-color: var(--amber); }
@@ -132,34 +234,74 @@ section.block { padding: 110px 0; }
 .step h3 { font-family: var(--display); font-size: 17px; margin: 10px 0 6px; }
 .step p { font-size: 14px; color: var(--muted); }
 
-/* контакты */
-.contact { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; padding: clamp(28px, 5vw, 60px); border-radius: 32px; background: radial-gradient(ellipse at 0% 0%, rgba(255, 106, 43, .25), transparent 60%), var(--card); border: 1px solid var(--line); }
-.contact h2 { font-family: var(--display); font-weight: 900; font-size: clamp(30px, 5vw, 58px); line-height: 1; }
-.contact h2 em { font-style: normal; color: var(--amber); }
-.c-list { display: grid; gap: 14px; align-content: center; }
-.c-item { display: flex; gap: 14px; align-items: center; padding: 16px 18px; border-radius: 18px; background: rgba(0, 0, 0, .25); border: 1px solid var(--line); transition: border-color .2s; }
-.c-item:hover { border-color: var(--amber); }
-.c-item b { display: block; font-size: 16px; }
-.c-item small { color: var(--muted); font-size: 12px; }
-.c-item .ci { font-size: 22px; width: 32px; text-align: center; }
+/* финальный призыв */
+.final { text-align: center; padding: clamp(40px, 7vw, 80px) 24px; border-radius: 34px; background: radial-gradient(ellipse at 50% 0%, rgba(255, 106, 43, .3), transparent 65%), rgba(26, 16, 13, .85); border: 1px solid var(--line); }
+.final h2 { font-family: var(--display); font-weight: 900; font-size: clamp(30px, 6vw, 64px); line-height: 1; margin-bottom: 18px; }
+.final h2 em { font-style: normal; color: var(--amber); }
+.final p { color: var(--muted); margin-bottom: 30px; }
+.final .cta { justify-content: center; animation: none; }
 
-footer { padding: 50px 0 70px; text-align: center; color: var(--muted); font-size: 13px; }
+footer { position: relative; z-index: 2; padding: 50px 0 calc(90px + var(--safe-b)); text-align: center; color: var(--muted); font-size: 13px; }
 footer a { color: var(--amber); text-decoration: underline; }
 
-.reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s, transform .8s; }
+/* ================= «Связь с нами» ================= */
+.contact-tab { position: fixed; right: 0; top: 50%; z-index: 65; transform: translateY(-50%); writing-mode: vertical-rl; rotate: 180deg;
+  padding: 18px 12px; border-radius: 0 14px 14px 0; border: 0; cursor: pointer; font-weight: 800; font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+  background: linear-gradient(180deg, var(--hot), var(--red)); color: #fff; box-shadow: 0 0 30px rgba(255, 59, 48, .4); transition: padding .2s; }
+.contact-tab:hover { padding-right: 18px; }
+.scrim { position: fixed; inset: 0; z-index: 90; background: rgba(0, 0, 0, .55); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity .35s; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 91; width: min(440px, 100vw); overflow-y: auto; padding: 28px 26px calc(28px + var(--safe-b));
+  background: #140c0a; border-left: 1px solid var(--line); box-shadow: -30px 0 80px rgba(0, 0, 0, .6); transform: translateX(105%); transition: transform .45s cubic-bezier(.2, .8, .2, 1); }
+body.drawer-open .scrim { opacity: 1; pointer-events: auto; }
+body.drawer-open .drawer { transform: none; }
+.drawer-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.drawer-head h2 { font-family: var(--display); font-size: 24px; }
+.x { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: none; cursor: pointer; font-size: 18px; }
+.drawer .call { width: 100%; margin-bottom: 18px; }
+.drawer .rows { display: grid; gap: 10px; margin-bottom: 24px; }
+.drawer .rows a, .drawer .rows div { display: flex; gap: 12px; align-items: center; padding: 14px; border-radius: 16px; background: rgba(0, 0, 0, .25); border: 1px solid var(--line); }
+.drawer .rows small { display: block; color: var(--muted); font-size: 12px; }
+.form h3 { font-family: var(--display); font-size: 17px; margin-bottom: 12px; }
+.form label { display: block; font-size: 12px; color: var(--muted); margin: 12px 0 6px; }
+.form input, .form select, .form textarea { width: 100%; padding: 13px 14px; border-radius: 14px; border: 1px solid var(--line); background: #0d0806; color: var(--text); font: inherit; font-size: 15px; outline: none; transition: border-color .2s; }
+.form input:focus, .form select:focus, .form textarea:focus { border-color: var(--amber); }
+.form textarea { min-height: 80px; resize: vertical; }
+.form .btn { width: 100%; margin-top: 18px; }
+.form .hint { font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+/* элементы сеток не растягивают колонку шире экрана */
+.jukebox > *, .mixer-wrap > *, .services > *, .plans > * { min-width: 0; }
+html { overflow-x: hidden; }
+
+/* нижняя панель на телефоне */
+.mbar { display: none; }
+
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity .9s, transform .9s cubic-bezier(.2, .8, .2, 1); }
 .reveal.in { opacity: 1; transform: none; }
 
+/* ================= телефон ================= */
 @media (max-width: 900px) {
-  .nav { display: none; }
-  .mixer-wrap, .contact { grid-template-columns: 1fr; }
+  .nav a { display: none; }
+  .jukebox, .mixer-wrap { grid-template-columns: 1fr; }
   .plans { grid-template-columns: 1fr; }
   .steps { grid-template-columns: 1fr 1fr; }
+  .contact-tab { display: none; }
+  .mbar { display: flex; position: fixed; left: 12px; right: 12px; bottom: calc(12px + var(--safe-b)); z-index: 65; gap: 10px; padding: 8px; border-radius: 999px;
+    background: rgba(20, 12, 10, .92); border: 1px solid var(--line); box-shadow: 0 10px 40px rgba(0, 0, 0, .6); backdrop-filter: blur(10px); }
+  .mbar .btn { flex: 1; padding: 13px 10px; font-size: 14px; }
+  .crate { overflow-x: auto; padding: 40px 4px 10px; margin: -30px -4px 20px; scroll-snap-type: x mandatory; }
+  .sleeve { width: 130px; scroll-snap-align: start; }
+  .sleeve .vinyl { transform: translateY(-22%); }
 }
 @media (max-width: 520px) {
   .steps { grid-template-columns: 1fr; }
-  .facts { gap: 24px; }
+  .facts { gap: 22px; }
   .meter { height: 120px; }
   .ch input[type="range"] { height: 110px; }
+  .info { padding: 22px; min-height: 0; }
+  .hero { min-height: calc(100svh - 120px); }
+  .beam { display: none; }
+  .bg-orbs i { filter: blur(50px); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -169,6 +311,11 @@ footer a { color: var(--amber); text-decoration: underline; }
 </head>
 <body>
 
+<div class="bg-orbs" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="beam" aria-hidden="true"></div>
+<canvas id="dust" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+
 <div class="concept" role="note">
   <span><b>Концепт</b> — это не официальный сайт Sound Live Records.</span>
   <span>Дизайн и разработка: <a href="https://t.me/nalpax" target="_blank" rel="noopener">@nalpax</a></span>
@@ -176,25 +323,25 @@ footer a { color: var(--amber); text-decoration: underline; }
 
 <div class="wrap">
   <header class="top">
-    <a href="#" class="brand"><span class="onair" id="onair"><i></i>ON AIR</span> SOUND LIVE</a>
+    <a href="#" class="brand"><span class="onair" id="onair"><i></i>ON AIR</span> SOUND LIVE <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></a>
     <nav class="nav">
       <a href="#services">Услуги</a>
-      <a href="#mixer">Микшер</a>
+      <a href="#records">Пластинки</a>
       <a href="#plans">Тарифы</a>
-      <a href="#contacts">Контакты</a>
+      <button type="button" class="nav-cta" data-open-contact>Связь с нами</button>
     </nav>
   </header>
 </div>
 
 <section class="hero">
   <canvas id="wave" aria-hidden="true"></canvas>
-  <div class="wrap hero-in">
+  <div class="wrap">
     <p class="kicker">Студия звукозаписи · Ярославль</p>
-    <h1>SOUND LIVE<span>RECORDS</span></h1>
+    <h1><span class="line"><span>SOUND LIVE</span></span><span class="line"><span>RECORDS</span></span></h1>
     <p class="lead">Запись вокала, сведение, мастеринг и написание песен. Приходи с идеей — уходи с готовым треком.</p>
     <div class="cta">
       <a class="btn" href="tel:+79610214876">● Записаться на сессию</a>
-      <a class="btn ghost" href="#plans">Тарифы и цены</a>
+      <a class="btn ghost" href="#records">Выбрать пластинку ↓</a>
     </div>
     <div class="facts">
       <div><b>от 2 500 ₽</b>сведение трека</div>
@@ -202,11 +349,13 @@ footer a { color: var(--amber); text-decoration: underline; }
       <div><b>10:00–23:00</b>ежедневно*</div>
     </div>
   </div>
+  <div class="scroll-cue">scroll</div>
 </section>
 
 <div class="ticker" aria-hidden="true"><div id="ticker"></div></div>
 
 <section class="block" id="services">
+  <div class="waves-bg" aria-hidden="true"></div>
   <div class="wrap">
     <h2 class="sec-title reveal">Что мы <em>делаем</em></h2>
     <p class="sec-sub reveal">Полный цикл: от первой строчки текста до трека, который не стыдно выпустить на площадки.</p>
@@ -221,14 +370,40 @@ footer a { color: var(--amber); text-decoration: underline; }
   </div>
 </section>
 
-<section class="block" id="mixer" style="background: var(--bg-2)">
+<section class="block alt" id="records">
+  <div class="wrap">
+    <h2 class="sec-title reveal">Выбери <em>пластинку</em></h2>
+    <p class="sec-sub reveal">Каждая пластинка — раздел о студии. Поставь её на проигрыватель.</p>
+    <div class="jukebox">
+      <div class="reveal">
+        <div class="crate" id="crate">
+          <button type="button" class="sleeve" data-rec="about" style="--lab:#ff6a2b"><span class="vinyl"></span><span class="cover c-about"><span class="num">A1</span><span class="lbl">О НАС</span></span><b>О нас</b><small>кто мы и что делаем</small></button>
+          <button type="button" class="sleeve" data-rec="contacts" style="--lab:#ffae42"><span class="vinyl"></span><span class="cover c-contacts"><span class="num">A2</span><span class="lbl">КОН­ТАКТЫ</span></span><b>Контакты</b><small>адрес, телефон, часы</small></button>
+          <button type="button" class="sleeve" data-rec="reviews" style="--lab:#ff3b30"><span class="vinyl"></span><span class="cover c-reviews"><span class="num">B1</span><span class="lbl">ОТЗЫВЫ</span></span><b>Отзывы</b><small>что говорят артисты</small></button>
+        </div>
+        <div class="deck" id="deck">
+          <div class="platter"><span class="vinyl" id="platter-vinyl"></span></div>
+          <div class="tonearm" aria-hidden="true"></div>
+          <div class="deck-ui"><span class="led"></span><span class="knob"></span></div>
+          <span class="deck-hint" id="deck-hint">33⅓ RPM · выбери пластинку</span>
+        </div>
+      </div>
+      <div class="info reveal" id="info" aria-live="polite">
+        <div class="idle"><div><b>Здесь пока тихо</b>Выбери пластинку слева — и она заиграет.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="mixer">
+  <div class="waves-bg" aria-hidden="true" style="animation-direction: reverse"></div>
   <div class="wrap mixer-wrap">
     <div class="reveal">
       <h2 class="sec-title">Попробуй <em>свести</em> сам</h2>
       <p class="sec-sub">Подвигай фейдеры — волна на главном экране отзовётся. А настоящее сведение оставь нам 😉</p>
       <a class="btn" href="tel:+79610214876">Записаться</a>
     </div>
-    <div class="mixer reveal" id="mixer-board">
+    <div class="mixer reveal">
       <div class="ch"><div class="meter"><i></i></div><input type="range" min="0" max="100" value="70" aria-label="Вокал"><label>Vocal</label></div>
       <div class="ch"><div class="meter"><i></i></div><input type="range" min="0" max="100" value="55" aria-label="Бас"><label>Bass</label></div>
       <div class="ch"><div class="meter"><i></i></div><input type="range" min="0" max="100" value="60" aria-label="Барабаны"><label>Drums</label></div>
@@ -238,20 +413,21 @@ footer a { color: var(--amber); text-decoration: underline; }
   </div>
 </section>
 
-<section class="block" id="plans">
+<section class="block alt" id="plans">
   <div class="wrap">
     <h2 class="sec-title reveal">Тарифы</h2>
     <p class="sec-sub reveal">Выбери формат — от одного трека до большого релиза.</p>
     <div class="plans">
-      <div class="plan reveal"><h3>Стандартный</h3><div class="sum">8 490 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><a class="btn ghost" href="tel:+79610214876">Выбрать</a></div>
-      <div class="plan top-plan reveal"><h3>Расширенный</h3><div class="sum">24 990 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><a class="btn" href="tel:+79610214876">Выбрать</a></div>
-      <div class="plan reveal"><h3>Премиальный</h3><div class="sum">38 490 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><a class="btn ghost" href="tel:+79610214876">Выбрать</a></div>
+      <div class="plan reveal"><h3>Стандартный</h3><div class="sum">8 490 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><button type="button" class="btn ghost" data-open-contact data-plan="Стандартный">Выбрать</button></div>
+      <div class="plan top-plan reveal"><h3>Расширенный</h3><div class="sum">24 990 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><button type="button" class="btn" data-open-contact data-plan="Расширенный">Выбрать</button></div>
+      <div class="plan reveal"><h3>Премиальный</h3><div class="sum">38 490 <small>₽</small></div><p>Состав тарифа заполняется вместе со студией.</p><button type="button" class="btn ghost" data-open-contact data-plan="Премиальный">Выбрать</button></div>
     </div>
     <p class="note reveal">* Цены и график взяты из открытых каталогов и могут быть неактуальны — это демонстрационный концепт.</p>
   </div>
 </section>
 
-<section class="block" style="background: var(--bg-2)">
+<section class="block">
+  <div class="waves-bg" aria-hidden="true"></div>
   <div class="wrap">
     <h2 class="sec-title reveal">Как мы <em>работаем</em></h2>
     <p class="sec-sub reveal">Четыре шага от идеи до релиза.</p>
@@ -264,14 +440,14 @@ footer a { color: var(--amber); text-decoration: underline; }
   </div>
 </section>
 
-<section class="block" id="contacts">
+<section class="block">
   <div class="wrap">
-    <div class="contact reveal">
+    <div class="final reveal">
       <h2>Готов<br>к <em>записи?</em></h2>
-      <div class="c-list">
-        <a class="c-item" href="tel:+79610214876"><span class="ci">📞</span><span><b>+7 961 021-48-76</b><small>позвонить и записаться</small></span></a>
-        <a class="c-item" href="https://yandex.ru/maps/?text=%D0%AF%D1%80%D0%BE%D1%81%D0%BB%D0%B0%D0%B2%D0%BB%D1%8C%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%90%D0%BA%D0%B0%D0%B4%D0%B5%D0%BC%D0%B8%D0%BA%D0%B0%20%D0%9A%D0%BE%D0%BB%D0%BC%D0%BE%D0%B3%D0%BE%D1%80%D0%BE%D0%B2%D0%B0%2C%2024%D0%BA2" target="_blank" rel="noopener"><span class="ci">📍</span><span><b>ул. Академика Колмогорова, 24 к2</b><small>Ярославль · открыть на карте</small></span></a>
-        <div class="c-item"><span class="ci">🕙</span><span><b>Ежедневно 10:00–23:00</b><small>по данным каталогов, уточняйте по телефону</small></span></div>
+      <p>Позвони или оставь заявку — подберём время для сессии.</p>
+      <div class="cta">
+        <a class="btn" href="tel:+79610214876">📞 Позвонить</a>
+        <button type="button" class="btn ghost" data-open-contact>Связь с нами</button>
       </div>
     </div>
   </div>
@@ -281,81 +457,239 @@ footer a { color: var(--amber); text-decoration: underline; }
   Концепт сайта для Sound Live Records · неофициальный · дизайн и разработка <a href="https://t.me/nalpax" target="_blank" rel="noopener">@nalpax</a> · <a href="https://nalpax.github.io" target="_blank" rel="noopener">nalpax.github.io</a>
 </footer>
 
+<!-- «Связь с нами» -->
+<button type="button" class="contact-tab" data-open-contact>Связь с нами</button>
+<div class="mbar"><a class="btn" href="tel:+79610214876">📞 Позвонить</a><button type="button" class="btn ghost" data-open-contact>Связь с нами</button></div>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" aria-hidden="true">
+  <div class="drawer-head"><h2 id="drawer-title">Связь с нами</h2><button type="button" class="x" id="drawer-close" aria-label="Закрыть">✕</button></div>
+  <a class="btn call" href="tel:+79610214876">📞 +7 961 021-48-76</a>
+  <div class="rows">
+    <a href="https://yandex.ru/maps/?text=%D0%AF%D1%80%D0%BE%D1%81%D0%BB%D0%B0%D0%B2%D0%BB%D1%8C%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%90%D0%BA%D0%B0%D0%B4%D0%B5%D0%BC%D0%B8%D0%BA%D0%B0%20%D0%9A%D0%BE%D0%BB%D0%BC%D0%BE%D0%B3%D0%BE%D1%80%D0%BE%D0%B2%D0%B0%2C%2024%D0%BA2" target="_blank" rel="noopener"><span>📍</span><span>ул. Академика Колмогорова, 24 к2<small>Ярославль · открыть на карте</small></span></a>
+    <div><span>🕙</span><span>Ежедневно 10:00–23:00<small>по данным каталогов, уточняйте по телефону</small></span></div>
+  </div>
+  <form class="form" id="lead-form">
+    <h3>Оставить заявку</h3>
+    <label for="f-name">Как тебя зовут</label>
+    <input id="f-name" required autocomplete="name" placeholder="Имя или псевдоним">
+    <label for="f-service">Что нужно</label>
+    <select id="f-service">
+      <option>Запись вокала</option><option>Сведение</option><option>Мастеринг</option><option>Написание песни</option><option>Клип / обложка</option><option>Тариф «Стандартный»</option><option>Тариф «Расширенный»</option><option>Тариф «Премиальный»</option>
+    </select>
+    <label for="f-when">Когда удобно</label>
+    <input id="f-when" placeholder="например, в субботу вечером">
+    <label for="f-msg">Комментарий</label>
+    <textarea id="f-msg" placeholder="Жанр, референсы, что хочешь получить"></textarea>
+    <button type="submit" class="btn">Отправить заявку по SMS</button>
+    <p class="hint">Откроется приложение сообщений с готовым текстом на номер студии.</p>
+  </form>
+</aside>
+
 <script>
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const lite = matchMedia("(pointer: coarse)").matches || innerWidth < 760;
+const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelectorAll(s)];
 
 // бегущая строка
 const words = ["ЗАПИСЬ ВОКАЛА", "СВЕДЕНИЕ", "МАСТЕРИНГ", "НАПИСАНИЕ ПЕСЕН", "КЛИПЫ", "ДИЗАЙН ОБЛОЖЕК", "ЯРОСЛАВЛЬ"];
 const row = words.map((w) => `<span>${w}</span><em>✦</em>`).join("");
-document.getElementById("ticker").innerHTML = row + row;
+$("#ticker").innerHTML = row + row;
 
-// фейдеры микшера управляют волной на главном экране
-const faders = [...document.querySelectorAll(".ch input")];
-const meters = [...document.querySelectorAll(".meter i")];
-const mix = () => faders.map((f) => f.value / 100);
-
-// живая звуковая волна: реагирует на курсор/палец и на микшер
-const canvas = document.getElementById("wave");
-const ctx = canvas.getContext("2d");
-let W, H, mx = 0.5, my = 0.5, energy = 0.4;
-function size() {
-  const dpr = Math.min(devicePixelRatio || 1, lite ? 1 : 2);
-  W = canvas.clientWidth; H = canvas.clientHeight;
-  canvas.width = W * dpr; canvas.height = H * dpr;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-}
-size();
-addEventListener("resize", size);
-addEventListener("pointermove", (e) => { mx = e.clientX / innerWidth; my = e.clientY / innerHeight; energy = Math.min(1, energy + 0.05); });
-
-const LINES = lite ? 3 : 5;
-const COLORS = ["255,174,66", "255,106,43", "255,59,48", "255,200,140", "255,140,60"];
-let running = true;
-new IntersectionObserver(([e]) => { running = e.isIntersecting; if (running) requestAnimationFrame(draw); }).observe(canvas);
-function draw(t) {
-  if (!running) return;
-  const m = mix();
-  energy += (0.25 + m[4] * 0.35 - energy) * 0.02;
-  ctx.clearRect(0, 0, W, H);
-  for (let l = 0; l < LINES; l++) {
-    const amp = H * 0.12 * (0.4 + m[l % 4] * 1.2) * (0.5 + energy);
-    ctx.beginPath();
-    for (let x = 0; x <= W; x += lite ? 8 : 4) {
-      const k = x / W;
-      const focus = Math.exp(-((k - mx) ** 2) / 0.04);
-      const y = H * (0.45 + (my - 0.5) * 0.15) +
-        Math.sin(k * (8 + l * 3) + t / (700 - l * 90)) * amp * (0.35 + focus) +
-        Math.sin(k * 23 + t / 300 + l) * amp * 0.15;
-      x ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
-    }
-    ctx.strokeStyle = `rgba(${COLORS[l]},${0.55 - l * 0.08})`;
-    ctx.lineWidth = l === 0 ? 2.5 : 1.2;
-    if (!lite) { ctx.shadowColor = `rgb(${COLORS[l]})`; ctx.shadowBlur = l === 0 ? 18 : 0; }
-    ctx.stroke();
+/* ---------- пылинки в луче света (спокойный фон на всю страницу) ---------- */
+(() => {
+  const c = $("#dust"), x = c.getContext("2d");
+  let w, h, motes = [];
+  function size() {
+    w = c.width = innerWidth; h = c.height = innerHeight;
+    motes = Array.from({ length: lite ? 26 : 60 }, () => ({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.6 + .4, vx: (Math.random() - .5) * .15, vy: -Math.random() * .25 - .05, a: Math.random() * .5 + .15, p: Math.random() * 6 }));
   }
-  ctx.shadowBlur = 0;
-  if (!reduce) requestAnimationFrame(draw);
-}
-requestAnimationFrame(draw);
+  size(); addEventListener("resize", size);
+  let last = 0;
+  (function draw(t) {
+    if (!reduce) requestAnimationFrame(draw);
+    if (lite && t - last < 40) return;
+    last = t;
+    x.clearRect(0, 0, w, h);
+    for (const m of motes) {
+      m.x += m.vx; m.y += m.vy;
+      if (m.y < -5) { m.y = h + 5; m.x = Math.random() * w; }
+      const tw = .6 + Math.sin(t / 900 + m.p) * .4;
+      x.fillStyle = `rgba(255,200,140,${m.a * tw})`;
+      x.beginPath(); x.arc(m.x, m.y, m.r, 0, Math.PI * 2); x.fill();
+    }
+  })(0);
+})();
 
-// индикаторы уровня на микшере «пляшут» в такт
+/* ---------- живая звуковая волна на главном экране ---------- */
+const faders = $$(".ch input"), meters = $$(".meter i");
+const mix = () => faders.map((f) => f.value / 100);
+(() => {
+  const canvas = $("#wave"), ctx = canvas.getContext("2d");
+  let W, H, mx = .5, my = .5, energy = .4, running = true;
+  function size() {
+    const dpr = Math.min(devicePixelRatio || 1, lite ? 1 : 2);
+    W = canvas.clientWidth; H = canvas.clientHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  size(); addEventListener("resize", size);
+  addEventListener("pointermove", (e) => { mx = e.clientX / innerWidth; my = e.clientY / innerHeight; energy = Math.min(1, energy + .05); });
+  // на телефоне волна мягко «гуляет» сама и откликается на касание
+  addEventListener("touchmove", (e) => { const t = e.touches[0]; mx = t.clientX / innerWidth; my = t.clientY / innerHeight; }, { passive: true });
+  const LINES = lite ? 3 : 5;
+  const COLORS = ["255,174,66", "255,106,43", "255,59,48", "255,200,140", "255,140,60"];
+  new IntersectionObserver(([e]) => { const was = running; running = e.isIntersecting; if (running && !was) requestAnimationFrame(draw); }).observe(canvas);
+  function draw(t) {
+    if (!running) return;
+    const m = mix();
+    if (lite) mx += (.5 + Math.sin(t / 3000) * .3 - mx) * .01;
+    energy += (.25 + m[4] * .35 - energy) * .02;
+    ctx.clearRect(0, 0, W, H);
+    for (let l = 0; l < LINES; l++) {
+      const amp = H * .12 * (.4 + m[l % 4] * 1.2) * (.5 + energy);
+      ctx.beginPath();
+      for (let x = 0; x <= W; x += lite ? 8 : 4) {
+        const k = x / W, focus = Math.exp(-((k - mx) ** 2) / .04);
+        const y = H * (.5 + (my - .5) * .15) + Math.sin(k * (8 + l * 3) + t / (700 - l * 90)) * amp * (.35 + focus) + Math.sin(k * 23 + t / 300 + l) * amp * .15;
+        x ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }
+      ctx.strokeStyle = `rgba(${COLORS[l]},${.55 - l * .08})`;
+      ctx.lineWidth = l === 0 ? 2.5 : 1.2;
+      if (!lite) { ctx.shadowColor = `rgb(${COLORS[l]})`; ctx.shadowBlur = l === 0 ? 18 : 0; }
+      ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
+    if (!reduce) requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+// индикаторы уровня на микшере
+let mixerVisible = false;
+new IntersectionObserver(([e]) => (mixerVisible = e.isIntersecting)).observe($(".mixer"));
 setInterval(() => {
+  if (!mixerVisible) return;
   const m = mix();
-  meters.forEach((el, i) => (el.style.height = Math.max(4, m[i] * 100 * (0.55 + Math.random() * 0.45)) + "%"));
+  meters.forEach((el, i) => (el.style.height = Math.max(4, m[i] * 100 * (.55 + Math.random() * .45)) + "%"));
 }, 90);
 
-// табличка ON AIR загорается, когда двигаешь фейдер или наводишь на кнопку записи
-const onair = document.getElementById("onair");
+// табличка ON AIR
+const onair = $("#onair");
 let offTimer;
-function light() { onair.classList.add("live"); clearTimeout(offTimer); offTimer = setTimeout(() => onair.classList.remove("live"), 1800); }
-faders.forEach((f) => f.addEventListener("input", light));
-document.querySelectorAll(".btn").forEach((b) => b.addEventListener("pointerenter", light));
+function light(ms = 1800) { onair.classList.add("live"); clearTimeout(offTimer); offTimer = setTimeout(() => onair.classList.remove("live"), ms); }
+faders.forEach((f) => f.addEventListener("input", () => light()));
+$$(".btn").forEach((b) => b.addEventListener("pointerenter", () => light()));
 setTimeout(light, 600);
 
-// появление блоков при прокрутке
-const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { threshold: 0.15 });
-document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+/* ---------- ПЛАСТИНКИ: летят на проигрыватель и показывают раздел ---------- */
+const RECORDS = {
+  about: {
+    side: "A1 · О нас", color: "#ff6a2b",
+    html: `<h3>Sound Live Records</h3>
+      <p>Студия звукозаписи в Ярославле. Записываем вокал, сводим и мастерим треки, пишем песни под артиста, снимаем клипы и делаем обложки для релизов.</p>
+      <div class="chips"><span>🎙️ запись</span><span>🎛️ сведение</span><span>💿 мастеринг</span><span>✍️ песни</span><span>🎬 клипы</span><span>🎨 обложки</span></div>`,
+  },
+  contacts: {
+    side: "A2 · Контакты", color: "#ffae42",
+    html: `<h3>Где нас найти</h3>
+      <div class="rows">
+        <a href="tel:+79610214876"><span>📞</span><span>+7 961 021-48-76<small>позвонить и записаться</small></span></a>
+        <a href="https://yandex.ru/maps/?text=%D0%AF%D1%80%D0%BE%D1%81%D0%BB%D0%B0%D0%B2%D0%BB%D1%8C%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%90%D0%BA%D0%B0%D0%B4%D0%B5%D0%BC%D0%B8%D0%BA%D0%B0%20%D0%9A%D0%BE%D0%BB%D0%BC%D0%BE%D0%B3%D0%BE%D1%80%D0%BE%D0%B2%D0%B0%2C%2024%D0%BA2" target="_blank" rel="noopener"><span>📍</span><span>ул. Академика Колмогорова, 24 к2<small>открыть на карте</small></span></a>
+        <div><span>🕙</span><span>Ежедневно 10:00–23:00<small>по данным каталогов</small></span></div>
+      </div>`,
+  },
+  reviews: {
+    side: "B1 · Отзывы", color: "#ff3b30",
+    html: `<h3>Что говорят артисты</h3>
+      <p>Сюда подключим настоящие отзывы ваших клиентов — с Яндекс Карт или из соцсетей.</p>
+      <div class="rev"><span class="stars">★★★★★</span><i style="width:90%"></i><i style="width:70%"></i></div>
+      <div class="rev"><span class="stars">★★★★★</span><i style="width:80%"></i><i style="width:55%"></i></div>`,
+  },
+};
+(() => {
+  const deck = $("#deck"), platter = $("#platter-vinyl"), info = $("#info"), hint = $("#deck-hint");
+  let busy = false, current = null;
+  function show(key) {
+    const r = RECORDS[key];
+    info.innerHTML = `<div class="panel"><div class="track"><span class="eq"><i></i><i></i><i></i><i></i></span>Сейчас играет · ${r.side}</div>${r.html}</div>`;
+    hint.textContent = "33⅓ RPM · " + r.side;
+  }
+  function play(btn) {
+    const key = btn.dataset.rec;
+    if (busy || key === current) return;
+    busy = true;
+    $$(".sleeve").forEach((s) => s.classList.toggle("out", s === btn));
+    const src = btn.querySelector(".vinyl").getBoundingClientRect();
+    const dst = platter.getBoundingClientRect();
+    deck.classList.remove("has");
+    platter.style.setProperty("--lab", RECORDS[key].color);
+    if (reduce) { finish(); return; }
+    // летящая копия пластинки
+    const fly = document.createElement("span");
+    fly.className = "vinyl flying";
+    fly.style.cssText = `left:${src.left}px;top:${src.top}px;width:${src.width}px;--lab:${RECORDS[key].color}`;
+    document.body.appendChild(fly);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      fly.style.transform = `translate(${dst.left - src.left}px, ${dst.top - src.top}px) rotate(540deg)`;
+      fly.style.width = dst.width + "px";
+    }));
+    fly.addEventListener("transitionend", function done(e) {
+      if (e.propertyName !== "transform") return;
+      fly.removeEventListener("transitionend", done);
+      fly.remove();
+      finish();
+    });
+    function finish() {
+      deck.classList.add("has");
+      current = key;
+      light(2600);
+      setTimeout(() => { show(key); busy = false; }, reduce ? 0 : 450);
+    }
+  }
+  $$(".sleeve").forEach((b) => b.addEventListener("click", () => {
+    play(b);
+    // на телефоне после выбора плавно показываем проигрыватель
+    if (lite) setTimeout(() => deck.scrollIntoView({ behavior: "smooth", block: "center" }), 150);
+  }));
+})();
+
+/* ---------- «Связь с нами» ---------- */
+(() => {
+  const drawer = $("#drawer");
+  const open = (plan) => {
+    document.body.classList.add("drawer-open");
+    drawer.setAttribute("aria-hidden", "false");
+    if (plan) $("#f-service").value = `Тариф «${plan}»`;
+    setTimeout(() => $("#f-name").focus({ preventScroll: true }), 400);
+  };
+  const close = () => { document.body.classList.remove("drawer-open"); drawer.setAttribute("aria-hidden", "true"); };
+  $$("[data-open-contact]").forEach((b) => b.addEventListener("click", () => open(b.dataset.plan)));
+  $("#drawer-close").addEventListener("click", close);
+  $("#scrim").addEventListener("click", close);
+  addEventListener("keydown", (e) => e.key === "Escape" && close());
+  // заявка: собираем текст и открываем SMS на номер студии
+  $("#lead-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const text = [
+      `Здравствуйте! Хочу записаться.`,
+      `Имя: ${$("#f-name").value}`,
+      `Услуга: ${$("#f-service").value}`,
+      $("#f-when").value && `Когда удобно: ${$("#f-when").value}`,
+      $("#f-msg").value && `Комментарий: ${$("#f-msg").value}`,
+    ].filter(Boolean).join("\n");
+    location.href = `sms:+79610214876?&body=${encodeURIComponent(text)}`;
+  });
+})();
+
+// появление блоков при прокрутке, с небольшой задержкой между соседями
+const io = new IntersectionObserver((es) => es.forEach((e) => {
+  if (!e.isIntersecting) return;
+  const sibs = [...e.target.parentElement.children].filter((n) => n.classList.contains("reveal"));
+  e.target.style.transitionDelay = Math.min(sibs.indexOf(e.target), 5) * 80 + "ms";
+  e.target.classList.add("in");
+  io.unobserve(e.target);
+}), { threshold: .15 });
+$$(".reveal").forEach((el) => io.observe(el));
 </script>
 </body>
 </html>
