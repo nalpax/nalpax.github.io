@@ -821,11 +821,15 @@ addEventListener("touchmove", (e) => { const t = e.touches[0]; pmx = t.clientX /
 (() => {
   const canvas = $("#wave"), ctx = canvas.getContext("2d");
   const ring = $("#ring"), rc = ring.getContext("2d");
-  let W, H, S, mx = .5, my = .5, energy = .4, running = true, lastX = .5;
+  let W, H, S, baseY, ampH, mx = .5, my = .5, energy = .4, running = true, lastX = .5;
   const dprMax = lite ? 1.5 : 2;
   function size() {
     const dpr = Math.min(devicePixelRatio || 1, dprMax);
     W = canvas.clientWidth; H = canvas.clientHeight;
+    // на телефоне экран высокий (текст + пластинка), поэтому волну держим в первом видимом экране, за кнопками
+    const top = canvas.getBoundingClientRect().top + scrollY, vis = clamp(innerHeight - top, 320, H);
+    ampH = lite ? Math.min(vis, 700) * .7 : H;
+    baseY = lite ? vis * .66 : H * .66;
     canvas.width = W * dpr; canvas.height = H * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     S = ring.clientWidth;
@@ -836,13 +840,12 @@ addEventListener("touchmove", (e) => { const t = e.touches[0]; pmx = t.clientX /
   const LINES = lite ? 3 : 5;
   const COLORS = ["255,174,66", "255,106,43", "255,59,48", "255,200,140", "255,140,60"];
   const sparks = Array.from({ length: lite ? 12 : 26 }, () => ({ x: Math.random(), v: .0004 + Math.random() * .001, s: Math.random() * 1.6 + .8, p: Math.random() * 6 }));
-  const grad = () => { const g = ctx.createLinearGradient(0, H * .35, 0, H); g.addColorStop(0, "rgba(255,106,43,.22)"); g.addColorStop(.6, "rgba(255,59,48,.05)"); g.addColorStop(1, "rgba(255,59,48,0)"); return g; };
+  const grad = () => { const g = ctx.createLinearGradient(0, baseY - ampH * .3, 0, H); g.addColorStop(0, "rgba(255,106,43,.22)"); g.addColorStop(.6, "rgba(255,59,48,.05)"); g.addColorStop(1, "rgba(255,59,48,0)"); return g; };
   let fill = grad(); addEventListener("resize", () => (fill = grad()));
-  const base = () => H * (lite ? .78 : .66);
   function waveY(l, x, t, m) {
-    const amp = H * .1 * (.4 + m[l % 4] * 1.2) * (.5 + energy);
+    const amp = ampH * .1 * (.4 + m[l % 4] * 1.2) * (.5 + energy);
     const k = x / W, focus = Math.exp(-((k - mx) ** 2) / .04);
-    return base() + (my - .5) * H * .08 + Math.sin(k * (8 + l * 3) + t / (700 - l * 90)) * amp * (.35 + focus) + Math.sin(k * 23 + t / 300 + l) * amp * .15;
+    return baseY + (my - .5) * ampH * .08 + Math.sin(k * (8 + l * 3) + t / (700 - l * 90)) * amp * (.35 + focus) + Math.sin(k * 23 + t / 300 + l) * amp * .15;
   }
   new IntersectionObserver(([e]) => { const was = running; running = e.isIntersecting; if (running && !was) requestAnimationFrame(draw); }).observe(canvas);
   function draw(t) {
