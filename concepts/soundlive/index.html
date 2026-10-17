@@ -415,6 +415,33 @@ body.drawer-open .drawer { transform: none; }
 .form .btn { width: 100%; margin-top: 18px; }
 .form .hint { font-size: 12px; color: var(--muted); margin-top: 10px; }
 
+
+/* ================= заставка ================= */
+.loader { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; align-content: center; gap: 24px; background: radial-gradient(circle at 50% 45%, #1d0f0a, var(--bg) 60%);
+  clip-path: inset(0 0 0 0); transition: clip-path 1s cubic-bezier(.7, 0, .2, 1); }
+.loader.done { clip-path: inset(0 0 100% 0); pointer-events: none; }
+.ld-disc { width: min(190px, 44vw); }
+.ld-disc svg { animation: spin 1s linear infinite; }
+.ld-txt { text-align: center; font-family: var(--display); }
+.ld-txt b { display: block; font-size: 46px; line-height: 1; color: var(--amber); font-variant-numeric: tabular-nums; }
+.ld-txt span { display: block; margin-top: 10px; font-size: 11px; letter-spacing: .35em; color: var(--muted); }
+.ld-bar { width: min(240px, 60vw); height: 2px; background: rgba(255, 174, 66, .12); border-radius: 2px; overflow: hidden; }
+.ld-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--amber), var(--red)); box-shadow: 0 0 10px var(--hot); }
+body.loading .hero * { animation-play-state: paused !important; }
+
+/* ================= прогресс прокрутки ================= */
+.to-top { position: fixed; left: 24px; bottom: 24px; z-index: 64; width: 56px; height: 56px; padding: 0; border: 0; border-radius: 50%; cursor: pointer; background: rgba(20, 12, 10, .85);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .5); backdrop-filter: blur(8px); opacity: 0; transform: translateY(20px) scale(.8); transition: opacity .4s, transform .4s var(--ease); }
+.to-top.show { opacity: 1; transform: none; }
+.to-top svg.pr { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.to-top .trk, .to-top .val { fill: none; stroke-width: 2.5; }
+.to-top .trk { stroke: rgba(255, 174, 66, .12); }
+.to-top .val { stroke: var(--amber); stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; filter: drop-shadow(0 0 4px var(--hot)); }
+.to-top .tt-disc { position: absolute !important; inset: 9px; }
+.to-top::after { content: "↑"; position: absolute; inset: 0; display: grid; place-items: center; font-weight: 800; color: #1a0e08; font-size: 13px; opacity: 0; transition: opacity .2s; }
+.to-top:hover::after { opacity: 1; }
+@media (max-width: 960px) { .to-top { display: none; } }
+
 /* элементы сеток не растягивают колонку шире экрана */
 .hero-grid > *, .jukebox > *, .mixer-wrap > *, .services > *, .plans > *, .steps > * { min-width: 0; }
 
@@ -477,7 +504,9 @@ body.drawer-open .drawer { transform: none; }
 }
 </style>
 </head>
-<body>
+<body class="loading">
+<div class="loader" id="loader" aria-hidden="true"><span class="ld-disc" data-vinyl="#ff6a2b|SOUND LIVE|A1"></span><div class="ld-txt"><b id="ld-n">0</b><span>SOUND LIVE RECORDS</span></div><div class="ld-bar"><i id="ld-bar"></i></div></div>
+<button type="button" class="to-top" id="to-top" aria-label="Наверх" data-cur="UP"><svg class="pr" viewBox="0 0 44 44"><circle class="trk" cx="22" cy="22" r="20"/><circle class="val" id="to-top-val" cx="22" cy="22" r="20" pathLength="100"/></svg><span class="tt-disc" data-vinyl="#ffae42|UP|↑"></span></button>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="swg" x1="0" x2="1"><stop offset="0" stop-color="#ffae42"/><stop offset="1" stop-color="#ff3b30"/></linearGradient></defs></svg>
 <div class="bg-orbs" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -819,7 +848,7 @@ addEventListener("touchmove", (e) => { const t = e.touches[0]; pmx = t.clientX /
   function draw(t) {
     if (!running) return;
     const m = mix();
-    if (lite) { mx += (.5 + Math.sin(t / 3000) * .3 - mx) * .02; my = .5 + Math.sin(t / 4100) * .2; }
+    if (lite) { mx += ((pmx !== .5 ? pmx : .5 + Math.sin(t / 3000) * .3) - mx) * .02; my = .5 + Math.sin(t / 4100) * .2; }
     else { mx += (pmx - mx) * .06; my += (pmy - my) * .06; }
     if (Math.abs(pmx - lastX) > .002) energy = Math.min(1, energy + .02);
     lastX = pmx;
@@ -897,7 +926,11 @@ if (fine && !reduce) {
   let x = -100, y = -100, rx = x, ry = y, pts = [], still = 0;
   const size = () => { tc.width = innerWidth; tc.height = innerHeight; };
   size(); addEventListener("resize", size);
-  addEventListener("pointermove", (e) => { x = e.clientX; y = e.clientY; still = 0; });
+  addEventListener("pointermove", (e) => {
+    // резкий скачок (вход в окно, первое движение) — без длинной линии через экран
+    if (Math.hypot(e.clientX - x, e.clientY - y) > 250) { pts = []; rx = e.clientX; ry = e.clientY; }
+    x = e.clientX; y = e.clientY; still = 0;
+  });
   document.addEventListener("pointerover", (e) => {
     const el = e.target.closest("a, button, input, select, textarea, [data-cur]");
     ring.classList.toggle("hot", !!el);
@@ -1119,6 +1152,59 @@ const RECORDS = {
     location.href = `sms:+79610214876?&body=${encodeURIComponent(text)}`;
   });
 })();
+
+
+/* ---------- заставка: пластинка раскручивается, счётчик до 100 ---------- */
+(() => {
+  const loader = $("#loader"), n = $("#ld-n"), bar = $("#ld-bar");
+  let seen = false;
+  try { seen = sessionStorage.getItem("sl-intro") === "1"; sessionStorage.setItem("sl-intro", "1"); } catch (e) {}
+  const finish = () => { loader.classList.add("done"); document.body.classList.remove("loading"); setTimeout(() => loader.remove(), 1100); };
+  if (reduce || seen) { loader.remove(); document.body.classList.remove("loading"); return; }
+  const t0 = performance.now(), dur = 1300;
+  (function step(t) {
+    const k = clamp((t - t0) / dur), e = 1 - (1 - k) ** 3;
+    n.textContent = Math.round(e * 100); bar.style.width = e * 100 + "%";
+    if (k < 1) requestAnimationFrame(step); else setTimeout(finish, 150);
+  })(t0);
+})();
+
+/* ---------- прогресс прокрутки на мини-пластинке ---------- */
+(() => {
+  const btn = $("#to-top"), val = $("#to-top-val"), disc = btn.querySelector("svg:not(.pr)");
+  let ticking = false;
+  const upd = () => {
+    ticking = false;
+    const max = document.documentElement.scrollHeight - innerHeight, p = max > 0 ? scrollY / max : 0;
+    val.style.strokeDashoffset = 100 - p * 100;
+    if (disc) disc.style.transform = `rotate(${scrollY * .4}deg)`;
+    btn.classList.toggle("show", scrollY > 500);
+  };
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(upd); } }, { passive: true });
+  btn.addEventListener("click", () => scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }));
+  upd();
+})();
+
+/* ---------- «магнитные» кнопки на компьютере ---------- */
+if (!lite && !reduce) $$(".btn, .speed button, .ss, .to-top").forEach((b) => {
+  b.addEventListener("pointermove", (e) => {
+    const r = b.getBoundingClientRect();
+    b.style.translate = `${(e.clientX - r.left - r.width / 2) * .22}px ${(e.clientY - r.top - r.height / 2) * .3}px`;
+  });
+  b.addEventListener("pointerleave", () => (b.style.translate = ""));
+});
+
+/* ---------- телефон: пластинка наклоняется от гироскопа ---------- */
+if (lite && !reduce && "DeviceOrientationEvent" in window && typeof DeviceOrientationEvent.requestPermission !== "function") {
+  const tilt = $("#tilt");
+  let raf = 0, gx = 0, gy = 0;
+  addEventListener("deviceorientation", (e) => {
+    if (e.gamma == null) return;
+    gx = clamp(e.gamma / 30, -1, 1); gy = clamp((e.beta - 45) / 30, -1, 1);
+    pmx = .5 + gx * .35;
+    if (!raf) raf = requestAnimationFrame(() => { raf = 0; tilt.style.transform = `perspective(900px) rotateY(${gx * 12}deg) rotateX(${-gy * 10}deg)`; });
+  });
+}
 
 // появление блоков при прокрутке
 const io = new IntersectionObserver((es) => es.forEach((e) => {
